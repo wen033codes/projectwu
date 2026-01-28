@@ -1,0 +1,342 @@
+:root {
+    --primary-blue: #3b82f6;
+    --dark-blue: #2563eb;
+    --purple-label: #d8b4fe;
+    --text-color: #333;
+    --link-color: #2563eb;
+    --orange-text: #f97316;
+    --background-gray: #f8fafc;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background-color: var(--background-gray);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.top-bar {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+    text-align: left;
+}
+
+.content-container {
+    width: 90%;
+    max-width: none;
+    margin: 0 auto;
+    padding: 40px 20px;
+    background-color: white;
+    min-height: 100vh;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.main-title {
+    color: var(--primary-blue);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    line-height: 1.3;
+}
+
+.description {
+    margin-bottom: 24px;
+}
+
+.description p {
+    color: #4b5563;
+    /* slightly muted for description */
+    margin-bottom: 12px;
+}
+
+.text-link,
+.item-link {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+.text-link:hover,
+.item-link:hover {
+    text-decoration: underline;
+}
+
+.button-group {
+    margin: 20px 0;
+}
+
+.primary-btn {
+    background-color: var(--dark-blue);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    /* Slight radius */
+}
+
+.primary-btn:hover {
+    opacity: 0.9;
+}
+
+.section {
+    margin-bottom: 30px;
+}
+
+h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #000;
+}
+
+.feature-list {
+    list-style-position: inside;
+    margin-left: 0;
+}
+
+.feature-list li {
+    margin-bottom: 8px;
+}
+
+.category-block {
+    margin-bottom: 16px;
+}
+
+.category-label {
+    background-color: var(--purple-label);
+    color: white;
+    /* Screenshot shows white text on purple */
+    padding: 4px 8px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 8px;
+    /* Adjust text color if screenshot shows dark text, but usually light on dark */
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Actually looking at the screenshot, the text on purple seems to be white with a bit of shadow or just white. */
+
+.item-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 4px;
+}
+
+.item-list li {
+    margin-bottom: 8px;
+    padding-left: 0;
+}
+
+.highlight-orange {
+    color: var(--orange-text);
+    font-weight: bold;
+    margin-top: 16px;
+}
+
+.footer-action {
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 40px;
+}
+
+.home-btn {
+    padding: 10px 40px;
+}
+
+/* Adjustments for the purple labels based on closer inspection */
+.category-label {
+    background-color: #c084fc;
+    /* Lighter purple */
+    color: white;
+}
+
+/* Smart Home Page Specifics */
+.list-item {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+.sub-item-group {
+    margin-left: 24px;
+    margin-bottom: 24px;
+    color: #555;
+    line-height: 1.8;
+}
+
+
+/* DIY Assistive Page Specifics */
+.category-section {
+    margin-bottom: 24px;
+}
+
+.category-label-large {
+    background-color: #d8b4fe;
+    /* Purple background matches screenshot */
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    display: inline-block;
+    margin-bottom: 16px;
+}
+
+.device-item {
+    margin-left: 0;
+    margin-bottom: 20px;
+}
+
+.device-name {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.info-section {
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+.section-title-blue {
+    color: var(--dark-blue);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    border-bottom: none;
+}
+
+.link-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.link-list li {
+    margin-bottom: 12px;
+}
+
+/* White Pigeon Bell Page Specifics */
+.big-blue-title {
+    font-size: 2rem;
+    color: var(--dark-blue);
+    text-align: left;
+    /* Screenshot shows left aligned or maybe centered, keeping general title style */
+    margin-bottom: 20px;
+}
+
+.content-section {
+    padding: 0 10px;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    /* 16:9 Aspect Ratio */
+    height: 0;
+    margin-bottom: 20px;
+    background-color: #ddd;
+    /* Placeholder color */
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.info-links {
+    margin-bottom: 24px;
+}
+
+.info-text {
+    font-size: 1.1rem;
+    color: #999;
+    /* Light gray for placeholder/inactive text look */
+    margin-bottom: 8px;
+}
+
+.materials-info {
+    margin-top: 24px;
+    line-height: 1.6;
+}
+
+.material-line {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+}
+
+.blue-text {
+    color: var(--dark-blue);
+}
+
+.red-text {
+    color: #dc2626;
+    /* Red color */
+}
+
+/* Flying Squirrel Mouse Page Specifics */
+.info-text-label {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 24px;
+}
+
+.code-download-box {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 24px;
+    background-color: #f8fafc;
+    margin-bottom: 24px;
+}
+
+.box-header {
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.icon {
+    margin-right: 8px;
+}
+
+.code-block-green {
+    background-color: #22c55e;
+    /* Green color match */
+    color: white;
+    padding: 16px;
+    border-radius: 6px;
+    font-family: monospace;
+    word-break: break-all;
+    margin-bottom: 12px;
+}
+
+.copy-instruction {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.link-line {
+    margin-top: 8px;
+}
