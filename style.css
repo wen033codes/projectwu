@@ -33,7 +33,7 @@ body {
     width: 90%;
     max-width: none;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 10px 20px;
     background-color: white;
     min-height: 100vh;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
@@ -48,7 +48,7 @@ body {
 }
 
 .description {
-    margin-bottom: 24px;
+    margin-bottom: 10px;
 }
 
 .description p {
@@ -69,7 +69,7 @@ body {
 }
 
 .button-group {
-    margin: 20px 0;
+    margin: 10px 0;
 }
 
 .primary-btn {
@@ -145,8 +145,12 @@ h2 {
 
 .footer-action {
     text-align: center;
-    margin-top: 60px;
+    margin-top: 5px;
     margin-bottom: 40px;
+    border-top: 1px solid #e5e7eb;
+    /* Light gray separator line */
+    padding-top: 5px;
+    /* Space between line and button */
 }
 
 .home-btn {
@@ -339,4 +343,48 @@ h2 {
 
 .link-line {
     margin-top: 8px;
+}
+
+/* Layout for Two-Column Features */
+.features-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.feature-column {
+    /* Common styles for columns */
+    min-width: 300px;
+    /* Ensure columns don't get too squished */
+}
+
+/* Specific ratios: 1:2 */
+.smart-home {
+    flex: 1;
+}
+
+.diy-assistive {
+    flex: 2;
+}
+
+/* Internal grid for DIY Assistive section */
+.diy-grid-container {
+    display: grid;
+    /* Two columns internally, equal width */
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Make it responsive for mobile */
+@media (max-width: 768px) {
+    .features-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .diy-grid-container {
+        grid-template-columns: 1fr;
+        /* Stack internally on mobile too */
+    }
 }
