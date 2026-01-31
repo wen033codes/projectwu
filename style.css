@@ -257,12 +257,12 @@ h2 {
     margin-bottom: 12px;
 }
 
-.video-container {
+.video-responsive-wrapper {
     position: relative;
     width: 100%;
     max-width: 640px;
     /* Limit width to user request */
-    padding-bottom: 56.25% !important;
+    padding-bottom: 56.25%;
     /* 16:9 Aspect Ratio */
     height: 0;
     margin: 0 auto 20px auto;
@@ -271,7 +271,7 @@ h2 {
     /* Placeholder color */
 }
 
-.video-container iframe {
+.video-responsive-wrapper iframe {
     position: absolute;
     top: 0;
     left: 0;
