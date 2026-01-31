@@ -262,7 +262,7 @@ h2 {
     width: 100%;
     max-width: 640px;
     /* Limit width to user request */
-    padding-bottom: 56.25%;
+    padding-bottom: 56.25% !important;
     /* 16:9 Aspect Ratio */
     height: 0;
     margin: 0 auto 20px auto;
