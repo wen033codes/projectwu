@@ -31,7 +31,8 @@ body {
 
 .content-container {
     width: 90%;
-    max-width: none;
+    max-width: 1000px;
+    /* Limit content width for better readability */
     margin: 0 auto;
     padding: 10px 20px;
     background-color: white;
