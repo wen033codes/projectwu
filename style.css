@@ -260,6 +260,8 @@ h2 {
 .video-container {
     position: relative;
     width: 100%;
+    max-width: 720px;
+    /* Limit width to user request */
     padding-bottom: 56.25%;
     /* 16:9 Aspect Ratio */
     height: 0;
