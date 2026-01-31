@@ -31,8 +31,7 @@ body {
 
 .content-container {
     width: 90%;
-    max-width: 1000px;
-    /* Limit content width for better readability */
+    max-width: none;
     margin: 0 auto;
     padding: 10px 20px;
     background-color: white;
@@ -266,7 +265,8 @@ h2 {
     padding-bottom: 56.25%;
     /* 16:9 Aspect Ratio */
     height: 0;
-    margin-bottom: 20px;
+    margin: 0 auto 20px auto;
+    /* Centered horizontally */
     background-color: #ddd;
     /* Placeholder color */
 }
