@@ -40,20 +40,48 @@
             <!-- Code Download Section -->
             <div class="code-download-box">
                 <p class="box-header"><span class="icon">📄</span> Microbit程式下載網址</p>
-                <div class="code-block-green">
-                    https://github.com/wen033codes/BT-Voice-controlled.git
+                <div class="code-row">
+                    <div class="code-block-green" id="code-url">
+                        https://github.com/wen033codes/BT-Voice-controlled.git
+                    </div>
+                    <button class="copy-btn" onclick="copyCode()">複製</button>
                 </div>
-                <p class="copy-instruction"><span class="icon">📋</span> 複製方法：三次點擊上方代碼區域選取全部，然後 Ctrl+C</p>
+                <!-- <p class="copy-instruction"><span class="icon">📋</span> 複製方法：三次點擊上方代碼區域選取全部，然後 Ctrl+C</p> -->
+
+                <script>
+                    function copyCode() {
+                        var copyText = document.getElementById("code-url");
+                        var textArea = document.createElement("textarea");
+                        textArea.value = copyText.textContent.trim();
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand("Copy");
+                        textArea.remove();
+                        alert("已複製網址!");
+                    }
+                </script>
             </div>
 
             <div class="materials-info">
-                <p class="material-line">
-                    <span class="blue-text">主要材料及費用 : micro:bit/520元、SU-03T/110元、麥克風、0.25W喇叭</span>
-                    <span class="red-text">(價格僅供參考)</span>
-                </p>
-                <p class="material-line blue-text">
-                    其他材料 : 可搭配使用[4號2節3V電池盒/30元]
-                </p>
+                <div class="materials-row">
+                    <div class="materials-col">
+                        <p class="material-line" style="margin-bottom: 4px;">
+                            <span class="blue-text">主要材料</span>
+                            <span class="red-text">(價格僅供參考)</span> :
+                        </p>
+                        <ul class="item-list">
+                            <li class="blue-text">micro:bit/520元</li>
+                            <li class="blue-text">SU-03T/110元</li>
+                            <li class="blue-text">麥克風</li>
+                            <li class="blue-text">0.25W喇叭</li>
+                        </ul>
+                    </div>
+                    <div class="materials-col">
+                        <p class="material-line blue-text">
+                            其他材料 : 可搭配使用[4號2節3V電池盒/30元]
+                        </p>
+                    </div>
+                </div>
             </div>
         </section>
 
