@@ -335,10 +335,9 @@ h2 {
 }
 
 .code-block-green {
-    background-color: #22c55e;
-    /* Green color match */
-    color: white;
-    padding: 16px;
+    background-color: transparent;
+    color: #333;
+    padding: 8px 0;
     border-radius: 6px;
     font-family: monospace;
     word-break: break-all;
@@ -362,7 +361,7 @@ h2 {
 
 .code-row .code-block-green {
     margin-bottom: 0;
-    flex-grow: 1;
+    flex-grow: 0;
 }
 
 .copy-btn {
@@ -370,8 +369,7 @@ h2 {
     color: white;
     border: none;
     padding: 0 20px;
-    height: 52px;
-    /* Match approximate height of code block */
+    height: 40px;
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
