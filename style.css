@@ -210,6 +210,15 @@ h2 {
     margin-bottom: 20px;
 }
 
+/* Distinct color for device buttons to differentiate from main category headers */
+.device-item .primary-btn {
+    background-color: #16a34a; /* Green */
+}
+
+.device-item .primary-btn:hover {
+    background-color: #15803d; /* Darker Green */
+}
+
 .device-name {
     font-size: 1.1rem;
     color: #333;
@@ -389,7 +398,7 @@ h2 {
     margin-top: 8px;
 }
 
-/* Layout for Two-Column Features */
+/* Layout for Three-Column Features */
 .features-container {
     display: flex;
     flex-wrap: wrap;
@@ -399,17 +408,21 @@ h2 {
 
 .feature-column {
     /* Common styles for columns */
-    min-width: 300px;
+    min-width: 250px;
     /* Ensure columns don't get too squished */
 }
 
-/* Specific ratios: 1:2 */
+/* Specific ratios: 1:2:1 */
 .smart-home {
     flex: 1;
 }
 
 .diy-assistive {
     flex: 2;
+}
+
+.voice-function {
+    flex: 1;
 }
 
 /* Internal grid for DIY Assistive section */
