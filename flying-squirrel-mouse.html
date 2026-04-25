@@ -7,6 +7,47 @@
     <title>小飛鼠藍牙穿戴式滑鼠 - DIY智能家居改造及電腦、手機、平板操作輔具</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Image Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: contain;
+        }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        .modal-close:hover,
+        .modal-close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
@@ -78,27 +119,27 @@
                 </script>
             </div>
 
-            <div class="materials-info">
-                <div class="materials-row">
-                    <div class="materials-col">
-                        <p class="material-line" style="margin-bottom: 4px;">
-                            <span class="blue-text">主要材料</span>
-                            <span class="red-text">(價格僅供參考)</span> :
-                        </p>
-                        <ul class="item-list">
-                            <li class="blue-text">micro:bit/520元</li>
-                            <li class="blue-text">充電電池模組(KS B040)/240元</li>
-                        </ul>
-                    </div>
-                    <div class="materials-col">
-                        <p class="material-line blue-text">
-                            其他材料 : 3M魔鬼粘(寬度:2cm 長度:1M)
-                        </p>
+            <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 40px; margin-top: 40px; margin-bottom: 20px;">
+                <div style="flex: 2; min-width: 300px;">
+                    <p style="font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #333;">接線圖</p>
+                    <div style="position: relative;">
+                        <img src="diagram/小飛鼠接線圖.PNG" alt="小飛鼠接線圖" style="width: 100%; height: auto; display: block; cursor: pointer;" onclick="openModal('diagram/小飛鼠接線圖.PNG')" title="點擊放大">
                     </div>
                 </div>
-                <p class="material-line link-line">
-                    組裝方法 : <a href="https://www.youtube.com/watch?v=e2RCiFNIF9g" class="text-link" target="_blank">KS B040充電電池模組</a>
-                </p>
+                
+                <div class="materials-info" style="flex: 1; min-width: 250px; margin-top: 0;">
+                    <h2 class="section-subtitle" style="margin-bottom: 15px;">小飛鼠材料</h2>
+                    <ol style="line-height: 1.8; font-size: 16px; padding-left: 24px; color: #333;">
+                        <li>Micro:bit V2 1片</li>
+                        <li>充電電池模組 KS B040 1個</li>
+                        <li>迴紋針 1個</li>
+                        <li>R型端子 1個</li>
+                        <li>母對公杜邦線 1條</li>
+                    </ol>
+                    <p class="material-line link-line" style="margin-top: 20px;">
+                        組裝方法 : <a href="https://www.youtube.com/watch?v=e2RCiFNIF9g" class="text-link" target="_blank">KS B040充電電池模組</a>
+                    </p>
+                </div>
             </div>
         </section>
 
@@ -108,6 +149,22 @@
 
     </main>
 
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <script>
+        function openModal(imageSrc) {
+            document.getElementById('imageModal').style.display = "block";
+            document.getElementById('modalImage').src = imageSrc;
+        }
+        
+        function closeModal() {
+            document.getElementById('imageModal').style.display = "none";
+        }
+    </script>
 </body>
 
 </html>
