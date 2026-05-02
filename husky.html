@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
@@ -64,46 +64,67 @@
 
         <section class="content-section">
             <div class="info-links">
-                <p class="info-text">說明文件</p>
-                <p class="info-text">程式下載</p>
-                <div style="margin-top: 20px; margin-bottom: 20px; width: 66.66%;">
-                    <p style="font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #333;">CI-03T</p>
-                    <div style="position: relative;">
-                        <img src="diagram/哈士奇語音辨識播放接線圖(ci03t).PNG" alt="哈士奇語音辨識播放接線圖" style="width: 100%; height: auto; display: block;">
-                        <!-- 左側綠色晶片的點擊熱區 (Hotspot) -->
-                        <a href="javascript:void(0)" onclick="openModal('diagram/哈士奇語音辨識播放接線圖part1(ci03t).PNG')" title="擊點放大查看" style="position: absolute; top: 10%; left: 0%; width: 45%; height: 80%; display: block; z-index: 10;"></a>
-                        <!-- 右側MP3晶片的點擊熱區 (Hotspot) -->
-                        <a href="javascript:void(0)" onclick="openModal('diagram/哈士奇語音辨識播放接線圖part2.PNG')" title="擊點放大查看" style="position: absolute; top: 10%; right: 0%; width: 45%; height: 80%; display: block; z-index: 10;"></a>
+                <div style="display: flex; gap: 40px; align-items: flex-start; margin-bottom: 30px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 300px;">
+                        <h2 class="section-subtitle" style="margin-bottom: 15px; color: #0284c7;">哈士奇眼控叫人鈴基本設定</h2>
+                        <ol style="line-height: 1.8; font-size: 16px; padding-left: 24px; color: #333;">
+                            <li>將HUSKYLENS2開機，進入系統設置(System Settings)>Language>中文(繁體)。</li>
+                            <li>於系統設置(System Settings)>協議種類(Protocol Type)>I2C。</li>
+                            <li>選擇注視方向檢測(Eye Gaze)，進行眼控檢測。</li>
+                            <li>第一次使用注視方向檢測(Eye Gaze)時，需要先讓設備進行學習。</li>
+                            <li>按下按鈕A進行學習，每個ID學習至少10張圖。</li>
+                            <li>學習順序：眼球向左看、眼球向右看、眼球看鏡頭、眼球看左上或左下、眼球看右上或右下，。<br>
+                            (※注意頭與鏡頭、鏡頭距離皆需固定保持不動)。</li>
+                        </ol>
+                    </div>
+                    <div style="flex: 1; min-width: 300px;">
+                        <h2 class="section-subtitle" style="margin-bottom: 15px; color: #0284c7;">哈士奇眼控叫人鈴規則</h2>
+                        <ol style="line-height: 1.8; font-size: 16px; padding-left: 24px; color: #333; margin-bottom: 10px;">
+                            <li>指令順序有兩層，第一層指令>第二層指令(分兩段指令避免誤觸)</li>
+                            <li>第一層指令：ID 4(眼球向左下或左上看) > ID 5(眼球向右下或右上看)，各ID 1秒才算輸入完成。</li>
+                            <li>靜候1秒進入第二層。</li>
+                            <li>第二層指令：ID 1(眼球向左看) > ID 1(眼球向左看) > ID 1(眼球向左看)，各ID 0.5秒才算輸入完成。</li>
+                            <li>第二層指令：ID 1(眼球向左看) > ID 2(眼球向右看) > ID 1(眼球向左看)，各ID 0.5秒才算輸入完成。</li>
+                            <li>靜候1秒觸發叫人鈴。</li>
+                        </ol>
+                        <ul style="list-style-type: none; line-height: 1.8; font-size: 16px; padding-left: 0; color: #333;">
+                            <li>※第一層指令輸入第一個ID時，將會等候10秒後自動退出。</li>
+                            <li>※第二層指令輸入第一個ID時，將會等候50秒後自動退出。</li>
+                            <li>※MIC/RGB顯示綠燈表示有抓到ID。</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 40px; align-items: flex-start; margin-top: 20px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <div style="flex: 2; min-width: 300px;">
+                        <p style="font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #0284c7;">哈士奇接線圖</p>
+                        <div style="position: relative;">
+                            <img src="diagram/哈士奇眼控叫人鈴接線圖.PNG" alt="哈士奇眼控叫人鈴接線圖" style="width: 100%; height: auto; display: block; cursor: pointer;" onclick="openModal('diagram/哈士奇眼控叫人鈴接線圖.PNG')" title="點擊放大">
+                        </div>
+                    </div>
+                    <div class="materials-info" style="flex: 1; min-width: 300px; margin-top: 0;">
+                        <h2 class="section-subtitle" style="margin-bottom: 15px; font-size: 18px; color: #0284c7;">哈士奇眼控叫人鈴材料</h2>
+                        <ol style="line-height: 1.8; font-size: 15px; padding-left: 20px; color: #333; margin: 0;">
+                            <li>HUSKYLENS2 1台</li>
+                            <li>Gravity-4P 感測器連接線 1條 ※購買HUSKYLENS2會附，購買前留意</li>
+                            <li>Micro:Bit V2 1~2片(1台接收、1台傳送)</li>
+                            <li>KSB034 基礎擴充板</li>
+                            <li>USB-A TO Micro USB 訊號線 1~2條</li>
+                            <li>USB-A TO USB-C 訊號線 1條</li>
+                            <li>5V/1A充電頭 2~3個</li>
+                            <li>充電電池模組(KS B040) 1~2個 ※可選</li>
+                        </ol>
                     </div>
                 </div>
 
                 <div style="margin-top: 40px; margin-bottom: 20px; width: 66.66%;">
-                    <p style="font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #333;">SU-03T</p>
+                    <p style="font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #0284c7;">哈士奇接線圖 (進階)</p>
                     <div style="position: relative;">
-                        <img src="diagram/哈士奇語音辨識播放接線圖(su03t).PNG" alt="哈士奇語音辨識播放接線圖 SU-03T" style="width: 100%; height: auto; display: block; cursor: pointer;" onclick="openModal('diagram/哈士奇語音辨識播放接線圖(su03t).PNG')" title="點擊放大">
+                        <img src="diagram/哈士奇眼控叫人鈴接線圖(進階).PNG" alt="哈士奇眼控叫人鈴接線圖(進階)" style="width: 100%; height: auto; display: block; cursor: pointer;" onclick="openModal('diagram/哈士奇眼控叫人鈴接線圖(進階).PNG')" title="點擊放大">
                     </div>
                 </div>
             </div>
 
-            <div class="materials-info" style="margin-top: 30px;">
-                <h2 class="section-subtitle" style="margin-bottom: 15px;">哈士奇語音辨識播放材料</h2>
-                <ol style="line-height: 1.8; font-size: 16px; padding-left: 24px; color: #333;">
-                    <li>杜邦線(公對公) 8條</li>
-                    <li>杜邦線(2.0mm轉2.54mm母對母) 4條</li>
-                    <li>CI-03T語音辨識模組1個</li>
-                    <li>MP3-TF-16P V3.0 模組1個</li>
-                    <li>5V 1A變壓器1個</li>
-                    <li>8R 0.25W喇叭2個(一般喇叭也可以)</li>
-                    <li>麥克風1個</li>
-                    <li>空白Micro SD記憶卡 1個(32GB以下)</li>
-                    <li>830孔麵包板(MB102)</li>
-                    <li>麵包板專用電源(輸出5V1A)</li>
-                    <li>3.5mm免焊2pin音源轉接頭1個</li>
-                    <li>USB-A to USB-A電源線1個(公對公)</li>
-                    <li>CH340串口工具1個</li>
-                    <li>1k歐姆(※CI-03T需要)</li>
-                </ol>
-            </div>
+
         </section>
 
         <div class="footer-action">
