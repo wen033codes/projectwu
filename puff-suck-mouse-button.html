@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
@@ -28,7 +28,30 @@
                 <p class="info-text-label">說明文件 :</p>
             </div>
 
-            <p class="info-text-label">程式下載</p>
+            <p class="info-text-label">程式下載 :</p>
+
+            <!-- Code Download Section -->
+            <div class="code-download-box">
+                <p class="box-header"><span class="icon">📄</span> Microbit程式下載網址</p>
+                <div class="code-row">
+                    <div class="code-block-green" id="code-url">
+                        https://github.com/wen033codes/BT-Puff-Suck-Mouse-Buttons.git
+                    </div>
+                    <button class="copy-btn" onclick="copyCode()">複製</button>
+                </div>
+                <script>
+                    function copyCode() {
+                        var copyText = document.getElementById("code-url");
+                        var textArea = document.createElement("textarea");
+                        textArea.value = copyText.textContent.trim();
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand("Copy");
+                        textArea.remove();
+                        alert("已複製網址!");
+                    }
+                </script>
+            </div>
 
             <div class="materials-info">
                 <div class="materials-row">
