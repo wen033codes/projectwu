@@ -28,8 +28,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     <li class="indent-2"><a href="cloud-leopard-mouse.html">小雲豹的藍牙雙按鍵滑鼠</a></li>
                     
                     <li class="menu-category indent-1">滑鼠按鍵</li>
-                    <li class="indent-2"><a href="puff-suck-mouse-button.html">藍牙吹吸滑鼠按鍵</a></li>
                     <li class="indent-2"><a href="tadpole-mouse-button-v2.html">小蝌蚪藍牙滑鼠按鍵</a></li>
+                    <li class="indent-2"><a href="puff-suck-mouse-button.html">藍牙吹吸滑鼠按鍵</a></li>
                     
                     <li class="menu-category indent-1">iOS切換開關</li>
                     <li class="indent-2"><a href="tadpole-switch-v1.html">小蝌蚪藍牙切換開關</a></li>
