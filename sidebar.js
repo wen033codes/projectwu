@@ -55,11 +55,19 @@ document.addEventListener("DOMContentLoaded", function() {
                 </ul>
             </div>
         </div>
-        <button id="open-sidebar" class="open-sidebar-btn"><i class="fa-solid fa-bars"></i></button>
     `;
 
     // Append sidebar to body
     document.body.insertAdjacentHTML('beforeend', sidebarHTML);
+
+    // Append open button to top-bar
+    const openBtnHTML = `<button id="open-sidebar" class="open-sidebar-btn"><i class="fa-solid fa-bars"></i></button>`;
+    const topBar = document.querySelector('.top-bar');
+    if (topBar) {
+        topBar.insertAdjacentHTML('afterbegin', openBtnHTML);
+    } else {
+        document.body.insertAdjacentHTML('beforeend', openBtnHTML);
+    }
 
     // Add event listeners
     const openBtn = document.getElementById('open-sidebar');
