@@ -1,4 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // Inject Favicon if not already present
+    if (!document.querySelector('link[rel*="icon"]')) {
+        const faviconLink = document.createElement('link');
+        faviconLink.rel = 'icon';
+        faviconLink.type = 'image/png';
+        faviconLink.href = 'favicon.png';
+        document.head.appendChild(faviconLink);
+    }
+
     // Inject CSS for font-awesome if not already present
     if (!document.querySelector('link[href*="font-awesome"]')) {
         const faLink = document.createElement('link');
