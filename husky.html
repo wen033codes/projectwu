@@ -47,6 +47,49 @@
             text-decoration: none;
             cursor: pointer;
         }
+        
+        /* Modal Arrow Buttons */
+        .modal-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #f1f1f1;
+            font-size: 30px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 1002;
+            user-select: none;
+            padding: 10px 16px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
+            text-decoration: none;
+        }
+        .modal-arrow:hover {
+            color: #ffffff;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .modal-prev {
+            left: 20px;
+        }
+        .modal-next {
+            right: 20px;
+        }
+        
+        /* Responsive adjustments for arrows */
+        @media (max-width: 600px) {
+            .modal-arrow {
+                font-size: 20px;
+                padding: 6px 10px;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+            .modal-prev {
+                left: 8px;
+            }
+            .modal-next {
+                right: 8px;
+            }
+        }
     </style>
 </head>
 
@@ -74,7 +117,7 @@
                             <li>第一次使用注視方向檢測(Eye Gaze)時，需要先讓設備進行學習。</li>
                             <li>按下按鈕A進行學習，每個ID學習至少10張圖。</li>
                             <li>學習順序：眼球向左看、眼球向右看、眼球看鏡頭、眼球看左上或左下、眼球看右上或右下，。<br>
-                            (※注意頭與鏡頭、鏡頭距離皆需固定保持不動)。</li>
+                            (<span class="red-text">※注意頭與鏡頭、鏡頭距離皆需固定保持不動</span>)。</li>
                         </ol>
                     </div>
                     <div style="flex: 1; min-width: 300px;">
@@ -88,40 +131,113 @@
                             <li>靜候1秒觸發叫人鈴。</li>
                         </ol>
                         <ul style="list-style-type: none; line-height: 1.8; font-size: 16px; padding-left: 0; color: #333;">
-                            <li>※第一層指令輸入第一個ID時，將會等候10秒後自動退出。</li>
-                            <li>※第二層指令輸入第一個ID時，將會等候50秒後自動退出。</li>
-                            <li>※MIC/RGB顯示綠燈表示有抓到ID。</li>
+                            <li><span class="red-text">※第一層指令輸入第一個ID時，將會等候10秒後自動退出。</span></li>
+                            <li><span class="red-text">※第二層指令輸入第一個ID時，將會等候50秒後自動退出。</span></li>
+                            <li><span class="red-text">※MIC/RGB顯示綠燈表示有抓到ID。</span></li>
                         </ul>
                     </div>
                 </div>
 
 
-                <div style="display: flex; gap: 40px; align-items: flex-start; margin-top: 20px; margin-bottom: 20px; flex-wrap: wrap;">
-                    <div style="flex: 2; min-width: 300px;">
-                        <p style="font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #0284c7;">哈士奇接線圖</p>
-                        <div style="position: relative;">
-                            <img src="diagram/哈士奇眼控叫人鈴接線圖.PNG" alt="哈士奇眼控叫人鈴接線圖" style="width: 100%; height: auto; display: block; cursor: pointer;" onclick="openModal('diagram/哈士奇眼控叫人鈴接線圖.PNG')" title="點擊放大">
+                <!-- Group 1: 內建蜂鳴器版 -->
+                <div style="display: flex; gap: 30px; align-items: stretch; margin-top: 30px; margin-bottom: 40px; flex-wrap: wrap;">
+                    <!-- Left: Diagram -->
+                    <div style="flex: 1.5; min-width: 320px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
+                        <p style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #0284c7; border-bottom: 2px solid #0284c7; padding-bottom: 6px; display: inline-block; align-self: flex-start;">內建蜂鳴器版 - 接線圖</p>
+                        <div style="position: relative; margin-top: auto;">
+                            <img src="diagram/哈士奇/哈士奇眼控叫人鈴接線圖(內建蜂鳴器).PNG" alt="哈士奇眼控叫人鈴接線圖 (內建蜂鳴器)" style="width: 100%; height: auto; display: block; cursor: pointer; border-radius: 4px;" onclick="openModal('diagram/哈士奇/哈士奇眼控叫人鈴接線圖(內建蜂鳴器).PNG')" title="點擊放大">
                         </div>
                     </div>
-                    <div class="materials-info" style="flex: 1; min-width: 300px; margin-top: 0;">
-                        <h2 class="section-subtitle" style="margin-bottom: 15px; font-size: 18px; color: #0284c7;">哈士奇眼控叫人鈴材料</h2>
-                        <ol style="line-height: 1.8; font-size: 15px; padding-left: 20px; color: #333; margin: 0;">
+                    <!-- Right: Materials -->
+                    <div class="materials-info" style="flex: 1; min-width: 280px; margin-top: 0; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
+                        <h2 class="section-subtitle" style="margin-bottom: 15px; font-size: 17px; color: #0284c7; border-bottom: 2px solid #0284c7; padding-bottom: 8px; display: inline-block; align-self: flex-start;">哈士奇眼控叫人鈴材料(內建蜂鳴器)</h2>
+                        <ol style="line-height: 1.8; font-size: 15px; padding-left: 20px; color: #333; margin: 0; margin-top: 10px;">
                             <li>HUSKYLENS2 1台</li>
-                            <li>Gravity-4P 感測器連接線 1條 ※購買HUSKYLENS2會附，購買前留意</li>
-                            <li>Micro:Bit V2 1~2片(1台接收、1台傳送)</li>
+                            <li>Gravity-4P 感測器連接線 1條 <span class="red-text">※購買HUSKYLENS2會附，購買前留意</span></li>
+                            <li>Micro:Bit V2 1片</li>
                             <li>KSB034 基礎擴充板</li>
-                            <li>USB-A TO Micro USB 訊號線 1~2條</li>
+                            <li>USB-A TO Micro USB 訊號線 1條</li>
                             <li>USB-A TO USB-C 訊號線 1條</li>
-                            <li>5V/1A充電頭 2~3個</li>
-                            <li>充電電池模組(KS B040) 1~2個 ※可選</li>
+                            <li>5V/1A充電頭 2個</li>
+                            <li>充電電池模組(KS B040) 1個 <span class="red-text">※可選</span></li>
                         </ol>
                     </div>
                 </div>
 
-                <div style="margin-top: 40px; margin-bottom: 20px; width: 66.66%;">
-                    <p style="font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #0284c7;">哈士奇接線圖 (進階)</p>
-                    <div style="position: relative;">
-                        <img src="diagram/哈士奇眼控叫人鈴接線圖(進階).PNG" alt="哈士奇眼控叫人鈴接線圖(進階)" style="width: 100%; height: auto; display: block; cursor: pointer;" onclick="openModal('diagram/哈士奇眼控叫人鈴接線圖(進階).PNG')" title="點擊放大">
+                <!-- Group 2: 繼電器版 -->
+                <div style="display: flex; gap: 30px; align-items: stretch; margin-bottom: 40px; flex-wrap: wrap;">
+                    <!-- Left: Diagram -->
+                    <div style="flex: 1.5; min-width: 320px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
+                        <p style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #0284c7; border-bottom: 2px solid #0284c7; padding-bottom: 6px; display: inline-block; align-self: flex-start;">繼電器版 - 接線圖</p>
+                        <div style="position: relative; margin-top: auto;">
+                            <img src="diagram/哈士奇/哈士奇眼控叫人鈴接線圖(繼電器).PNG" alt="哈士奇眼控叫人鈴接線圖 (繼電器)" style="width: 100%; height: auto; display: block; cursor: pointer; border-radius: 4px;" onclick="openModal('diagram/哈士奇/哈士奇眼控叫人鈴接線圖(繼電器).PNG')" title="點擊放大">
+                        </div>
+                    </div>
+                    <!-- Right: Materials -->
+                    <div class="materials-info" style="flex: 1; min-width: 280px; margin-top: 0; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
+                        <h2 class="section-subtitle" style="margin-bottom: 15px; font-size: 17px; color: #0284c7; border-bottom: 2px solid #0284c7; padding-bottom: 8px; display: inline-block; align-self: flex-start;">哈士奇眼控叫人鈴材料(繼電器)</h2>
+                        <ol style="line-height: 1.8; font-size: 15px; padding-left: 20px; color: #333; margin: 0; margin-top: 10px;">
+                            <li>HUSKYLENS2 1台</li>
+                            <li>Gravity-4P 感測器連接線 1條 <span class="red-text">※購買HUSKYLENS2會附，購買前留意</span></li>
+                            <li>Micro:Bit V2 1片</li>
+                            <li>KSB034 基礎擴充板</li>
+                            <li>USB-A TO Micro USB 訊號線 1條</li>
+                            <li>USB-A TO USB-C 訊號線 1條</li>
+                            <li>5V/1A充電頭 2個</li>
+                            <li>充電電池模組(KS B040) 1個 <span class="red-text">※可選</span></li>
+                            <li>1路5V繼電器模組(支援高低地位觸發) 1個</li>
+                            <li>3.5mm 2芯單聲道音源線(公頭) 1個</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Group 3: 廣播版 -->
+                <div style="display: flex; gap: 30px; align-items: stretch; margin-bottom: 40px; flex-wrap: wrap;">
+                    <!-- Left: Diagram -->
+                    <div style="flex: 1.5; min-width: 320px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
+                        <p style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #0284c7; border-bottom: 2px solid #0284c7; padding-bottom: 6px; display: inline-block; align-self: flex-start;">廣播版 - 接線圖</p>
+                        <div style="position: relative; margin-top: auto;">
+                            <img src="diagram/哈士奇/哈士奇眼控叫人鈴接線圖(廣播).PNG" alt="哈士奇眼控叫人鈴接線圖 (廣播)" style="width: 100%; height: auto; display: block; cursor: pointer; border-radius: 4px;" onclick="openModal('diagram/哈士奇/哈士奇眼控叫人鈴接線圖(廣播).PNG')" title="點擊放大">
+                        </div>
+                    </div>
+                    <!-- Right: Materials -->
+                    <div class="materials-info" style="flex: 1; min-width: 280px; margin-top: 0; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
+                        <h2 class="section-subtitle" style="margin-bottom: 15px; font-size: 17px; color: #0284c7; border-bottom: 2px solid #0284c7; padding-bottom: 8px; display: inline-block; align-self: flex-start;">哈士奇眼控叫人鈴材料(廣播)</h2>
+                        <ol style="line-height: 1.8; font-size: 15px; padding-left: 20px; color: #333; margin: 0; margin-top: 10px;">
+                            <li>HUSKYLENS2 1台</li>
+                            <li>Gravity-4P 感測器連接線 1條 <span class="red-text">※購買HUSKYLENS2會附，購買前留意</span></li>
+                            <li>Micro:Bit V2 2片(1台接收、1台傳送)</li>
+                            <li>KSB034 基礎擴充板</li>
+                            <li>USB-A TO Micro USB 訊號線 2條</li>
+                            <li>USB-A TO USB-C 訊號線 1條</li>
+                            <li>5V/1A充電頭 3個</li>
+                            <li>充電電池模組(KS B040) 2個 <span class="red-text">※可選</span></li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Group 4: Arduino 版 -->
+                <div style="display: flex; gap: 30px; align-items: stretch; margin-bottom: 40px; flex-wrap: wrap;">
+                    <!-- Left: Diagram -->
+                    <div style="flex: 1.5; min-width: 320px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
+                        <p style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #0284c7; border-bottom: 2px solid #0284c7; padding-bottom: 6px; display: inline-block; align-self: flex-start;">Arduino 版 - 接線圖</p>
+                        <div style="position: relative; margin-top: auto;">
+                            <img src="diagram/哈士奇/哈士奇眼控叫人鈴接線圖(Arduino).PNG" alt="哈士奇眼控叫人鈴接線圖 (Arduino)" style="width: 100%; height: auto; display: block; cursor: pointer; border-radius: 4px;" onclick="openModal('diagram/哈士奇/哈士奇眼控叫人鈴接線圖(Arduino).PNG')" title="點擊放大">
+                        </div>
+                    </div>
+                    <!-- Right: Materials -->
+                    <div class="materials-info" style="flex: 1; min-width: 280px; margin-top: 0; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
+                        <h2 class="section-subtitle" style="margin-bottom: 15px; font-size: 17px; color: #0284c7; border-bottom: 2px solid #0284c7; padding-bottom: 8px; display: inline-block; align-self: flex-start;">哈士奇眼控叫人鈴材料(Arduino)</h2>
+                        <ol style="line-height: 1.8; font-size: 15px; padding-left: 20px; color: #333; margin: 0; margin-top: 10px;">
+                            <li>HUSKYLENS2 1台</li>
+                            <li>Gravity-4P 感測器連接線 1條 <span class="red-text">※購買HUSKYLENS2會附，購買前留意</span></li>
+                            <li>Arduino nano V3 1片 <span class="red-text">※可選購Type-C電源版</span></li>
+                            <li>USB-A TO Micro USB 訊號線 或 USB-A TO USB-C 訊號線 1條 <span class="red-text">※依購買的Arduino 版本而定</span></li>
+                            <li>5V/1A充電頭 1個</li>
+                            <li>1路5V繼電器模組(支援高低地位觸發) 1個</li>
+                            <li>3.5mm 2芯單聲道音源線(公頭) 1個</li>
+                            <li>杜邦線2.54mm(母對母) 3條</li>
+                        </ol>
                     </div>
                 </div>
             </div>
@@ -136,20 +252,64 @@
     </main>
 
     <!-- Image Modal -->
-    <div id="imageModal" class="modal" onclick="closeModal()">
-        <span class="modal-close" onclick="closeModal()">&times;</span>
-        <img class="modal-content" id="modalImage">
+    <div id="imageModal" class="modal" onclick="closeModal(event)">
+        <span class="modal-close" onclick="closeModal(event)">&times;</span>
+        <a class="modal-arrow modal-prev" onclick="prevImage(event)">&#10094;</a>
+        <img class="modal-content" id="modalImage" onclick="event.stopPropagation()">
+        <a class="modal-arrow modal-next" onclick="nextImage(event)">&#10095;</a>
     </div>
 
     <script>
+        const images = [
+            'diagram/哈士奇/哈士奇眼控叫人鈴接線圖(內建蜂鳴器).PNG',
+            'diagram/哈士奇/哈士奇眼控叫人鈴接線圖(繼電器).PNG',
+            'diagram/哈士奇/哈士奇眼控叫人鈴接線圖(廣播).PNG',
+            'diagram/哈士奇/哈士奇眼控叫人鈴接線圖(Arduino).PNG'
+        ];
+        let currentIndex = 0;
+
         function openModal(imageSrc) {
+            currentIndex = images.indexOf(imageSrc);
+            if (currentIndex === -1) currentIndex = 0;
+            updateModalImage();
             document.getElementById('imageModal').style.display = "block";
-            document.getElementById('modalImage').src = imageSrc;
         }
         
-        function closeModal() {
-            document.getElementById('imageModal').style.display = "none";
+        function updateModalImage() {
+            document.getElementById('modalImage').src = images[currentIndex];
         }
+
+        function prevImage(event) {
+            if (event) event.stopPropagation();
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateModalImage();
+        }
+
+        function nextImage(event) {
+            if (event) event.stopPropagation();
+            currentIndex = (currentIndex + 1) % images.length;
+            updateModalImage();
+        }
+        
+        function closeModal(event) {
+            if (!event || event.target === document.getElementById('imageModal') || event.target.classList.contains('modal-close')) {
+                document.getElementById('imageModal').style.display = "none";
+            }
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            const modal = document.getElementById('imageModal');
+            if (modal.style.display === "block") {
+                if (event.key === "ArrowLeft") {
+                    prevImage();
+                } else if (event.key === "ArrowRight") {
+                    nextImage();
+                } else if (event.key === "Escape") {
+                    modal.style.display = "none";
+                }
+            }
+        });
     </script>
 <script src="sidebar.js?v=8"></script>
 </body>

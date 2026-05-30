@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
@@ -47,6 +47,49 @@
             text-decoration: none;
             cursor: pointer;
         }
+        
+        /* Modal Arrow Buttons */
+        .modal-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #f1f1f1;
+            font-size: 30px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 1002;
+            user-select: none;
+            padding: 10px 16px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
+            text-decoration: none;
+        }
+        .modal-arrow:hover {
+            color: #ffffff;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .modal-prev {
+            left: 20px;
+        }
+        .modal-next {
+            right: 20px;
+        }
+        
+        /* Responsive adjustments for arrows */
+        @media (max-width: 600px) {
+            .modal-arrow {
+                font-size: 20px;
+                padding: 6px 10px;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+            .modal-prev {
+                left: 8px;
+            }
+            .modal-next {
+                right: 8px;
+            }
+        }
     </style>
 </head>
 
@@ -66,43 +109,51 @@
             <div class="info-links">
                 <p class="info-text">說明文件</p>
                 <p class="info-text">程式下載</p>
-                <div style="margin-top: 20px; margin-bottom: 20px; width: 66.66%;">
-                    <p style="font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #333;">CI-03T</p>
-                    <div style="position: relative;">
-                        <img src="diagram/小八哥語音辨識播放接線圖(ci03t).PNG" alt="小八哥語音辨識播放接線圖" style="width: 100%; height: auto; display: block;">
-                        <!-- 左側綠色晶片的點擊熱區 (Hotspot) -->
-                        <a href="javascript:void(0)" onclick="openModal('diagram/小八哥語音辨識播放接線圖part1(ci03t).PNG')" title="擊點放大查看" style="position: absolute; top: 10%; left: 0%; width: 45%; height: 80%; display: block; z-index: 10;"></a>
-                        <!-- 右側MP3晶片的點擊熱區 (Hotspot) -->
-                        <a href="javascript:void(0)" onclick="openModal('diagram/小八哥語音辨識播放接線圖part2.PNG')" title="擊點放大查看" style="position: absolute; top: 10%; right: 0%; width: 45%; height: 80%; display: block; z-index: 10;"></a>
+                <div style="display: flex; gap: 24px; margin-top: 24px; margin-bottom: 24px; max-width: 100%; flex-wrap: wrap;">
+                    <!-- CI-03T Card -->
+                    <div style="flex: 1; min-width: 300px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                        <p style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #333; border-bottom: 2px solid #3b82f6; padding-bottom: 6px; display: inline-block;">CI-03T</p>
+                        <div style="position: relative;">
+                            <img src="diagram/小八哥/小八哥語音轉譯接線圖(ci03t).PNG" alt="小八哥語音轉譯接線圖 CI-03T" style="width: 100%; height: auto; display: block; cursor: pointer; border-radius: 4px;" onclick="openModal('diagram/小八哥/小八哥語音轉譯接線圖(ci03t).PNG')" title="點擊放大">
+                        </div>
                     </div>
-                </div>
-
-                <div style="margin-top: 40px; margin-bottom: 20px; width: 66.66%;">
-                    <p style="font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #333;">SU-03T</p>
-                    <div style="position: relative;">
-                        <img src="diagram/小八哥語音辨識播放接線圖(su03t).PNG" alt="小八哥語音辨識播放接線圖 SU-03T" style="width: 100%; height: auto; display: block; cursor: pointer;" onclick="openModal('diagram/小八哥語音辨識播放接線圖(su03t).PNG')" title="點擊放大">
+                    
+                    <!-- SU-03T Card -->
+                    <div style="flex: 1; min-width: 300px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                        <p style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #333; border-bottom: 2px solid #3b82f6; padding-bottom: 6px; display: inline-block;">SU-03T</p>
+                        <div style="position: relative;">
+                            <img src="diagram/小八哥/小八哥語音轉譯接線圖(su03t).PNG" alt="小八哥語音轉譯接線圖 SU-03T" style="width: 100%; height: auto; display: block; cursor: pointer; border-radius: 4px;" onclick="openModal('diagram/小八哥/小八哥語音轉譯接線圖(su03t).PNG')" title="點擊放大">
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="materials-info" style="margin-top: 30px;">
                 <h2 class="section-subtitle" style="margin-bottom: 15px;">小八哥語音辨識播放材料</h2>
-                <ol style="line-height: 1.8; font-size: 16px; padding-left: 24px; color: #333;">
-                    <li>杜邦線(公對公) 8條</li>
-                    <li>杜邦線(2.0mm轉2.54mm母對母) 4條</li>
-                    <li>CI-03T語音辨識模組1個</li>
-                    <li>MP3-TF-16P V3.0 模組1個</li>
-                    <li>5V 1A變壓器1個</li>
-                    <li>8R 0.25W喇叭2個(一般喇叭也可以)</li>
-                    <li>麥克風1個</li>
-                    <li>空白Micro SD記憶卡 1個(32GB以下)</li>
-                    <li>830孔麵包板(MB102)</li>
-                    <li>麵包板專用電源(輸出5V1A)</li>
-                    <li>3.5mm免焊2pin音源轉接頭1個</li>
-                    <li>USB-A to USB-A電源線1個(公對公)</li>
-                    <li>CH340串口工具1個</li>
-                    <li>1k歐姆(※CI-03T需要)</li>
-                </ol>
+                <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 280px;">
+                        <ol style="line-height: 1.8; font-size: 16px; padding-left: 24px; color: #333; margin: 0;">
+                            <li>杜邦線(公對公) 8條</li>
+                            <li>杜邦線(2.0mm轉2.54mm母對母) 4條</li>
+                            <li>CI-03T語音辨識模組1個</li>
+                            <li>MP3-TF-16P V3.0 模組1個</li>
+                            <li>5V 1A變壓器1個</li>
+                            <li>8R 0.25W喇叭2個(一般喇叭也可以)</li>
+                            <li>麥克風1個</li>
+                        </ol>
+                    </div>
+                    <div style="flex: 1; min-width: 280px;">
+                        <ol start="8" style="line-height: 1.8; font-size: 16px; padding-left: 24px; color: #333; margin: 0;">
+                            <li>空白Micro SD記憶卡 1個(32GB以下)</li>
+                            <li>830孔麵包板(MB102)</li>
+                            <li>麵包板專用電源(輸出5V1A)</li>
+                            <li>3.5mm免焊2pin音源轉接頭1個</li>
+                            <li>USB-A to USB-A電源線1個(公對公)</li>
+                            <li>CH340串口工具1個</li>
+                            <li>1k歐姆<span class="red-text">(※CI-03T需要)</span></li>
+                        </ol>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -113,20 +164,62 @@
     </main>
 
     <!-- Image Modal -->
-    <div id="imageModal" class="modal" onclick="closeModal()">
-        <span class="modal-close" onclick="closeModal()">&times;</span>
-        <img class="modal-content" id="modalImage">
+    <div id="imageModal" class="modal" onclick="closeModal(event)">
+        <span class="modal-close" onclick="closeModal(event)">&times;</span>
+        <a class="modal-arrow modal-prev" onclick="prevImage(event)">&#10094;</a>
+        <img class="modal-content" id="modalImage" onclick="event.stopPropagation()">
+        <a class="modal-arrow modal-next" onclick="nextImage(event)">&#10095;</a>
     </div>
 
     <script>
+        const images = [
+            'diagram/小八哥/小八哥語音轉譯接線圖(ci03t).PNG',
+            'diagram/小八哥/小八哥語音轉譯接線圖(su03t).PNG'
+        ];
+        let currentIndex = 0;
+
         function openModal(imageSrc) {
+            currentIndex = images.indexOf(imageSrc);
+            if (currentIndex === -1) currentIndex = 0;
+            updateModalImage();
             document.getElementById('imageModal').style.display = "block";
-            document.getElementById('modalImage').src = imageSrc;
         }
         
-        function closeModal() {
-            document.getElementById('imageModal').style.display = "none";
+        function updateModalImage() {
+            document.getElementById('modalImage').src = images[currentIndex];
         }
+
+        function prevImage(event) {
+            if (event) event.stopPropagation();
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateModalImage();
+        }
+
+        function nextImage(event) {
+            if (event) event.stopPropagation();
+            currentIndex = (currentIndex + 1) % images.length;
+            updateModalImage();
+        }
+        
+        function closeModal(event) {
+            if (!event || event.target === document.getElementById('imageModal') || event.target.classList.contains('modal-close')) {
+                document.getElementById('imageModal').style.display = "none";
+            }
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            const modal = document.getElementById('imageModal');
+            if (modal.style.display === "block") {
+                if (event.key === "ArrowLeft") {
+                    prevImage();
+                } else if (event.key === "ArrowRight") {
+                    nextImage();
+                } else if (event.key === "Escape") {
+                    modal.style.display = "none";
+                }
+            }
+        });
     </script>
 <script src="sidebar.js?v=8"></script>
 </body>
