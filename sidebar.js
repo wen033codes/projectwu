@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         </a>
                     </li>
                     
-                    <li class="main-category-item"><a href="qa.html" class="main-category-link"><i class="fa-solid fa-circle-question"></i> Q&A</a></li>
+                    <li class="main-category-item"><a href="qa.html" target="_blank" class="main-category-link"><i class="fa-solid fa-circle-question"></i> Q&A</a></li>
                 </ul>
             </div>
 

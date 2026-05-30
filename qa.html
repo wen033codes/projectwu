@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
@@ -7,6 +7,106 @@
     <title>Q&amp;A - DIY智能家居改造及電腦、手機、平板操作輔具</title>
     <link rel="stylesheet" href="style.css?v=6">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .keyword-badge {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+            color: #dc2626; /* Red highlight */
+            background-color: #fef2f2;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px dashed #fca5a5;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            margin: 2px 4px;
+            font-size: 14px;
+        }
+        .keyword-badge:hover {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+            transform: translateY(-1.5px);
+            box-shadow: 0 4px 6px rgba(220, 38, 38, 0.1);
+        }
+        .keyword-badge:active {
+            transform: translateY(0);
+        }
+        
+        /* Success state */
+        .keyword-badge.copied {
+            background-color: #dcfce7 !important;
+            color: #15803d !important;
+            border-color: #86efac !important;
+            border-style: solid !important;
+        }
+
+        /* 2-Column Responsive Layout */
+        .materials-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .material-card {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease;
+            box-sizing: border-box;
+        }
+        
+        .material-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.06), 0 3px 6px rgba(0,0,0,0.04);
+            border-color: #3b82f6;
+        }
+
+        .material-card-left {
+            flex: 0 0 130px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .material-card-left img {
+            width: 100%;
+            height: auto;
+            max-width: 120px;
+            border-radius: 6px;
+            display: block;
+        }
+        
+        .material-card-right {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        @media (max-width: 1024px) {
+            .materials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .material-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .material-card-left {
+                flex: 0 0 auto;
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -21,30 +121,116 @@
     <main class="content-container">
         <h1 class="main-title">Q&amp;A 常見問題</h1>
 
-        <div class="info-row">
+        <div class="info-row" style="margin-bottom: 30px;">
             <!-- Micro:bit Section -->
-            <section class="info-section">
-                <h2 class="category-label-large">micro:bit操作參考</h2>
-                <ul class="link-list">
-                    <li><a href="https://makecode.microbit.org/" class="text-link" target="_blank">makecode網站 : microbit 匯入、下載程式</a></li>
-                    <li><a href="docs/makecode匯入程式操作20240627.pdf" class="text-link" target="_blank">匯入程式操作</a></li>
-                    <li><a href="docs/makecode下載程式操作(20250630).pdf" class="text-link" target="_blank">下載程式操作</a></li>
-                    <li><a href="docs/mircobit常用模組v2.pdf" class="text-link" target="_blank">常用模組介紹</a></li>
+            <section class="info-section" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 24px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <h2 class="category-label-large" style="margin-bottom: 15px; font-size: 18px; color: #0284c7; border-bottom: 2px solid #0284c7; padding-bottom: 8px; display: inline-block;">micro:bit 操作參考指南</h2>
+                <ul class="link-list" style="margin-top: 10px;">
+                    <li><a href="https://makecode.microbit.org/" class="text-link" target="_blank"><i class="fa-solid fa-code"></i> MakeCode 官方網站：micro:bit 匯入與下載線上編輯器</a></li>
+                    <li><a href="docs/makecode匯入程式操作20240627.pdf" class="text-link" target="_blank"><i class="fa-solid fa-file-pdf"></i> 匯入程式操作說明文件 (PDF)</a></li>
+                    <li><a href="docs/makecode下載程式操作(20250630).pdf" class="text-link" target="_blank"><i class="fa-solid fa-file-pdf"></i> 下載與燒錄程式操作說明文件 (PDF)</a></li>
+                    <li><a href="docs/mircobit常用模組v2.pdf" class="text-link" target="_blank"><i class="fa-solid fa-file-pdf"></i> micro:bit 常用擴充模組介紹說明文件 (PDF)</a></li>
                 </ul>
             </section>
+        </div>
 
-            <!-- Where to buy Section -->
-            <section class="info-section">
-                <h2 class="category-label-large">材料哪裡買?</h2>
-                <ul class="link-list">
-                    <li><a href="https://shopee.tw/%E3%80%90%E7%8F%BE%E8%B2%A8%E5%90%AB%E7%A8%85%E9%99%84%E7%99%BC%E7%A5%A8%E3%80%91%E5%8E%9F%E5%BB%A0BBC-micro-bit-microbit-%E5%BE%AE%E6%8E%A7%E5%88%B6%E6%9D%BF-V2.21_%E9%9D%9C%E9%9B%BB%E8%A2%8B%E5%8C%85%E8%A3%9D-i.51604827.21244842391?sp_atk=1c8b0188-9685-4238-8dd3-82aa6757b7a1&xptdk=1c8b0188-9685-4238-8dd3-82aa6757b7a1" class="text-link" target="_blank">micro:bit(v2)</a></li>
-                    <li><a href="https://www.kaise.com.tw/index.php?route=product/product&product_id=207" class="text-link" target="_blank">KSB040充電電池模組</a> <a href="ksb040.html" class="text-link" target="_blank">&lt;&lt;功能說明及注意事項&gt;&gt;</a></li>
-                    <li><a href="https://shopee.tw/product/14363185/26355624189?d_id=60e11&uls_trackid=52ntpo8p012h&utm_content=2tqH4r7MJSJAS4ugAT1UEiS2Xvib" class="text-link" target="_blank">SU-03T、CI-03T語音辨識模組</a></li>
-                    <li><a href="https://shopee.tw/product/656213378/15057338988?d_id=60e11&uls_trackid=52ntpg0v004o&utm_content=2tqH4r7MJRx2ipNainr2m7uZyJXH" class="text-link" target="_blank">繼電器模組</a></li>
-                    <li><a href="https://shopee.tw/buyer/login?fu_tracking_id=124a3ffc310-e5ad-4e66-b404-a3a13de02b9a&next=https%3A%2F%2Fshopee.tw%2Fproduct%2F10708564%2F25653139051%3Fd_id%3Dd791e%26uls_trackid%3D52icrlfc000d%26utm_content%3D4Q7zvnfXNDatABZ1obGoDNTWQ6ns" class="text-link" target="_blank">氣壓感測器模組</a></li>
-                    <li><a href="https://www.ruten.com.tw/item/show?22343000429391" class="text-link" target="_blank">轉接頭 3.5mm轉6.5mm</a></li>
-                </ul>
-            </section>
+        <h2 class="category-label-large" style="margin-top: 40px; margin-bottom: 20px; font-size: 1.5rem; color: #0284c7; border-bottom: 3px solid #0284c7; padding-bottom: 8px; display: inline-block;">常用材料購買指南</h2>
+        
+        <div class="materials-grid">
+            
+            <!-- Item 1: BBC micro:bit V2 -->
+            <div class="material-card">
+                <!-- Left: Image -->
+                <div class="material-card-left">
+                    <img src="diagram/microbit_v2.png" alt="BBC micro:bit V2">
+                </div>
+                <!-- Right: Details -->
+                <div class="material-card-right">
+                    <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #333; border-bottom: 2px solid #3b82f6; padding-bottom: 6px; display: inline-block;">BBC micro:bit V2 主控板</h3>
+                    <p style="margin-bottom: 8px; font-size: 15px; color: #555;"><strong>購買管道：</strong> 蝦皮購物 (Shopee)</p>
+                    <p style="margin-bottom: 12px; font-size: 15px; color: #555;"><strong>查詢關鍵字：</strong> <span class="keyword-badge" onclick="copyKeyword(this, 'microbit V2')" title="點擊複製關鍵字">microbit V2 <i class="fa-regular fa-copy" style="margin-left: 4px; font-size: 12px; opacity: 0.7;"></i></span></p>
+                    <a href="https://shopee.tw/%E3%80%90%E7%8F%BE%E8%B2%A8%E5%90%AB%E7%A8%85%E9%99%84%E7%99%BC%E7%A5%A8%E3%80%91%E5%8E%9F%E5%BB%A0BBC-micro-bit-microbit-%E5%BE%AE%E6%8E%A7%E5%88%B6%E6%9D%BF-V2.21_%E9%9D%9C%E9%9B%BB%E8%A2%8B%E5%8C%85%E8%A3%9D-i.51604827.21244842391?sp_atk=1c8b0188-9685-4238-8dd3-82aa6757b7a1&xptdk=1c8b0188-9685-4238-8dd3-82aa6757b7a1" target="_blank" class="primary-btn" style="background-color: #f97316; font-size: 13px; padding: 6px 14px; border-radius: 4px;"><i class="fa-solid fa-cart-shopping"></i> 前往蝦皮賣場</a>
+                </div>
+            </div>
+
+            <!-- Item 2: KSB040 充電電池模組 -->
+            <div class="material-card">
+                <!-- Left: Image -->
+                <div class="material-card-left">
+                    <img src="diagram/ksb040_battery.png" alt="KSB040充電電池模組">
+                </div>
+                <!-- Right: Details -->
+                <div class="material-card-right">
+                    <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #333; border-bottom: 2px solid #3b82f6; padding-bottom: 6px; display: inline-block;">KSB040 充電電池模組</h3>
+                    <p style="margin-bottom: 8px; font-size: 15px; color: #555;"><strong>購買管道：</strong> 凱斯電子官網 (Kaise Electronics)</p>
+                    <p style="margin-bottom: 12px; font-size: 15px; color: #555;"><strong>查詢關鍵字：</strong> <span class="keyword-badge" onclick="copyKeyword(this, 'KSB040')" title="點擊複製關鍵字">KSB040 <i class="fa-regular fa-copy" style="margin-left: 4px; font-size: 12px; opacity: 0.7;"></i></span></p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <a href="https://www.kaise.com.tw/index.php?route=product/product&product_id=207" target="_blank" class="primary-btn" style="background-color: #2563eb; font-size: 13px; padding: 6px 14px; border-radius: 4px;"><i class="fa-solid fa-globe"></i> 前往凱斯電子</a>
+                        <a href="ksb040.html" target="_blank" class="primary-btn" style="background-color: #10b981; font-size: 13px; padding: 6px 14px; border-radius: 4px;"><i class="fa-solid fa-circle-info"></i> 檢視功能說明與注意事項</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 3: SU-03T / CI-03T 語音辨識模組 -->
+            <div class="material-card">
+                <!-- Left: Image -->
+                <div class="material-card-left">
+                    <img src="diagram/voice_module.png" alt="SU-03T / CI-03T">
+                </div>
+                <!-- Right: Details -->
+                <div class="material-card-right">
+                    <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #333; border-bottom: 2px solid #3b82f6; padding-bottom: 6px; display: inline-block;">SU-03T / CI-03T 語音辨識模組</h3>
+                    <p style="margin-bottom: 8px; font-size: 15px; color: #555;"><strong>購買管道：</strong> 蝦皮購物 (Shopee)</p>
+                    <p style="margin-bottom: 12px; font-size: 15px; color: #555;"><strong>查詢關鍵字：</strong> <span class="keyword-badge" onclick="copyKeyword(this, 'SU-03T')" title="點擊複製關鍵字">SU-03T <i class="fa-regular fa-copy" style="margin-left: 4px; font-size: 12px; opacity: 0.7;"></i></span> 或 <span class="keyword-badge" onclick="copyKeyword(this, 'CI-03T')" title="點擊複製關鍵字">CI-03T <i class="fa-regular fa-copy" style="margin-left: 4px; font-size: 12px; opacity: 0.7;"></i></span></p>
+                    <a href="https://shopee.tw/product/14363185/26355624189?d_id=60e11&uls_trackid=52ntpo8p012h&utm_content=2tqH4r7MJSJAS4ugAT1UEiS2Xvib" target="_blank" class="primary-btn" style="background-color: #f97316; font-size: 13px; padding: 6px 14px; border-radius: 4px;"><i class="fa-solid fa-cart-shopping"></i> 前往蝦皮賣場</a>
+                </div>
+            </div>
+
+            <!-- Item 4: 繼電器模組 -->
+            <div class="material-card">
+                <!-- Left: Image -->
+                <div class="material-card-left">
+                    <img src="diagram/relay_sensor.png" alt="1路5V繼電器模組">
+                </div>
+                <!-- Right: Details -->
+                <div class="material-card-right">
+                    <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #333; border-bottom: 2px solid #3b82f6; padding-bottom: 6px; display: inline-block;">1路 5V 繼電器模組</h3>
+                    <p style="margin-bottom: 8px; font-size: 15px; color: #555;"><strong>購買管道：</strong> 蝦皮購物 (Shopee)</p>
+                    <p style="margin-bottom: 12px; font-size: 15px; color: #555;"><strong>查詢關鍵字：</strong> <span class="keyword-badge" onclick="copyKeyword(this, '1路 5V 繼電器模組')" title="點擊複製關鍵字">1路 5V 繼電器模組 <i class="fa-regular fa-copy" style="margin-left: 4px; font-size: 12px; opacity: 0.7;"></i></span></p>
+                    <a href="https://shopee.tw/product/656213378/15057338988?d_id=60e11&uls_trackid=52ntpg0v004o&utm_content=2tqH4r7MJRx2ipNainr2m7uZyJXH" target="_blank" class="primary-btn" style="background-color: #f97316; font-size: 13px; padding: 6px 14px; border-radius: 4px;"><i class="fa-solid fa-cart-shopping"></i> 前往蝦皮賣場</a>
+                </div>
+            </div>
+
+            <!-- Item 5: 氣壓感測器模組 -->
+            <div class="material-card">
+                <!-- Left: Image -->
+                <div class="material-card-left">
+                    <img src="diagram/pressure_sensor.png" alt="氣壓感測器模組">
+                </div>
+                <!-- Right: Details -->
+                <div class="material-card-right">
+                    <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #333; border-bottom: 2px solid #3b82f6; padding-bottom: 6px; display: inline-block;">氣壓感測器模組</h3>
+                    <p style="margin-bottom: 8px; font-size: 15px; color: #555;"><strong>購買管道：</strong> 蝦皮購物 (Shopee)</p>
+                    <p style="margin-bottom: 12px; font-size: 15px; color: #555;"><strong>查詢關鍵字：</strong> <span class="keyword-badge" onclick="copyKeyword(this, '氣壓感測器模組')" title="點擊複製關鍵字">氣壓感測器模組 <i class="fa-regular fa-copy" style="margin-left: 4px; font-size: 12px; opacity: 0.7;"></i></span></p>
+                    <a href="https://shopee.tw/buyer/login?fu_tracking_id=124a3ffc310-e5ad-4e66-b404-a3a13de02b9a&next=https%3A%2F%2Fshopee.tw%2Fproduct%2F10708564%2F25653139051%3Fd_id%3Dd791e%26uls_trackid%3D52icrlfc000d%26utm_content%3D4Q7zvnfXNDatABZ1obGoDNTWQ6ns" target="_blank" class="primary-btn" style="background-color: #f97316; font-size: 13px; padding: 6px 14px; border-radius: 4px;"><i class="fa-solid fa-cart-shopping"></i> 前往蝦皮賣場</a>
+                </div>
+            </div>
+
+            <!-- Item 6: 轉接頭 3.5mm轉6.5mm -->
+            <div class="material-card">
+                <!-- Left: Image -->
+                <div class="material-card-left">
+                    <img src="diagram/audio_adapter.png" alt="轉接頭 3.5mm轉6.5mm">
+                </div>
+                <!-- Right: Details -->
+                <div class="material-card-right">
+                    <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #333; border-bottom: 2px solid #3b82f6; padding-bottom: 6px; display: inline-block;">音源轉接頭 3.5mm 轉 6.5mm</h3>
+                    <p style="margin-bottom: 8px; font-size: 15px; color: #555;"><strong>購買管道：</strong> 露天拍賣 (Ruten)</p>
+                    <p style="margin-bottom: 12px; font-size: 15px; color: #555;"><strong>查詢關鍵字：</strong> <span class="keyword-badge" onclick="copyKeyword(this, '3.5mm 轉 6.5mm 轉接頭')" title="點擊複製關鍵字">3.5mm 轉 6.5mm 轉接頭 <i class="fa-regular fa-copy" style="margin-left: 4px; font-size: 12px; opacity: 0.7;"></i></span></p>
+                    <a href="https://www.ruten.com.tw/item/show?22343000429391" target="_blank" class="primary-btn" style="background-color: #10b981; font-size: 13px; padding: 6px 14px; border-radius: 4px;"><i class="fa-solid fa-cart-shopping"></i> 前往露天拍賣</a>
+                </div>
+            </div>
+
         </div>
 
         <div class="footer-action">
@@ -53,17 +239,74 @@
 
     </main>
 
-<script src="sidebar.js?v=8"></script>
+    <!-- Toast Container -->
+    <div id="toast-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000; pointer-events: none; display: flex; flex-direction: column; gap: 8px;"></div>
+
+    <script>
+    function copyKeyword(element, text) {
+        navigator.clipboard.writeText(text).then(() => {
+            // Show toast
+            showToast(`已複製關鍵字：「${text}」`);
+            
+            // Visual feedback on badge
+            element.classList.add('copied');
+            const icon = element.querySelector('i');
+            if (icon) {
+                icon.className = 'fa-solid fa-check';
+            }
+            
+            setTimeout(() => {
+                element.classList.remove('copied');
+                if (icon) {
+                    icon.className = 'fa-regular fa-copy';
+                }
+            }, 1200);
+        }).catch(err => {
+            console.error('複製失敗', err);
+        });
+    }
+
+    function showToast(message) {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+        
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            background-color: #1e293b;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        `;
+        toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 16px;"></i> <span>${message}</span>`;
+        container.appendChild(toast);
+        
+        // Force reflow
+        toast.offsetHeight;
+        
+        // Animate in
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+        
+        // Animate out
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-20px)';
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 2200);
+    }
+    </script>
+    <script src="sidebar.js?v=8"></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
