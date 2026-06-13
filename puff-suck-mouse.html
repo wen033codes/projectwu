@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
@@ -47,6 +47,146 @@
             text-decoration: none;
             cursor: pointer;
         }
+
+        /* Document Modal Styles */
+        .doc-modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .doc-modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+        .doc-modal-container {
+            background-color: #ffffff;
+            width: 95%;
+            max-width: 800px;
+            max-height: 85vh;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        .doc-modal-overlay.show .doc-modal-container {
+            transform: translateY(0);
+        }
+        .doc-modal-header {
+            padding: 16px 24px;
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .doc-modal-header h2 {
+            margin: 0 !important;
+            color: #ffffff !important;
+            font-size: 1.3rem !important;
+            font-weight: 700 !important;
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+        }
+        .doc-close-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .doc-close-btn:hover {
+            opacity: 1;
+        }
+        .doc-modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            font-size: 15px;
+            color: #334155;
+            line-height: 1.7;
+        }
+        .doc-section-title {
+            font-size: 1.15rem;
+            color: var(--dark-blue);
+            margin: 24px 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 700;
+        }
+        .doc-section-title:first-of-type {
+            margin-top: 0;
+        }
+        .doc-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 16px;
+        }
+        .doc-item {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+        .doc-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .doc-trigger {
+            display: inline-block;
+            background-color: #eff6ff;
+            color: #1e40af;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-right: 8px;
+            border: 1px solid #bfdbfe;
+        }
+        .doc-value {
+            font-family: monospace;
+            font-size: 0.85rem;
+            background-color: #f1f5f9;
+            color: #475569;
+            padding: 1px 6px;
+            border-radius: 3px;
+        }
+        .doc-action {
+            margin-top: 8px;
+            color: #0f172a;
+        }
+        .doc-action ul {
+            padding-left: 20px;
+            margin-top: 4px;
+            list-style-type: disc;
+        }
+        .doc-action li {
+            margin-bottom: 4px;
+        }
+        .doc-action li strong {
+            color: #2563eb;
+        }
+        .doc-action strong {
+            color: #f97316;
+        }
     </style>
 </head>
 
@@ -73,8 +213,7 @@
             </div>
 
             <div class="info-links">
-                <p class="info-text-label">說明文件 : <a href="docs/藍牙吹吸滑鼠操作說明.pdf" class="text-link"
-                        target="_blank">藍牙吹吸滑鼠操作說明</a></p>
+                <a href="javascript:void(0)" class="primary-btn" onclick="openDocModal()">藍牙吹吸滑鼠操作說明</a>
             </div>
 
             <!-- Code Download Section -->
@@ -137,6 +276,72 @@
         <img class="modal-content" id="modalImage">
     </div>
 
+    <!-- Document Modal -->
+    <div id="docModal" class="doc-modal-overlay" onclick="closeDocModal(event)">
+        <div class="doc-modal-container" onclick="event.stopPropagation()">
+            <div class="doc-modal-header">
+                <h2>藍牙吹吸滑鼠操作說明</h2>
+                <button class="doc-close-btn" onclick="closeDocModal(event)">&times;</button>
+            </div>
+            <div class="doc-modal-body">
+                <h3 class="doc-section-title" style="margin-top: 0;">🌬️ 吹氣操作 (Puff)</h3>
+                <ul class="doc-list">
+                    <li class="doc-item">
+                        <span class="doc-trigger">輕吹一下</span>
+                        <span class="doc-value">PaValue: 0 ~ 119</span>
+                        <div class="doc-action">
+                            <ul>
+                                <li><strong>上 (嗶)</strong>：顯示向上箭頭圖案，滑鼠向上移動</li>
+                                <li><strong>右 (嗶)</strong>：顯示向右箭頭圖案，滑鼠向右移動</li>
+                                <li><strong>下 (嗶)</strong>：顯示向下箭頭圖案，滑鼠向下移動</li>
+                                <li><strong>左 (嗶)</strong>：顯示向左箭頭圖案，滑鼠向左移動</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="doc-item">
+                        <span class="doc-trigger">長重吹</span>
+                        <span class="doc-value">PaValue &gt;= 120</span>
+                        <div class="doc-action">
+                            聽到 1 聲 (嗶) 放開：<strong>遊標緩速前進</strong>
+                        </div>
+                    </li>
+                    <li class="doc-item">
+                        <span class="doc-trigger">長重吹後再輕吹一下</span>
+                        <span class="doc-value">PaValue: 0 ~ 119</span>
+                        <div class="doc-action">
+                            <strong>停止</strong>移動
+                        </div>
+                    </li>
+                </ul>
+
+                <h3 class="doc-section-title">💨 吸氣操作 (Suck)</h3>
+                <p style="margin-bottom: 12px; font-weight: 500; color: #475569;">※ 吸氣時預設滑鼠 Speed (速度) 為 0</p>
+                <ul class="doc-list">
+                    <li class="doc-item">
+                        <span class="doc-trigger">吸氣</span>
+                        <span class="doc-value">PaValue: &lt; 0 ~ &lt; -159</span>
+                        <div class="doc-action">
+                            <ul>
+                                <li><strong>聽到 1 聲滾動聲放開</strong>：按一下左鍵滑鼠，顯示 <strong>L</strong> 圖案</li>
+                                <li><strong>聽到 2 聲滾動聲放開</strong>：按一下向上拖曳滑鼠，按一下向下拖曳滑鼠，顯示 <strong>H</strong> 圖案</li>
+                                <li><strong>聽到 3 聲滾動聲放開</strong>：按一下右鍵滑鼠，顯示 <strong>R</strong> 圖案</li>
+                                <li><strong>聽到 4 聲滾動聲放開</strong>：捲動滑鼠（第一次捲動往上，第二次捲動往下），顯示<strong>捲動</strong>圖案</li>
+                                <li><strong>聽到 5 聲滾動聲放開</strong>：快按兩下左鍵，顯示 <strong>D</strong> 圖案</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="doc-item">
+                        <span class="doc-trigger">吸氣</span>
+                        <span class="doc-value">PaValue: &gt; -160</span>
+                        <div class="doc-action">
+                            快按 1 下左鍵
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openModal(imageSrc) {
             document.getElementById('imageModal').style.display = "block";
@@ -145,6 +350,25 @@
         
         function closeModal() {
             document.getElementById('imageModal').style.display = "none";
+        }
+
+        /* Document Modal Functions */
+        function openDocModal() {
+            const modal = document.getElementById('docModal');
+            modal.style.display = 'flex';
+            // Force reflow
+            modal.offsetHeight;
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Disable background scrolling
+        }
+
+        function closeDocModal(event) {
+            const modal = document.getElementById('docModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = ''; // Restore background scrolling
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
         }
     </script>
 <script src="sidebar.js?v=8"></script>

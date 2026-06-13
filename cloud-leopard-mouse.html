@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
@@ -65,13 +65,9 @@
         <section class="content-section">
             <h2 class="section-subtitle">說明影片</h2>
 
-            <div class="info-links">
-                <p class="info-text-label">說明文件 :
-                    <a href="docs/小雲豹藍牙雙鍵滑鼠-使用情境及說明_20251122.pdf" class="text-link"
-                        target="_blank">小雲豹藍牙雙鍵滑鼠-使用情境及說明</a>
-                    &nbsp;&nbsp;&nbsp;
-                    <a href="docs/小雲豹使用說明.pdf" class="text-link" target="_blank">小雲豹使用說明</a>
-                </p>
+            <div class="info-links" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <a href="javascript:void(0)" class="primary-btn" onclick="openDocModal('docModal1')">小雲豹藍牙雙鍵滑鼠-使用情境及說明</a>
+                <a href="javascript:void(0)" class="primary-btn" onclick="openDocModal('docModal2')">小雲豹使用說明</a>
             </div>
 
             <!-- Code Download Section -->
@@ -137,6 +133,112 @@
         <img class="modal-content" id="modalImage">
     </div>
 
+    <!-- Document Modal 1: 情境及說明 -->
+    <div id="docModal1" class="doc-modal-overlay" onclick="closeDocModal('docModal1', event)">
+        <div class="doc-modal-container" onclick="event.stopPropagation()">
+            <div class="doc-modal-header">
+                <h2>小雲豹使用情境及說明</h2>
+                <button class="doc-close-btn" onclick="closeDocModal('docModal1', event)">&times;</button>
+            </div>
+            <div class="doc-modal-body">
+                <h3 class="doc-section-title" style="margin-top: 0;">🛠️ 組裝說明與需要材料</h3>
+                <ul class="doc-list">
+                    <li class="doc-item">
+                        <strong>需要材料：</strong> micro:bit V2、4號電池盒 / USB電源線+外接電源 / KSB040充電電池模組、音源插座(母頭)、擴充板、杜邦線(1公1母)。
+                    </li>
+                    <li class="doc-item">
+                        <strong>自製按鍵：</strong> 
+                        如果您需要自行裝配外接按鍵，可參考影片（2:00之後內容）：
+                        <a href="https://www.youtube.com/watch?v=Wl03UrhBNqo" class="text-link" target="_blank">自製按鍵組裝影片</a>。
+                    </li>
+                </ul>
+
+                <h3 class="doc-section-title">🕹️ 使用情境說明</h3>
+                <ul class="doc-list">
+                    <li class="doc-item">
+                        <span class="doc-trigger">螢幕游標控制</span>
+                        <div class="doc-action">
+                            按一次<strong>左側按鈕</strong>，游標便會改變方向，依<strong>「上 ➔ 右 ➔ 下 ➔ 左」</strong>的順序讓游標以等速移動。
+                        </div>
+                    </li>
+                    <li class="doc-item">
+                        <span class="doc-trigger">滑鼠按鍵控制</span>
+                        <div class="doc-action">
+                            持續按住<strong>右側按鈕</strong>不放時，會啟動提示聲音的循環；滑鼠會依續<strong>「左鍵 ➔ 拖曳 ➔ 右鍵 ➔ 捲動 ➔ 左鍵兩次」</strong>等五種功能循環，聽到想要執行的聲音提示後放開按鍵，即可執行該項功能。
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Modal 2: 詳細使用說明 -->
+    <div id="docModal2" class="doc-modal-overlay" onclick="closeDocModal('docModal2', event)">
+        <div class="doc-modal-container" onclick="event.stopPropagation()">
+            <div class="doc-modal-header">
+                <h2>小雲豹詳細使用說明</h2>
+                <button class="doc-close-btn" onclick="closeDocModal('docModal2', event)">&times;</button>
+            </div>
+            <div class="doc-modal-body">
+                <h3 class="doc-section-title" style="margin-top: 0;">🐾 產品簡介</h3>
+                <p style="margin-bottom: 15px; font-size: 14px; color: #334155;">
+                    小雲豹是藍牙雙鍵滑鼠，用一個按鍵控制螢幕游標，另一個按鍵控制一般滑鼠的左右鍵功能。支援蘋果 iOS、安卓 Android、微軟 Windows 系統。
+                </p>
+
+                <h3 class="doc-section-title">🎯 螢幕游標控制</h3>
+                <ul class="doc-list">
+                    <li class="doc-item">
+                        <strong>單擊按鈕</strong>：每按一次左側按鈕，游標便會改變方向，依<strong>「上 ➔ 右 ➔ 下 ➔ 左」</strong>的順序讓游標以等速移動。
+                        <div style="margin-top: 5px; color: #475569; font-size: 13px;">
+                            • 上（嗶）：顯示向上箭頭圖案<br>
+                            • 右（嗶）：顯示向右箭頭圖案<br>
+                            • 下（嗶）：顯示向下箭頭圖案<br>
+                            • 左（嗶）：顯示向左箭頭圖案
+                        </div>
+                    </li>
+                    <li class="doc-item">
+                        <strong>長按按鈕</strong>：若按住不放（約 2 秒）聽到嗶聲後，游標將會順著同一個方向緩速前進（嗶~~），方便精準對位。放開按鈕即可停住游標。
+                    </li>
+                </ul>
+
+                <h3 class="doc-section-title">🖱️ 滑鼠按鍵控制</h3>
+                <p style="margin-bottom: 8px; font-size: 14px; color: #334155;">
+                    持續按住<strong>右側按鈕</strong>不放，系統將循環播放以下五種功能提示音，放開按鈕即執行對應功能：
+                </p>
+                <ol style="line-height: 1.8; font-size: 14px; padding-left: 20px; color: #334155; margin-bottom: 15px;">
+                    <li><strong>左鍵一次</strong>：嗶一聲，顯示 <strong>L</strong> 圖案</li>
+                    <li><strong>拖曳</strong>：嗶一聲，顯示 <strong>H</strong> 圖案，再按一次即可解除（圖案熄滅）</li>
+                    <li><strong>右鍵一次</strong>：嗶一聲，顯示 <strong>R</strong> 圖案</li>
+                    <li><strong>捲動</strong>：嗶一聲，顯示捲動圖案，再按一次即可解除</li>
+                    <li><strong>左鍵兩次</strong>：嗶嗶兩聲，顯示 <strong>D</strong> 圖案。亦可直接快速按兩次按鈕執行</li>
+                </ol>
+
+                <h3 class="doc-section-title">🔊 調整音效音量</h3>
+                <ul class="doc-list">
+                    <li class="doc-item">
+                        觸碰小雲豹正面正上方的<strong>金色橢圓形觸控標誌 (Logo)</strong>，即可調整音效音量（每次觸碰會顯示當前音量 0 - 9）。
+                    </li>
+                    <li class="doc-item">
+                        <strong>長按觸控標誌</strong>再放開，即可恢復預設音量。
+                    </li>
+                </ul>
+
+                <h3 class="doc-section-title">⚡ 調整游標與捲動速度</h3>
+                <ul class="doc-list">
+                    <li class="doc-item">
+                        <strong>恢復預設速度</strong>：同時按下小雲豹正面的 <strong>A 鍵</strong>與 <strong>B 鍵</strong>。
+                    </li>
+                    <li class="doc-item">
+                        <strong>游標移動速度</strong>：單獨按下 <strong>A 鍵</strong>可循環改變游標移動速度（數字越小越慢，越大越快）。
+                    </li>
+                    <li class="doc-item">
+                        <strong>螢幕捲動速度</strong>：單獨按下 <strong>B 鍵</strong>可循環改變螢幕上下捲動的速度（數字越小越快，越大越慢）。
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openModal(imageSrc) {
             document.getElementById('imageModal').style.display = "block";
@@ -145,6 +247,39 @@
         
         function closeModal() {
             document.getElementById('imageModal').style.display = "none";
+        }
+
+        /* Document Modal Functions */
+        function openDocModal(modalId) {
+            const modal = document.getElementById(modalId || 'docModal');
+            if (!modal) return;
+            modal.style.display = 'flex';
+            // Force reflow
+            modal.offsetHeight;
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Disable background scrolling
+        }
+
+        function closeDocModal(modalId, event) {
+            let actualId = modalId;
+            let actualEvent = event;
+            if (typeof modalId === 'object' && modalId !== null && modalId.target) {
+                actualEvent = modalId;
+                actualId = 'docModal';
+            }
+            
+            const modal = document.getElementById(actualId || 'docModal');
+            if (!modal) return;
+            
+            if (actualEvent && actualEvent.stopPropagation && actualEvent.target !== modal && !actualEvent.target.classList.contains('doc-close-btn')) {
+                return;
+            }
+
+            modal.classList.remove('show');
+            document.body.style.overflow = ''; // Restore background scrolling
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
         }
     </script>
 <script src="sidebar.js?v=8"></script>

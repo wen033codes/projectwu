@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
@@ -73,8 +73,7 @@
             </div>
 
             <div class="info-links">
-                <p class="info-text-label">說明文件 : <a href="docs/小橘喵使用說明v0.7.pdf" class="text-link"
-                        target="_blank">小橘喵使用說明.pdf</a></p>
+                <a href="javascript:void(0)" class="primary-btn" onclick="openDocModal()">小橘喵使用說明</a>
             </div>
 
             <p class="info-text-label">程式下載 :</p>
@@ -139,6 +138,176 @@
         <img class="modal-content" id="modalImage">
     </div>
 
+    <!-- Document Modal -->
+    <div id="docModal" class="doc-modal-overlay" onclick="closeDocModal(event)">
+        <div class="doc-modal-container" onclick="event.stopPropagation()">
+            <div class="doc-modal-header">
+                <h2>小橘喵使用說明</h2>
+                <button class="doc-close-btn" onclick="closeDocModal(event)">&times;</button>
+            </div>
+            <div class="doc-modal-body">
+                <h3 class="doc-section-title" style="margin-top: 0;">🗣️ 語音辨識指令與滑鼠動作對照表</h3>
+                <p style="margin-bottom: 15px; font-size: 14px; color: #64748b;">您可以對著小橘喵發出以下語音指令來控制滑鼠操作：</p>
+                <table style="width:100%; border-collapse:collapse; margin-bottom:20px; font-size:14px;">
+                    <thead>
+                        <tr style="background-color:#f1f5f9; border-bottom:2px solid #cbd5e1; text-align:left;">
+                            <th style="padding:10px; border:1px solid #cbd5e1;">滑鼠動作 (Action)</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">語音指令 (Voice Command)</th>
+                            <th style="padding:10px; border:1px solid #cbd5e1;">顯示 (Display)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">左鍵單擊 (LeftClick)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">選定、點選、點左鍵</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">左鍵</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">右鍵單擊 (RightClick)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">功能表、點右鍵</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">右鍵</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">向上移動 (UP)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">北、上、上移、往上、向上</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">上</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">向下移動 (DOWN)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">南、下、下移、往下、向下</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">下</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">向左移動 (LEFT)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">往左、向左</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">左</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">向右移動 (RIGHT)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">往右、向右</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">右</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">停止移動 (STOP)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">停、停止、停下、停住</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">停</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">快速移動 (FAST)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">快速、快移、加快</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">快</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">慢速移動 (SLOW)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">慢速、慢移、減慢</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">慢</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">左鍵雙擊 (DoubleClick)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">開啟、雙按、雙擊、按兩次</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">雙按</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">滾動頁面 (SCROLL)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">捲動、捲軸</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">捲</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">滑鼠按住 (Hold)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">拖曳、按住、按下</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">按</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">滑鼠放開 (Release)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">放、放開、鬆開</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">放</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">中速移動 (NORMAL)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">中速、常速、平常速度、中等速度</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">中</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">往左上移動 (LEFTUP)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">左北、左上、左上移動</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">左上</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">往右下移動 (RIGHTDOWN)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">右南、右下、右下移動</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">右下</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">往左下移動 (LEFTDOWN)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">左南、左下、左下移動</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">左下</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">往右上移動 (RIGHTUP)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">右北、右上、右上移動</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">右上</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">最小音量 (MINVOL)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">最小音量</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">最小音量</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">中等音量 (MIDVOL)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">中等音量</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">中等音量</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">最大音量 (MAXVOL)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">最大音量</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">最大音量</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">增高音量 (VOLUP)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">增高音量、調高音量</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">調高音量</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">減低音量 (VOLDOWN)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">減低音量、調低音量</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">調低音量</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">語音輸入 (VINPUT)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">語音輸入</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">有需要再叫我</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">定位至左上角 (LEFTUP1)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">定位左上</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">左上角</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">定位至右下角 (RIGHTDOWN1)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">定位右下</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">右下角</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">定位至左下角 (LEFTDOWN1)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">定位左下</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">左下角</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">定位至右上角 (RIGHTUP1)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">定位右上</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">右上角</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-weight:500; color:#1e40af;">移到中心點 (CENTER)</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; color:#334155;">移到中心</td>
+                            <td style="padding:10px; border:1px solid #cbd5e1; font-family:monospace; color:#475569;">中心點</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openModal(imageSrc) {
             document.getElementById('imageModal').style.display = "block";
@@ -147,6 +316,28 @@
         
         function closeModal() {
             document.getElementById('imageModal').style.display = "none";
+        }
+
+        /* Document Modal Functions */
+        function openDocModal() {
+            const modal = document.getElementById('docModal');
+            modal.style.display = 'flex';
+            // Force reflow
+            modal.offsetHeight;
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Disable background scrolling
+        }
+
+        function closeDocModal(event) {
+            const modal = document.getElementById('docModal');
+            if (event && event.stopPropagation && event.target !== modal && !event.target.classList.contains('doc-close-btn')) {
+                return;
+            }
+            modal.classList.remove('show');
+            document.body.style.overflow = ''; // Restore background scrolling
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
         }
     </script>
 <script src="sidebar.js?v=8"></script>

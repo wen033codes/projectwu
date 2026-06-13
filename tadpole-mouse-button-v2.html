@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
@@ -73,7 +73,7 @@
             </div>
 
             <div class="info-links">
-                <p class="info-text-label">說明文件 : <a href="docs/小蝌蚪藍牙滑鼠按鍵_使用情境及說明.pdf" class="text-link" target="_blank">小蝌蚪藍牙滑鼠按鍵_使用情境及說明.pdf</a></p>
+                <a href="javascript:void(0)" class="primary-btn" onclick="openDocModal()">小蝌蚪藍牙滑鼠按鍵_使用情境及說明</a>
             </div>
 
             <p class="info-text-label">程式下載 : (版本2)藍牙切換開關(2)</p>
@@ -141,6 +141,38 @@
         <img class="modal-content" id="modalImage">
     </div>
 
+    <!-- Document Modal -->
+    <div id="docModal" class="doc-modal-overlay" onclick="closeDocModal(event)">
+        <div class="doc-modal-container" onclick="event.stopPropagation()">
+            <div class="doc-modal-header">
+                <h2>小蝌蚪藍牙滑鼠按鍵使用說明</h2>
+                <button class="doc-close-btn" onclick="closeDocModal(event)">&times;</button>
+            </div>
+            <div class="doc-modal-body">
+                <h3 class="doc-section-title" style="margin-top: 0;">📱 需要材料</h3>
+                <ul class="doc-list">
+                    <li class="doc-item">
+                        <strong>主要設備：</strong> micro:bit V2 主控板、iOS 裝置 (iPhone 或 iPad)。
+                    </li>
+                </ul>
+
+                <h3 class="doc-section-title">🔗 步驟 1: 藍牙配對</h3>
+                <ol style="line-height: 1.8; font-size: 15px; padding-left: 20px; color: #334155; margin-bottom: 20px;">
+                    <li style="margin-bottom: 8px;">開啟 iOS 裝置上的<strong>「設定」 > 「藍牙」</strong>。</li>
+                    <li style="margin-bottom: 8px;">將 micro:bit 通電，並使其進入配對狀態。</li>
+                    <li style="margin-bottom: 8px;">在藍牙裝置清單中點擊您的 micro:bit 裝置（如：<code>uBit [vitut]</code>）完成配對與連線。</li>
+                </ol>
+
+                <h3 class="doc-section-title">⚙️ 步驟 2: 切換控制與輔助觸控設定</h3>
+                <ol style="line-height: 1.8; font-size: 15px; padding-left: 20px; color: #334155;">
+                    <li style="margin-bottom: 8px;">前往 iOS 裝置的<strong>「設定」 > 「輔助使用」</strong>。</li>
+                    <li style="margin-bottom: 8px;">選擇<strong>「觸控」 > 「輔助觸控」 (AssistiveTouch)</strong>，並將其<strong>開啟</strong>。</li>
+                    <li style="margin-bottom: 8px;">您可以根據需要設定切換控制的對應功能，讓 micro:bit 按鍵成為您操控 iOS 裝置的輔助工具。</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openModal(imageSrc) {
             document.getElementById('imageModal').style.display = "block";
@@ -149,6 +181,28 @@
         
         function closeModal() {
             document.getElementById('imageModal').style.display = "none";
+        }
+
+        /* Document Modal Functions */
+        function openDocModal() {
+            const modal = document.getElementById('docModal');
+            modal.style.display = 'flex';
+            // Force reflow
+            modal.offsetHeight;
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Disable background scrolling
+        }
+
+        function closeDocModal(event) {
+            const modal = document.getElementById('docModal');
+            if (event && event.stopPropagation && event.target !== modal && !event.target.classList.contains('doc-close-btn')) {
+                return;
+            }
+            modal.classList.remove('show');
+            document.body.style.overflow = ''; // Restore background scrolling
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
         }
     </script>
 <script src="sidebar.js?v=8"></script>
