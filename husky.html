@@ -7,6 +7,7 @@
     <title>哈士奇 - DIY智能家居改造及電腦、手機、平板操作輔具</title>
     <link rel="stylesheet" href="style.css?v=2.0">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Image Modal Styles */
         .modal {
@@ -90,6 +91,22 @@
                 right: 8px;
             }
         }
+        
+        /* Title Description Styles */
+        .husky-desc {
+            font-size: 14px;
+            color: #475569;
+            font-weight: normal;
+            line-height: 1.5;
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        @media (min-width: 1024px) {
+            .husky-desc {
+                white-space: nowrap;
+            }
+        }
     </style>
 </head>
 
@@ -103,15 +120,25 @@
     </header>
 
     <main class="content-container">
-        <h1 class="main-title big-blue-title">哈士奇</h1>
+        <h1 class="main-title big-blue-title" style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
+            <span>哈士奇</span>
+            <span class="husky-desc">使用哈士奇鏡頭偵測使用者『看特定方向的次數』，再以 Arduino (或 Micro:bit）判斷後自動發出嗶嗶聲、開啟開關或發送廣播，呼叫照顧者幫忙</span>
+        </h1>
 
         <section class="content-section">
             <div class="info-links">
+                <div style="margin-top: 0; margin-bottom: 20px; font-size: 15px; line-height: 1.8; color: #334155; display: flex; flex-wrap: wrap; gap: 20px;">
+                    <div><i class="fa-solid fa-globe" style="color: var(--primary-blue); margin-right: 4px;"></i><a href="https://wiki.dfrobot.com/sen0638/" target="_blank" class="text-link" style="color: var(--link-color); text-decoration: none;">哈士奇V2官方網站</a></div>
+                    <div><i class="fa-solid fa-book" style="color: var(--primary-blue); margin-right: 4px;"></i><a href="https://wiki.dfrobot.com.cn/_SKU_SEN0638_Gravity_HUSKYLENS_2_AI_Camera_Vision_Sensor" target="_blank" class="text-link" style="color: var(--link-color); text-decoration: none;">哈士奇V2Wiki(簡中)</a></div>
+                    <div><i class="fa-solid fa-microchip" style="color: var(--primary-blue); margin-right: 4px;"></i><a href="https://docs.arduino.cc/hardware/nano/" target="_blank" class="text-link" style="color: var(--link-color); text-decoration: none;">Arduino nano V3</a></div>
+                    <div><i class="fa-solid fa-file-lines" style="color: var(--primary-blue); margin-right: 4px;"></i><a href="https://emakefun-docs.readthedocs.io/zh-cn/latest/arduino/ArduinoNanoIntroduce/" target="_blank" class="text-link" style="color: var(--link-color); text-decoration: none;">Arduino nano V3(簡中)</a></div>
+                </div>
+
                 <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px;">
                     <a href="javascript:void(0)" class="primary-btn" onclick="openDocModal('docModal1')">哈士奇眼控叫人鈴基本設定</a>
                     <a href="javascript:void(0)" class="primary-btn" onclick="openDocModal('docModal2')">哈士奇眼控叫人鈴規則</a>
                 </div>
-                    </div>
+            </div>
 
 
                 <!-- Group 1: 內建蜂鳴器版 -->
