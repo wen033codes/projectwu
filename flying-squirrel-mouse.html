@@ -90,7 +90,7 @@
             </div>
 
             <div class="info-links">
-                <a href="javascript:void(0)" class="primary-btn" onclick="openDocModal()">小飛鼠藍牙穿戴式滑鼠-使用情境及說明</a>
+                <a href="docs/Flying_Squirrel_Assistive_Mouse.pdf" class="primary-btn" target="_blank">小飛鼠藍牙穿戴式滑鼠-使用情境及說明</a>
             </div>
 
             <!-- Code Download Section -->
@@ -154,69 +154,7 @@
         <img class="modal-content" id="modalImage">
     </div>
 
-    <!-- Document Modal -->
-    <div id="docModal" class="doc-modal-overlay" onclick="closeDocModal(event)">
-        <div class="doc-modal-container" onclick="event.stopPropagation()">
-            <div class="doc-modal-header">
-                <h2>小飛鼠使用情境及說明</h2>
-                <button class="doc-close-btn" onclick="closeDocModal(event)">&times;</button>
-            </div>
-            <div class="doc-modal-body">
-                <h3 class="doc-section-title" style="margin-top: 0;">🛠️ 組裝說明與需要材料</h3>
-                <ul class="doc-list">
-                    <li class="doc-item">
-                        <strong>主要材料：</strong> Microbit V2、KSB040 電池擴展板、3M 魔鬼氈（用於黏貼 micro:bit 在帽子上）。
-                    </li>
-                    <li class="doc-item">
-                        <strong>micro:bit 與 KSB040 組裝方法：</strong> 
-                        只鎖 <strong>GND</strong>、<strong>3V</strong>、<strong>P0</strong> 三個孔。您可以參考影片：
-                        <a href="https://youtu.be/e2RCiFNIF9g" class="text-link" target="_blank">KS B040充電電池模組組裝影片</a>。
-                    </li>
-                </ul>
 
-                <h3 class="doc-section-title">🧭 使用情境說明</h3>
-                <ul class="doc-list">
-                    <li class="doc-item">
-                        <span class="doc-trigger">使用情境 (一)</span>
-                        <div class="doc-action">
-                            <ul>
-                                <li><strong>滑鼠方向控制</strong>：將 micro:bit + KSB040 <strong>平貼在帽沿（水平）</strong>，標誌朝帽緣前方。擺頭即可控制滑鼠游標移動方向。</li>
-                                <li><strong>按鍵控制</strong>：使用<strong>聲控（喊聲次數）</strong>來控制滑鼠左鍵與右鍵。</li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="doc-item">
-                        <span class="doc-trigger">使用情境 (二)</span>
-                        <div class="doc-action">
-                            <ul>
-                                <li><strong>滑鼠方向控制</strong>：同情境 (一)，透過帽沿的 micro:bit 傾斜度控制游標移動方向。</li>
-                                <li><strong>按鍵控制</strong>：使用<strong>觸碰次數</strong>來控制滑鼠左鍵與右鍵（使用一個迴紋針接到 P0）。</li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="doc-item">
-                        <span class="doc-trigger">使用情境 (三)</span>
-                        <div class="doc-action">
-                            <ul>
-                                <li><strong>滑鼠方向控制</strong>：<strong>上下左右搖擺</strong>配戴在身上的 micro:bit 控制滑鼠游標移動方向。</li>
-                                <li><strong>按鍵控制</strong>：使用其他外接方式（如吹吸嘴、腳踏板等）來控制滑鼠左鍵與右鍵。吹吸控制可參考「藍牙吹吸滑鼠按鍵」網頁。</li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
-
-                <h3 class="doc-section-title">💾 程式下載與燒錄</h3>
-                <ul class="doc-list">
-                    <li class="doc-item">
-                        <strong>情境 (一) 與 (二)</strong>：需要兩片 micro:bit，皆下載並燒錄<strong>小飛鼠程式</strong>。
-                    </li>
-                    <li class="doc-item">
-                        <strong>情境 (三)</strong>：第一片 micro:bit 下載並燒錄<strong>小飛鼠程式</strong>，另一片 micro:bit 則下載並燒錄<strong>腳踏板程式（版本 2 或版本 3）</strong>或<strong>吹吸程式</strong>。
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
 
     <script>
         function openModal(imageSrc) {
@@ -228,27 +166,6 @@
             document.getElementById('imageModal').style.display = "none";
         }
 
-        /* Document Modal Functions */
-        function openDocModal() {
-            const modal = document.getElementById('docModal');
-            modal.style.display = 'flex';
-            // Force reflow
-            modal.offsetHeight;
-            modal.classList.add('show');
-            document.body.style.overflow = 'hidden'; // Disable background scrolling
-        }
-
-        function closeDocModal(event) {
-            const modal = document.getElementById('docModal');
-            if (event && event.stopPropagation && event.target !== modal && !event.target.classList.contains('doc-close-btn')) {
-                return;
-            }
-            modal.classList.remove('show');
-            document.body.style.overflow = ''; // Restore background scrolling
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300);
-        }
     </script>
 <script src="sidebar.js?v=8"></script>
 </body>
