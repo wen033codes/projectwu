@@ -101,6 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div class="submenu-content">
                     <ul class="sidebar-menu">
                         <li class="indent-2"><a href="white-pigeon-bell.html">小白鴿聲控叫人鈴</a></li>
+                        <li class="indent-2"><a href="micro-bee-shake-bell.html">微蜂晃動叫人鈴</a></li>
                         <li class="indent-2"><a href="parrot-emergency-box.html">小鸚鵡聲控緊急連絡盒</a></li>
                         <li class="indent-2"><a href="little-myna.html">小八哥語音轉譯</a></li>
                         <li class="indent-2"><a href="husky.html">哈士奇眼控叫人鈴</a></li>
