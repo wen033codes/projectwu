@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小白鴿聲控叫人鈴 — 使用說明</title>
+    <link rel="stylesheet" href="style.css?v=2.0">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .manual-section {
+            margin-bottom: 36px;
+        }
+        .manual-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1565c0;
+            border-left: 5px solid #1565c0;
+            padding-left: 12px;
+            margin-bottom: 16px;
+        }
+        .manual-section h3 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #333;
+            margin: 20px 0 10px 0;
+        }
+        .manual-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+        .manual-table th {
+            background-color: #1565c0;
+            color: white;
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .manual-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+            vertical-align: top;
+        }
+        .manual-table tr:nth-child(even) td {
+            background-color: #f5f8ff;
+        }
+        .note-box {
+            background: #fff8e1;
+            border-left: 4px solid #f9a825;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 15px;
+            color: #555;
+            margin: 12px 0;
+        }
+        .note-box strong {
+            color: #e65100;
+        }
+        .step-block {
+            background: #f0f4ff;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+        .step-block p {
+            margin: 6px 0;
+            font-size: 15px;
+            color: #333;
+            line-height: 1.7;
+        }
+        .step-num {
+            display: inline-block;
+            background: #1565c0;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            text-align: center;
+            line-height: 24px;
+            margin-right: 8px;
+        }
+        .voice-cmd {
+            display: inline-block;
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            color: #1b5e20;
+            font-weight: 600;
+            border-radius: 6px;
+            padding: 2px 10px;
+            font-size: 14px;
+            margin: 2px 0;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #1565c0;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="top-bar">
+        <div class="container">
+            <span><a href="index.html" style="color: white; text-decoration: none;">DIY智能家居改造及電腦、手機、平板操作輔具 micro:bit 應用</a></span>
+        </div>
+    </header>
+
+    <main class="content-container">
+        <a href="white-pigeon-bell.html" class="back-btn">← 返回小白鴿聲控叫人鈴</a>
+        <h1 class="main-title big-blue-title">小白鴿聲控叫人鈴 — 使用說明</h1>
+
+        <section class="content-section">
+
+            <!-- 一、配件介紹 -->
+            <div class="manual-section">
+                <h2>一、配件介紹</h2>
+                <p style="font-size:15px; color:#555; margin-bottom:12px;">小白鴿聲控叫人鈴共包含以下 4 項配件：</p>
+                <table class="manual-table">
+                    <thead>
+                        <tr>
+                            <th>編號</th>
+                            <th>配件名稱</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>呼叫按鈕</td><td>手動按下即可觸發呼叫</td></tr>
+                        <tr><td>2</td><td>小白鴿主機</td><td>語音辨識核心裝置</td></tr>
+                        <tr><td>3</td><td>5V/1A 充電頭</td><td>提供主機電源</td></tr>
+                        <tr><td>4</td><td>呼叫鈴</td><td>接收呼叫訊號並發出鈴聲</td></tr>
+                    </tbody>
+                </table>
+                <div class="note-box">
+                    <strong>安裝方式：</strong>將呼叫按鈕與呼叫鈴接在一起，再將主機電源線插入 5V/1A 充電頭。
+                </div>
+            </div>
+
+            <!-- 二、基本操作 -->
+            <div class="manual-section">
+                <h2>二、基本操作</h2>
+
+                <h3>🔊 喚醒小白鴿</h3>
+                <p style="font-size:15px; color:#444; margin-bottom:8px;">說出喚醒詞：</p>
+                <p style="font-size:15px; margin-bottom:4px;"><span class="voice-cmd">你好，小白鴿</span></p>
+                <p style="font-size:14px; color:#666; margin-bottom:16px;">小白鴿回應：「在呢？」或「請說」，即可繼續下達命令。</p>
+
+                <h3>📢 呼叫鈴</h3>
+                <table class="manual-table">
+                    <thead><tr><th>操作方式</th><th>說明</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="voice-cmd">幫我按鈴</span>（語音命令）</td><td>小白鴿執行呼叫鈴</td></tr>
+                        <tr><td>手動按下呼叫按鈕</td><td>直接觸發呼叫鈴，效果相同</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>🔉 音量調整</h3>
+                <table class="manual-table">
+                    <thead><tr><th>語音命令</th><th>小白鴿動作</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="voice-cmd">最大音量</span></td><td>調整至最大音量</td></tr>
+                        <tr><td><span class="voice-cmd">中等音量</span></td><td>調整至中等音量</td></tr>
+                        <tr><td><span class="voice-cmd">最小音量</span></td><td>調整至最小音量</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>💤 手動休眠</h3>
+                <table class="manual-table">
+                    <thead><tr><th>語音命令</th><th>小白鴿動作</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="voice-cmd">小白鴿休息</span></td><td>回應「有需要再叫我」並進入休眠</td></tr>
+                    </tbody>
+                </table>
+                <div class="note-box">
+                    <strong>⚠️ 自動休眠機制：</strong>喚醒後，若 <strong>20 秒內沒有下達任何命令</strong>，小白鴿會自動發出提示音並進入休眠狀態。
+                </div>
+            </div>
+
+            <!-- 三、自訂喚醒詞與命令詞學習 -->
+            <div class="manual-section">
+                <h2>三、自訂喚醒詞與命令詞學習</h2>
+                <p style="font-size:15px; color:#555; margin-bottom:16px;">小白鴿支援使用者自訂個人化喚醒詞與命令詞，適合有特殊語音需求或習慣的使用者。</p>
+
+                <h3>📖 學習流程</h3>
+
+                <p style="font-size:15px; font-weight:600; color:#1565c0; margin-bottom:8px;">Step 1 — 學習喚醒詞</p>
+                <div class="step-block">
+                    <p><span class="step-num">1</span>喚醒小白鴿後，說：<span class="voice-cmd">開始學習喚醒詞</span></p>
+                    <p><span class="step-num">2</span>小白鴿提示：「請在安靜環境下，按提示學習喚醒詞」</p>
+                    <p><span class="step-num">3</span>依提示說出您的自訂喚醒詞（說 2 次確認）</p>
+                    <p><span class="step-num">4</span>小白鴿回應：「學習成功！」</p>
+                </div>
+
+                <p style="font-size:15px; font-weight:600; color:#1565c0; margin-bottom:8px;">Step 2 — 學習命令詞（緊接在喚醒詞學習後進行）</p>
+                <div class="step-block">
+                    <p><span class="step-num">1</span>小白鴿提示：「請在安靜環境下，按提示學習命令詞」</p>
+                    <p><span class="step-num">2</span>小白鴿提示：「請說，學習「幫我按鈴」的命令」</p>
+                    <p><span class="step-num">3</span>依提示說出您的自訂命令詞（說 2 次確認）</p>
+                    <p><span class="step-num">4</span>小白鴿回應：「學習成功」</p>
+                </div>
+
+                <h3>✅ 測試自訂詞</h3>
+                <div class="step-block">
+                    <p><span class="step-num">1</span>說出<strong>自訂喚醒詞</strong> → 小白鴿回應「我在」</p>
+                    <p><span class="step-num">2</span>說出<strong>自訂命令詞</strong> → 小白鴿執行呼叫鈴</p>
+                </div>
+
+                <h3>🗑️ 刪除自訂學習詞</h3>
+                <table class="manual-table">
+                    <thead><tr><th>語音命令</th><th>操作步驟</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="voice-cmd">刪除學習喚醒詞</span></td>
+                            <td>小白鴿詢問刪除對象 → 回答「刪除喚醒詞」→ 刪除成功</td>
+                        </tr>
+                        <tr>
+                            <td><span class="voice-cmd">刪除學習命令詞</span></td>
+                            <td>小白鴿詢問刪除對象 → 回答「刪除命令詞」→ 刪除成功</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="note-box">
+                    刪除後，將恢復使用預設的喚醒詞「你好，小白鴿」及命令詞「幫我按鈴」。
+                </div>
+            </div>
+
+            <!-- 四、功能總覽 -->
+            <div class="manual-section">
+                <h2>四、功能總覽</h2>
+                <table class="manual-table">
+                    <thead><tr><th>功能</th><th>操作方式</th></tr></thead>
+                    <tbody>
+                        <tr><td>喚醒</td><td><span class="voice-cmd">你好，小白鴿</span></td></tr>
+                        <tr><td>呼叫鈴（語音）</td><td>喚醒後說 <span class="voice-cmd">幫我按鈴</span></td></tr>
+                        <tr><td>呼叫鈴（手動）</td><td>直接按下呼叫按鈕</td></tr>
+                        <tr><td>最大音量</td><td><span class="voice-cmd">最大音量</span></td></tr>
+                        <tr><td>中等音量</td><td><span class="voice-cmd">中等音量</span></td></tr>
+                        <tr><td>最小音量</td><td><span class="voice-cmd">最小音量</span></td></tr>
+                        <tr><td>手動休眠</td><td><span class="voice-cmd">小白鴿休息</span></td></tr>
+                        <tr><td>自動休眠</td><td>喚醒後 20 秒無指令自動休眠</td></tr>
+                        <tr><td>學習自訂喚醒詞</td><td><span class="voice-cmd">開始學習喚醒詞</span></td></tr>
+                        <tr><td>學習自訂命令詞</td><td>接續喚醒詞學習流程</td></tr>
+                        <tr><td>刪除自訂喚醒詞</td><td><span class="voice-cmd">刪除學習喚醒詞</span></td></tr>
+                        <tr><td>刪除自訂命令詞</td><td><span class="voice-cmd">刪除學習命令詞</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 五、注意事項 -->
+            <div class="manual-section">
+                <h2>五、注意事項</h2>
+                <ol style="font-size:15px; line-height:2; color:#444; padding-left:22px;">
+                    <li>學習自訂詞時，請確保<strong>周圍環境安靜</strong>，以提高辨識準確度。</li>
+                    <li>自訂詞學習需<strong>說兩次</strong>，小白鴿會在兩次說法一致後確認學習成功。</li>
+                    <li>喚醒後若 <strong>20 秒</strong>內無命令，裝置將自動休眠，需重新喚醒。</li>
+                    <li>手動按下呼叫按鈕與語音命令「幫我按鈴」效果相同。</li>
+                </ol>
+            </div>
+
+        </section>
+
+        <div class="footer-action">
+            <a href="white-pigeon-bell.html" class="primary-btn home-btn">返回頁面</a>
+            <a href="index.html" class="primary-btn home-btn" style="margin-left:12px;">HOME</a>
+        </div>
+
+    </main>
+
+    <script src="sidebar.js?v=8"></script>
+</body>
+
+</html>

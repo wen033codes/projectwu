@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小鸚鵡聲控緊急連絡盒 — 使用說明</title>
+    <link rel="stylesheet" href="style.css?v=2.0">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .manual-section {
+            margin-bottom: 36px;
+        }
+        .manual-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1565c0;
+            border-left: 5px solid #1565c0;
+            padding-left: 12px;
+            margin-bottom: 16px;
+        }
+        .manual-section h3 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #333;
+            margin: 20px 0 10px 0;
+        }
+        .manual-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+        .manual-table th {
+            background-color: #1565c0;
+            color: white;
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .manual-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+            vertical-align: top;
+            line-height: 1.6;
+        }
+        .manual-table tr:nth-child(even) td {
+            background-color: #f5f8ff;
+        }
+        .note-box {
+            background: #fff8e1;
+            border-left: 4px solid #f9a825;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 15px;
+            color: #555;
+            margin: 12px 0;
+        }
+        .note-box strong {
+            color: #e65100;
+        }
+        .step-block {
+            background: #f0f4ff;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+        .step-block p {
+            margin: 8px 0;
+            font-size: 15px;
+            color: #333;
+            line-height: 1.8;
+        }
+        .step-num {
+            display: inline-block;
+            background: #1565c0;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            text-align: center;
+            line-height: 24px;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        .voice-cmd {
+            display: inline-block;
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            color: #1b5e20;
+            font-weight: 600;
+            border-radius: 6px;
+            padding: 2px 10px;
+            font-size: 14px;
+            margin: 2px 0;
+        }
+        .response-text {
+            display: inline-block;
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            color: #0d47a1;
+            border-radius: 6px;
+            padding: 2px 10px;
+            font-size: 14px;
+            margin: 2px 0;
+            font-style: italic;
+        }
+        .stage-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            background: #fafafa;
+        }
+        .stage-card .stage-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1565c0;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .stage-dialog {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .dialog-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        .dialog-speaker {
+            font-weight: 600;
+            min-width: 90px;
+            color: #555;
+            flex-shrink: 0;
+        }
+        .dialog-speaker.user { color: #2e7d32; }
+        .dialog-speaker.system { color: #1565c0; }
+        .dialog-content { color: #333; }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #1565c0;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .back-btn:hover { text-decoration: underline; }
+        .mode-badge {
+            display: inline-block;
+            border-radius: 20px;
+            padding: 2px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .mode-apple { background: #ffe0b2; color: #bf360c; }
+        .mode-google { background: #e8f5e9; color: #1b5e20; }
+    </style>
+</head>
+
+<body>
+
+    <header class="top-bar">
+        <div class="container">
+            <span><a href="index.html" style="color: white; text-decoration: none;">DIY智能家居改造及電腦、手機、平板操作輔具 micro:bit 應用</a></span>
+        </div>
+    </header>
+
+    <main class="content-container">
+        <a href="parrot-emergency-box.html" class="back-btn">← 返回小鸚鵡聲控緊急連絡盒</a>
+        <h1 class="main-title big-blue-title">小鸚鵡聲控緊急連絡盒 — 使用說明</h1>
+
+        <section class="content-section">
+
+            <!-- 一、功能概述 -->
+            <div class="manual-section">
+                <h2>一、功能概述</h2>
+                <p style="font-size:15px; color:#444; line-height:1.8; margin-bottom:12px;">
+                    小鸚鵡聲控緊急連絡盒是一款透過語音指令操作的緊急求救裝置。使用者只需說出指定語音命令，即可讓裝置自動透過手機語音助理（Apple Siri 或 Google 助理）撥打緊急電話，並同時播放預先錄製的個人求救訊息，協助他人在第一時間掌握使用者的身份與位置。
+                </p>
+                <table class="manual-table">
+                    <thead><tr><th>核心功能</th><th>說明</th></tr></thead>
+                    <tbody>
+                        <tr><td>🎙️ 語音喚醒</td><td>說「你好小鸚鵡」喚醒裝置</td></tr>
+                        <tr><td>🔴 錄製求救訊息</td><td>錄製 10 秒個人身份與位置資訊</td></tr>
+                        <tr><td>📱 設定語音助理</td><td>選擇使用 Apple Siri 或 Google 助理撥打</td></tr>
+                        <tr><td>🚑 緊急呼叫</td><td>語音命令觸發撥打 110（警察）或 119（救護車／消防）</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 二、操作流程 -->
+            <div class="manual-section">
+                <h2>二、操作流程</h2>
+
+                <!-- 喚醒 -->
+                <h3>🔊 喚醒小鸚鵡</h3>
+                <div class="step-block">
+                    <p><span class="step-num">1</span>裝置啟動後，系統提示：「請說『你好小鸚鵡』來開始使用。」</p>
+                    <p><span class="step-num">2</span>說出：<span class="voice-cmd">你好小鸚鵡</span></p>
+                    <p><span class="step-num">3</span>小鸚鵡回應：<span class="response-text">「為您服務。」</span>即可繼續下達命令。</p>
+                </div>
+
+                <!-- 錄音 -->
+                <h3>🎙️ 錄製個人求救訊息</h3>
+                <div class="step-block">
+                    <p><span class="step-num">1</span>喚醒後說：<span class="voice-cmd">錄音</span></p>
+                    <p><span class="step-num">2</span>小鸚鵡提示：<span class="response-text">「錄音長度 10 秒，開始錄音。」</span></p>
+                    <p><span class="step-num">3</span>在 10 秒內說出個人求救資訊，例如：「我是某某，我住在某某市、某某路、某某號。」</p>
+                    <p><span class="step-num">4</span>小鸚鵡回應：<span class="response-text">「錄製結束。」</span></p>
+                </div>
+                <div class="note-box">
+                    <strong>建議錄音內容：</strong>姓名、居住地址（縣市、路名、門牌號碼）、必要時可加上特殊健康狀況說明。
+                </div>
+
+                <!-- 設定助理 -->
+                <h3>📱 設定手機語音助理</h3>
+                <p style="font-size:15px; color:#555; margin-bottom:12px;">喚醒後說出 <span class="voice-cmd">設定助理</span>，選擇使用的語音助理平台：</p>
+
+                <div class="stage-card">
+                    <div class="stage-title">🍎 Apple Siri 模式 <span class="mode-badge mode-apple">iPhone / iPad</span></div>
+                    <div class="stage-dialog">
+                        <div class="dialog-row"><span class="dialog-speaker user">使用者</span><span class="dialog-content">「設定助理」</span></div>
+                        <div class="dialog-row"><span class="dialog-speaker system">小鸚鵡</span><span class="dialog-content">「請問要呼叫蘋果或 Google？」</span></div>
+                        <div class="dialog-row"><span class="dialog-speaker user">使用者</span><span class="dialog-content">「呼叫蘋果」</span></div>
+                        <div class="dialog-row"><span class="dialog-speaker system">系統回應</span><span class="dialog-content">「已設定為：打給警察。Siri 撥打 110。求救訊息：（播放錄製的個人資訊）」</span></div>
+                    </div>
+                </div>
+
+                <div class="stage-card">
+                    <div class="stage-title">🔍 Google 助理模式 <span class="mode-badge mode-google">Android</span></div>
+                    <div class="stage-dialog">
+                        <div class="dialog-row"><span class="dialog-speaker user">使用者</span><span class="dialog-content">「設定助理」</span></div>
+                        <div class="dialog-row"><span class="dialog-speaker system">小鸚鵡</span><span class="dialog-content">「請問要呼叫蘋果或 Google？」</span></div>
+                        <div class="dialog-row"><span class="dialog-speaker user">使用者</span><span class="dialog-content">「呼叫谷歌」</span></div>
+                        <div class="dialog-row"><span class="dialog-speaker system">系統回應</span><span class="dialog-content">「已設定為：Google 緊急聯絡人。Google 撥打緊急號碼。求救訊息：（播放錄製的個人資訊）」</span></div>
+                    </div>
+                </div>
+
+                <!-- 緊急呼叫 -->
+                <h3>🚨 緊急呼叫指令</h3>
+                <p style="font-size:15px; color:#555; margin-bottom:12px;">喚醒後直接說出以下語音命令，裝置會透過已設定的語音助理撥打對應電話，並自動播放求救訊息：</p>
+                <table class="manual-table">
+                    <thead><tr><th>語音命令</th><th>撥打號碼</th><th>求救訊息內容</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="voice-cmd">呼叫警察</span></td>
+                            <td>110</td>
+                            <td>「發生意外，快來搶救。」＋個人錄音資訊</td>
+                        </tr>
+                        <tr>
+                            <td><span class="voice-cmd">呼叫救護車</span></td>
+                            <td>119</td>
+                            <td>「需要急救，快來搶救。」＋個人錄音資訊</td>
+                        </tr>
+                        <tr>
+                            <td><span class="voice-cmd">叫消防隊</span></td>
+                            <td>119</td>
+                            <td>「發生火災，快來搶救。」＋個人錄音資訊</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 三、功能總覽 -->
+            <div class="manual-section">
+                <h2>三、功能總覽</h2>
+                <table class="manual-table">
+                    <thead><tr><th>功能</th><th>語音指令</th><th>說明</th></tr></thead>
+                    <tbody>
+                        <tr><td>喚醒裝置</td><td><span class="voice-cmd">你好小鸚鵡</span></td><td>裝置回應「為您服務」</td></tr>
+                        <tr><td>錄製求救訊息</td><td><span class="voice-cmd">錄音</span></td><td>錄製 10 秒個人身份與位置</td></tr>
+                        <tr><td>設定語音助理</td><td><span class="voice-cmd">設定助理</span></td><td>選擇 Siri（蘋果）或 Google 助理</td></tr>
+                        <tr><td>呼叫警察</td><td><span class="voice-cmd">呼叫警察</span></td><td>透過助理撥打 110</td></tr>
+                        <tr><td>呼叫救護車</td><td><span class="voice-cmd">呼叫救護車</span></td><td>透過助理撥打 119</td></tr>
+                        <tr><td>叫消防隊</td><td><span class="voice-cmd">叫消防隊</span></td><td>透過助理撥打 119</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 四、注意事項 -->
+            <div class="manual-section">
+                <h2>四、注意事項</h2>
+                <ol style="font-size:15px; line-height:2.2; color:#444; padding-left:22px;">
+                    <li>使用前請先完成<strong>求救訊息錄音</strong>，確保緊急時能正確播放個人資訊。</li>
+                    <li>請確認手機已安裝並啟用對應的語音助理（Siri 或 Google 助理），且允許語音助理撥打電話。</li>
+                    <li><strong>Apple Siri 模式</strong>適用於 iPhone、iPad 等 Apple 裝置；<strong>Google 助理模式</strong>適用於 Android 裝置。</li>
+                    <li>錄音時請在<strong>安靜環境</strong>下錄製，確保求救訊息清晰可辨識。</li>
+                    <li>建議定期更新錄音內容，確保地址等個人資訊正確。</li>
+                    <li>裝置語音辨識在環境嘈雜時可能影響辨識準確度，使用時建議靠近麥克風說話。</li>
+                </ol>
+            </div>
+
+        </section>
+
+        <div class="footer-action">
+            <a href="parrot-emergency-box.html" class="primary-btn home-btn">返回頁面</a>
+            <a href="index.html" class="primary-btn home-btn" style="margin-left:12px;">HOME</a>
+        </div>
+
+    </main>
+
+    <script src="sidebar.js?v=8"></script>
+</body>
+
+</html>
