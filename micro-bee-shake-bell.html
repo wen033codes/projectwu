@@ -78,6 +78,46 @@
                 <a href="javascript:void(0)" class="primary-btn" onclick="openRuleModal()">操作規則</a>
             </div>
 
+            <p class="info-text-label" style="margin-top: 20px; margin-bottom: 12px;">程式下載 :</p>
+
+            <!-- Code Download Section -->
+            <div class="code-download-box" style="margin-bottom: 30px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 24px;">
+                    <div style="flex: 1; min-width: 280px;">
+                        <p class="box-header"><span class="icon">📄</span> Microbit程式下載網址（搖晃呼叫）</p>
+                        <div class="code-row">
+                            <div class="code-block-green" id="code-url-call">
+                                https://github.com/wen033codes/micro-bee-shake-bell_v1.git
+                            </div>
+                            <button class="copy-btn" onclick="copyCode('code-url-call')">複製</button>
+                        </div>
+                    </div>
+
+                    <div style="flex: 1; min-width: 280px;">
+                        <p class="box-header"><span class="icon">📄</span> Microbit程式下載網址（接收）</p>
+                        <div class="code-row">
+                            <div class="code-block-green" id="code-url-rec">
+                                https://github.com/wen033codes/micro-bee-shake-bell_R_v2.git
+                            </div>
+                            <button class="copy-btn" onclick="copyCode('code-url-rec')">複製</button>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function copyCode(elementId) {
+                        var copyText = document.getElementById(elementId || "code-url-call");
+                        var textArea = document.createElement("textarea");
+                        textArea.value = copyText.textContent.trim();
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand("Copy");
+                        textArea.remove();
+                        alert("已複製網址!");
+                    }
+                </script>
+            </div>
+
             <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 40px; margin-top: 20px; margin-bottom: 20px;">
                 <div style="flex: 2; min-width: 300px;">
                     <div style="position: relative;">
