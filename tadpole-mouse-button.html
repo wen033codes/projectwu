@@ -47,6 +47,37 @@
             text-decoration: none;
             cursor: pointer;
         }
+
+        /* 2-Column Video Grid Layout (75% scale, fill page width) */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            margin: 0 0 24px 0;
+        }
+        .video-item {
+            width: 100%;
+        }
+        .video-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+        .video-grid .video-responsive-wrapper {
+            max-width: 100%;
+            margin: 0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        @media (max-width: 640px) {
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
     </style>
 </head>
 
@@ -65,48 +96,91 @@
         <section class="content-section">
             <h2 class="section-subtitle">說明影片</h2>
 
-            <div style="max-width: 640px; margin: 0 auto 24px auto;">
-                <h3 class="video-title" style="font-size: 1.05rem; font-weight: 600; color: #334155; margin-bottom: 8px; text-align: left;">IOS藍牙配對</h3>
-                <div class="video-responsive-wrapper" style="margin-bottom: 0;">
-                    <iframe width="640" height="360" src="https://www.youtube.com/embed/uRmUK0_Sm7E" title="IOS藍牙配對"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen></iframe>
+            <div class="video-grid">
+                <div class="video-item">
+                    <h3 class="video-title">IOS藍牙配對</h3>
+                    <div class="video-responsive-wrapper">
+                        <iframe src="https://www.youtube.com/embed/uRmUK0_Sm7E" title="IOS藍牙配對"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="video-item">
+                    <h3 class="video-title">IOS操作說明</h3>
+                    <div class="video-responsive-wrapper">
+                        <iframe src="https://www.youtube.com/embed/Shrjeqdj8f8" title="IOS操作說明"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="video-item">
+                    <h3 class="video-title">設備連接方式</h3>
+                    <div class="video-responsive-wrapper">
+                        <iframe src="https://www.youtube.com/embed/IhNtN-TWFrg" title="設備連接方式"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="video-item">
+                    <h3 class="video-title">Microbit工作方式</h3>
+                    <div class="video-responsive-wrapper">
+                        <iframe src="https://www.youtube.com/embed/epReJwWTx-k" title="Microbit工作方式"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="video-item">
+                    <h3 class="video-title">藍芽滑鼠按鍵-左鍵</h3>
+                    <div class="video-responsive-wrapper">
+                        <iframe src="https://www.youtube.com/embed/hCeL5MSXhGU" title="藍芽滑鼠按鍵-左鍵"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="video-item">
+                    <h3 class="video-title">藍芽滑鼠按鍵-右鍵</h3>
+                    <div class="video-responsive-wrapper">
+                        <iframe src="https://www.youtube.com/embed/P_0Sz_e8vK4" title="藍芽滑鼠按鍵-右鍵"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="video-item">
+                    <h3 class="video-title">藍芽滑鼠按鍵-Enter</h3>
+                    <div class="video-responsive-wrapper">
+                        <iframe src="https://www.youtube.com/embed/VnBoejit-4g" title="藍芽滑鼠按鍵-Enter"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="video-item">
+                    <h3 class="video-title">藍芽滑鼠按鍵-拖曳</h3>
+                    <div class="video-responsive-wrapper">
+                        <iframe src="https://www.youtube.com/embed/Fcgp0TD9nKg" title="藍芽滑鼠按鍵-拖曳"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen></iframe>
+                    </div>
                 </div>
             </div>
 
-            <div style="max-width: 640px; margin: 0 auto 24px auto;">
-                <h3 class="video-title" style="font-size: 1.05rem; font-weight: 600; color: #334155; margin-bottom: 8px; text-align: left;">IOS操作說明</h3>
-                <div class="video-responsive-wrapper" style="margin-bottom: 0;">
-                    <iframe width="640" height="360" src="https://www.youtube.com/embed/Shrjeqdj8f8" title="IOS操作說明"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen></iframe>
-                </div>
-            </div>
-
-            <div style="max-width: 640px; margin: 0 auto 24px auto;">
-                <h3 class="video-title" style="font-size: 1.05rem; font-weight: 600; color: #334155; margin-bottom: 8px; text-align: left;">設備連接方式</h3>
-                <div class="video-responsive-wrapper" style="margin-bottom: 0;">
-                    <iframe width="640" height="360" src="https://www.youtube.com/embed/IhNtN-TWFrg" title="設備連接方式"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen></iframe>
-                </div>
-            </div>
-
-            <div style="max-width: 640px; margin: 0 auto 24px auto;">
-                <h3 class="video-title" style="font-size: 1.05rem; font-weight: 600; color: #334155; margin-bottom: 8px; text-align: left;">Microbit工作方式</h3>
-                <div class="video-responsive-wrapper" style="margin-bottom: 0;">
-                    <iframe width="640" height="360" src="https://www.youtube.com/embed/epReJwWTx-k" title="Microbit工作方式"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen></iframe>
-                </div>
-            </div>
-
-            <div class="info-links">
+            <div class="info-links" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
                 <a href="javascript:void(0)" class="primary-btn" onclick="openDocModal()">小蝌蚪藍牙滑鼠按鍵_使用情境及說明</a>
+                <a href="javascript:void(0)" class="primary-btn" onclick="openRuleModal()">操作規則</a>
             </div>
 
             <p class="info-text-label">程式下載 : (版本3)藍牙滑鼠按鍵(3)</p>
@@ -205,6 +279,26 @@
         </div>
     </div>
 
+    <!-- Rule Modal -->
+    <div id="ruleModal" class="doc-modal-overlay" onclick="closeRuleModal(event)">
+        <div class="doc-modal-container" onclick="event.stopPropagation()">
+            <div class="doc-modal-header">
+                <h2>操作規則</h2>
+                <button class="doc-close-btn" onclick="closeRuleModal(event)">&times;</button>
+            </div>
+            <div class="doc-modal-body">
+                <ol style="line-height: 2; font-size: 16px; padding-left: 24px; color: #334155;">
+                    <li style="margin-bottom: 12px;">按一下按鈕(P1)或按鍵A，就是按滑鼠左鍵一下，並透過Microbit發出聲音。</li>
+                    <li style="margin-bottom: 12px;">快按兩下按鈕(P1)或雙擊按鍵A，就是按滑鼠左鍵兩下，並透過Microbit發出聲音。</li>
+                    <li style="margin-bottom: 12px;">按一下按鈕(P2)或按鍵B，就是按滑鼠右鍵一下，Microbit顯示R，並透過Microbit發出聲音。</li>
+                    <li style="margin-bottom: 12px;">長按按鈕(P1)，就是長按滑鼠左鍵拖曳，Microbit顯示H。</li>
+                    <li style="margin-bottom: 12px;">按一下標誌，放大Microbit音量，Microbit顯示音量數字1~9，並透過Microbit發出聲音。</li>
+                    <li style="margin-bottom: 12px;">長按標誌，有音量時靜音，無音量時調整為中間音量(5)，並透過Microbit發出聲音。</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openModal(imageSrc) {
             document.getElementById('imageModal').style.display = "block";
@@ -232,6 +326,27 @@
             }
             modal.classList.remove('show');
             document.body.style.overflow = ''; // Restore background scrolling
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        /* Rule Modal Functions */
+        function openRuleModal() {
+            const modal = document.getElementById('ruleModal');
+            modal.style.display = 'flex';
+            modal.offsetHeight;
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeRuleModal(event) {
+            const modal = document.getElementById('ruleModal');
+            if (event && event.stopPropagation && event.target !== modal && !event.target.classList.contains('doc-close-btn')) {
+                return;
+            }
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
             setTimeout(() => {
                 modal.style.display = 'none';
             }, 300);

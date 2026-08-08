@@ -73,38 +73,27 @@
                     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
 
-            <div class="info-links">
-                <a href="docs/Shake_Pager_System.pdf" class="primary-btn" target="_blank" style="margin-bottom: 20px; display: inline-block;">微蜂晃動叫人鈴-使用情境及說明</a>
-                
-                <div class="instructions-box" style="background-color: var(--background-gray); border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; margin-top: 10px; margin-bottom: 30px; text-align: left; max-width: 800px; box-sizing: border-box;">
-                    <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px; color: var(--dark-blue);">操作說明</h3>
-                    <ol style="line-height: 1.8; font-size: 16px; padding-left: 20px; color: var(--text-color); margin-bottom: 12px;">
-                        <li>呼叫器：晃動5次進行呼叫。</li>
-                        <li>觸發接收器。</li>
-                    </ol>
-                    <ul style="list-style-type: none; padding-left: 0; line-height: 1.8; font-size: 15px; color: #555;">
-                        <li style="margin-bottom: 6px;">※ 晃動未完整時，將會等候30秒後自動退出重新計算。</li>
-                        <li>※ 按下呼叫器按鈕A、B可以強制關閉接收器音樂</li>
-                    </ul>
+            <div class="info-links" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 24px;">
+                <a href="docs/Shake_Pager_System.pdf" class="primary-btn" target="_blank" style="display: inline-block;">微蜂晃動叫人鈴-使用情境及說明</a>
+                <a href="javascript:void(0)" class="primary-btn" onclick="openRuleModal()">操作規則</a>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 40px; margin-top: 20px; margin-bottom: 20px;">
+                <div style="flex: 2; min-width: 300px;">
+                    <div style="position: relative;">
+                        <!-- 接線圖 -->
+                        <img src="diagram/晃動叫人鈴接線圖.PNG" alt="微蜂晃動叫人鈴接線圖" style="width: 100%; height: auto; display: block; cursor: pointer;" onclick="openModal('diagram/晃動叫人鈴接線圖.PNG')" title="點擊放大">
+                    </div>
                 </div>
                 
-                <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 40px; margin-top: 20px; margin-bottom: 20px;">
-                    <div style="flex: 2; min-width: 300px;">
-                        <div style="position: relative;">
-                            <!-- 接線圖 -->
-                            <img src="diagram/晃動叫人鈴接線圖.PNG" alt="微蜂晃動叫人鈴接線圖" style="width: 100%; height: auto; display: block; cursor: pointer;" onclick="openModal('diagram/晃動叫人鈴接線圖.PNG')" title="點擊放大">
-                        </div>
-                    </div>
-                    
-                    <div class="materials-info" style="flex: 1; min-width: 250px; margin-top: 0;">
-                        <h2 class="section-subtitle" style="margin-bottom: 15px;">微蜂晃動叫人鈴材料</h2>
-                        <ol style="line-height: 1.8; font-size: 16px; padding-left: 24px; color: #333;">
-                            <li>Micro:Bit V2 2片 (1台接收、1台傳送)</li>
-                            <li>USB-A TO Micro USB 訊號線 2條</li>
-                            <li>5V/1A充電頭 2個</li>
-                            <li>充電電池模組(KS B040) 2個 ※ 可選</li>
-                        </ol>
-                    </div>
+                <div class="materials-info" style="flex: 1; min-width: 250px; margin-top: 0;">
+                    <h2 class="section-subtitle" style="margin-bottom: 15px;">微蜂晃動叫人鈴材料</h2>
+                    <ol style="line-height: 1.8; font-size: 16px; padding-left: 24px; color: #333;">
+                        <li>Micro:Bit V2 2片 (1台接收、1台傳送)</li>
+                        <li>USB-A TO Micro USB 訊號線 2條</li>
+                        <li>5V/1A充電頭 2個</li>
+                        <li>充電電池模組(KS B040) 2個 ※ 可選</li>
+                    </ol>
                 </div>
             </div>
         </section>
@@ -121,6 +110,26 @@
         <img class="modal-content" id="modalImage">
     </div>
 
+    <!-- Rule Modal -->
+    <div id="ruleModal" class="doc-modal-overlay" onclick="closeRuleModal(event)">
+        <div class="doc-modal-container" onclick="event.stopPropagation()">
+            <div class="doc-modal-header">
+                <h2>操作規則</h2>
+                <button class="doc-close-btn" onclick="closeRuleModal(event)">&times;</button>
+            </div>
+            <div class="doc-modal-body">
+                <ol style="line-height: 1.8; font-size: 16px; padding-left: 20px; color: #334155; margin-bottom: 16px;">
+                    <li style="margin-bottom: 8px;">呼叫器：晃動5次進行呼叫。</li>
+                    <li style="margin-bottom: 8px;">觸發接收器。</li>
+                </ol>
+                <ul style="list-style-type: none; padding-left: 0; line-height: 1.8; font-size: 15px; color: #555;">
+                    <li style="margin-bottom: 6px;">※ 晃動未完整時，將會等候30秒後自動退出重新計算。</li>
+                    <li>※ 按下呼叫器按鈕A、B可以強制關閉接收器音樂</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openModal(imageSrc) {
             document.getElementById('imageModal').style.display = "block";
@@ -129,6 +138,27 @@
         
         function closeModal() {
             document.getElementById('imageModal').style.display = "none";
+        }
+
+        /* Rule Modal Functions */
+        function openRuleModal() {
+            const modal = document.getElementById('ruleModal');
+            modal.style.display = 'flex';
+            modal.offsetHeight;
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeRuleModal(event) {
+            const modal = document.getElementById('ruleModal');
+            if (event && event.stopPropagation && event.target !== modal && !event.target.classList.contains('doc-close-btn')) {
+                return;
+            }
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
         }
     </script>
 <script src="sidebar.js?v=8"></script>

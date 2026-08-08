@@ -304,8 +304,8 @@ h2 {
 .video-responsive-wrapper {
     position: relative;
     width: 100%;
-    max-width: 640px;
-    /* Limit width to user request */
+    max-width: 480px;
+    /* Reduced to 75% of original 640px */
     aspect-ratio: 16/9;
     margin: 0 auto 20px auto;
     /* Centered horizontally */
