@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         
                         <li class="menu-category indent-1">iOS切換開關</li>
                         <li class="indent-2"><a href="tadpole-switch.html">小蝌蚪藍牙切換開關</a></li>
-                        <li class="indent-2"><a href="puff-suck-switch.html">藍牙吹吸按鍵</a></li>
+                        <li class="indent-2"><a href="puff-suck-switch.html">藍牙吹吸切換開關</a></li>
                     </ul>
                 </div>
             </div>
