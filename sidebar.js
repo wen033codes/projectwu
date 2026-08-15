@@ -39,21 +39,13 @@ document.addEventListener("DOMContentLoaded", function() {
                     <li class="main-category-item has-submenu" data-panel="voice-panel">
                         <a href="javascript:void(0)" class="main-category-link submenu-toggle" style="display: flex; justify-content: space-between; align-items: center;">
                             <span style="display:flex; align-items:center;">
-                                <i class="fa-solid fa-microphone"></i> 聲控 / 
-                                <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 4px;">
-                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                    <line x1="12" y1="5" x2="12" y2="2"></line>
-                                    <line x1="16" y1="6" x2="18" y2="3"></line>
-                                    <line x1="8" y1="6" x2="6" y2="3"></line>
-                                </svg>
-                                眼控輔具
+                                <i class="fa-solid fa-bell"></i> 叫人鈴及連絡盒
                             </span>
                             <i class="fa-solid fa-chevron-right arrow-icon"></i>
                         </a>
                     </li>
                     
-                    <li class="main-category-item"><a href="qa.html" target="_blank" class="main-category-link"><i class="fa-solid fa-circle-question"></i> Q&A</a></li>
+                    <li class="main-category-item"><a href="qa.html" class="main-category-link"><i class="fa-solid fa-circle-question"></i> Q&A</a></li>
                 </ul>
             </div>
 
@@ -69,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <li class="indent-2"><a href="flying-squirrel-mouse.html">小飛鼠藍牙穿戴式滑鼠</a></li>
                         <li class="indent-2"><a href="puff-suck-mouse.html">藍牙吹吸滑鼠</a></li>
                         <li class="indent-2"><a href="orange-cat-mouse.html">小橘喵聲控藍牙滑鼠</a></li>
-                        <li class="indent-2"><a href="cloud-leopard-mouse.html">小雲豹的藍牙雙按鍵滑鼠</a></li>
+                        <li class="indent-2"><a href="cloud-leopard-mouse.html">小雲豹藍牙雙鍵滑鼠</a></li>
                         
                         <li class="menu-category indent-1">滑鼠按鍵</li>
                         <li class="indent-2"><a href="tadpole-mouse-button.html">小蝌蚪藍牙滑鼠按鍵</a></li>
@@ -87,15 +79,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div class="submenu-header">
                     <button class="back-btn"><i class="fa-solid fa-chevron-left"></i> 返回</button>
                     <h3 style="display:flex; align-items:center;">
-                        <i class="fa-solid fa-microphone"></i> 聲控/
-                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 4px;">
-                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                            <line x1="12" y1="5" x2="12" y2="2"></line>
-                            <line x1="16" y1="6" x2="18" y2="3"></line>
-                            <line x1="8" y1="6" x2="6" y2="3"></line>
-                        </svg>
-                        眼控輔具
+                        <i class="fa-solid fa-bell"></i> 叫人鈴及連絡盒
                     </h3>
                 </div>
                 <div class="submenu-content">
