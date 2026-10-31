@@ -117,17 +117,27 @@ ${JSON.stringify(knowledge, null, 2)}
             geminiData = data;
             break;
           } else if (data.error) {
-            lastErrorMessage = data.error.message;
-            console.warn(`Model ${model} failed:`, data.error.message);
+            lastErrorMessage = data.error.message || JSON.stringify(data.error);
+            console.warn(`Model ${model} failed:`, lastErrorMessage);
           }
         } catch (e) {
           lastErrorMessage = e.message;
         }
       }
 
+      // 若未取得有效回覆（包含配額額度用盡或頻率限制）
       if (!geminiData) {
-        return new Response(JSON.stringify({ error: `Gemini API 錯誤: ${lastErrorMessage || "無法取得模型回應"}` }), {
-          status: 500,
+        const isQuotaExceeded = lastErrorMessage.includes("quota") || 
+                                lastErrorMessage.includes("Resource has been exhausted") || 
+                                lastErrorMessage.includes("429") ||
+                                lastErrorMessage.includes("RESOURCE_EXHAUSTED") ||
+                                lastErrorMessage.includes("Rate limit");
+
+        const friendlyMessage = isQuotaExceeded
+          ? "💡 目前線上諮詢人數較多或今日免費額度已達上限，請稍候片刻再試，或歡迎直接點選選單瀏覽各項輔具詳細說明喔！"
+          : "💡 目前線上諮詢服務連線稍忙碌，請稍候片刻再試，或歡迎直接瀏覽相關網頁完整說明喔！";
+
+        return new Response(JSON.stringify({ reply: friendlyMessage }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" }
         });
       }

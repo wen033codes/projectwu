@@ -242,7 +242,14 @@
       document.getElementById(loadingId).remove();
 
       if (data.error) {
-        messagesBox.innerHTML += `<div class="pjwu-msg pjwu-msg-bot" style="color:#b91c1c;">服務提示：${data.error}</div>`;
+        const isQuota = data.error.includes("quota") || 
+                        data.error.includes("Resource has been exhausted") || 
+                        data.error.includes("429") ||
+                        data.error.includes("RESOURCE_EXHAUSTED");
+        const friendlyNotice = isQuota
+          ? "💡 目前線上諮詢人數較多或今日免費額度已達上限，請稍候片刻再試，或歡迎直接點選選單瀏覽各項輔具詳細說明喔！"
+          : `💡 服務提示：${data.error}`;
+        messagesBox.innerHTML += `<div class="pjwu-msg pjwu-msg-bot">${friendlyNotice}</div>`;
         return;
       }
 
