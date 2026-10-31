@@ -2,3 +2,12 @@ name = "pjwu-ai-chat"
 main = "src/index.js"
 compatibility_date = "2024-11-01"
 
+[ai]
+binding = "AI"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "pjwu-chat-db"
+database_id = "1cc0ce32-4a4b-499e-9ac5-4f032cfa438b"
+
+
