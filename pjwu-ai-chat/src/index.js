@@ -3,7 +3,7 @@ import knowledge from './knowledge.json';
 // 預設 Master Token（使用者可透過 npx wrangler secret put MASTER_TOKEN 隨時覆蓋）
 const DEFAULT_MASTER_TOKEN = "pjwu-master-2026-safe-token-89f4b";
 
-// 後台管理 HTML 介面產生器（含 Master Token 設備綁定授權防護）
+// 後台管理 HTML 介面產生器（含 Master Token 設備綁定與訪客設備/瀏覽器/IP解析展示）
 function renderAdminHtml() {
   return `<!DOCTYPE html>
 <html lang="zh-TW">
@@ -51,11 +51,7 @@ function renderAdminHtml() {
       box-shadow: 0 10px 25px rgba(0,0,0,0.06);
       text-align: center;
     }
-    .auth-icon {
-      font-size: 48px;
-      margin-bottom: 12px;
-      display: inline-block;
-    }
+    .auth-icon { font-size: 48px; margin-bottom: 12px; display: inline-block; }
     .auth-title { font-size: 20px; font-weight: 700; color: #4c1d95; margin-bottom: 8px; }
     .auth-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
     .form-group { text-align: left; margin-bottom: 16px; }
@@ -181,6 +177,7 @@ function renderAdminHtml() {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      align-items: center;
       gap: 10px;
       font-size: 12px;
       color: var(--text-muted);
@@ -188,8 +185,17 @@ function renderAdminHtml() {
       padding-bottom: 10px;
       border-bottom: 1px solid #f1f5f9;
     }
+    .client-tags {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
     .badge {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
       padding: 2px 8px;
       border-radius: 6px;
       font-size: 11px;
@@ -198,6 +204,9 @@ function renderAdminHtml() {
     .badge-gemini { background: #ede9fe; color: #6d28d9; }
     .badge-cf { background: #ffedd5; color: #c2410c; }
     .badge-fallback { background: #fee2e2; color: #b91c1c; }
+    .badge-client { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; font-weight: 500; }
+    .badge-ip { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; font-weight: 500; }
+
     .msg-section { margin-bottom: 10px; }
     .msg-label {
       font-size: 12px;
@@ -298,7 +307,7 @@ function renderAdminHtml() {
       <header>
         <div>
           <h1>🤖 AI 客服對話紀錄管理後台</h1>
-          <p style="font-size:13px;color:var(--text-muted);margin-top:4px;">DIY 無障礙輔具網站對話歷史與模型使用統計</p>
+          <p style="font-size:13px;color:var(--text-muted);margin-top:4px;">DIY 無障礙輔具網站對話歷史、訪客連線設備與模型統計</p>
         </div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
           <span class="device-pill" id="current-device-label">🟢 已授權設備</span>
@@ -328,7 +337,7 @@ function renderAdminHtml() {
       </div>
 
       <div class="controls">
-        <input type="text" id="search-input" class="search-input" placeholder="🔍 搜尋提問關鍵字或回覆內容..." />
+        <input type="text" id="search-input" class="search-input" placeholder="🔍 搜尋提問關鍵字、回覆內容、IP 或系統/瀏覽器..." />
         <button class="btn btn-primary" onclick="loadLogs(1)">搜尋 / 重新整理</button>
       </div>
 
@@ -368,6 +377,35 @@ function renderAdminHtml() {
 
     function getDeviceToken() {
       return localStorage.getItem(STORAGE_KEY) || "";
+    }
+
+    // 解析 User-Agent 的作業系統與瀏覽器
+    function parseClientUa(ua) {
+      if (!ua) return { os: "未知系統", browser: "未知瀏覽器", deviceType: "設備" };
+
+      let os = "其他系統";
+      if (/windows nt 10/i.test(ua)) os = "Windows 10/11";
+      else if (/windows nt 6\.3/i.test(ua)) os = "Windows 8.1";
+      else if (/windows nt 6\.1/i.test(ua)) os = "Windows 7";
+      else if (/iphone/i.test(ua)) os = "iPhone (iOS)";
+      else if (/ipad/i.test(ua)) os = "iPad (iPadOS)";
+      else if (/macintosh|mac os x/i.test(ua)) os = "macOS";
+      else if (/android/i.test(ua)) os = "Android";
+      else if (/linux/i.test(ua)) os = "Linux";
+
+      let browser = "其他瀏覽器";
+      if (/edg/i.test(ua)) browser = "Microsoft Edge";
+      else if (/line/i.test(ua)) browser = "LINE 內建瀏覽器";
+      else if (/fban|fbav/i.test(ua)) browser = "FB 內建瀏覽器";
+      else if (/chrome|crios/i.test(ua) && !/edg/i.test(ua)) browser = "Google Chrome";
+      else if (/safari/i.test(ua) && !/chrome|crios/i.test(ua)) browser = "Apple Safari";
+      else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
+
+      let deviceType = "💻 電腦";
+      if (/mobile|iphone|android.*mobile/i.test(ua)) deviceType = "📱 手機";
+      else if (/ipad|tablet|android(?!.*mobile)/i.test(ua)) deviceType = "平板";
+
+      return { os, browser, deviceType };
     }
 
     // 檢查設備綁定狀態
@@ -507,15 +545,26 @@ function renderAdminHtml() {
           else if (item.provider?.includes('fallback')) badgeClass = 'badge-fallback';
 
           const timeStr = formatUtcToTaipei(item.created_at);
+          const clientInfo = parseClientUa(item.user_agent);
+
+          // 地區資訊組合
+          let geoInfo = '';
+          if (item.client_city || item.client_country) {
+            geoInfo = \`(\${[item.client_city, item.client_country].filter(Boolean).join(', ')})\`;
+          }
 
           html += \`
             <div class="log-card">
               <div class="log-meta">
-                <span>🕒 <strong>\${timeStr}</strong> (UTC+8)</span>
-                <span>
-                  <span class="badge \${badgeClass}">\${item.provider || '未知模型'}</span>
-                  \${item.client_ip ? \`<span style="margin-left:8px;">IP: \${item.client_ip}</span>\` : ''}
-                </span>
+                <div>
+                  🕒 <strong>\${timeStr}</strong> (UTC+8)
+                  <span class="badge \${badgeClass}" style="margin-left:8px;">\${item.provider || '未知模型'}</span>
+                </div>
+                <div class="client-tags">
+                  \${item.client_ip ? \`<span class="badge badge-ip" title="訪客連線 IP">🌐 \${item.client_ip} \${geoInfo}</span>\` : ''}
+                  <span class="badge badge-client" title="訪客作業系統與設備">💻 \${clientInfo.deviceType} · \${clientInfo.os}</span>
+                  <span class="badge badge-client" title="訪客瀏覽器">🧭 \${clientInfo.browser}</span>
+                </div>
               </div>
               <div class="msg-section">
                 <div class="msg-label">👤 訪客提問：</div>
@@ -566,6 +615,7 @@ function renderAdminHtml() {
         let html = '';
         devices.forEach(d => {
           const isCurrent = d.device_id === currentToken;
+          const devInfo = parseClientUa(d.user_agent);
           html += \`
             <div class="device-item">
               <div>
@@ -573,6 +623,9 @@ function renderAdminHtml() {
                   \${escapeHtml(d.device_name)} \${isCurrent ? '<span style="color:#059669;font-size:12px;">(目前這台設備)</span>' : ''}
                 </div>
                 <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">
+                  \${devInfo.deviceType} · \${devInfo.os} · \${devInfo.browser}
+                </div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">
                   綁定時間：\${formatUtcToTaipei(d.created_at)} | 最近使用：\${formatUtcToTaipei(d.last_used_at)}
                 </div>
               </div>
@@ -746,7 +799,7 @@ export default {
       }
 
       const list = await env.DB.prepare(
-        "SELECT id, device_id, device_name, client_ip, created_at, last_used_at FROM authorized_devices ORDER BY id DESC"
+        "SELECT id, device_id, device_name, client_ip, user_agent, created_at, last_used_at FROM authorized_devices ORDER BY id DESC"
       ).all();
 
       return new Response(JSON.stringify(list.results || []), {
@@ -798,9 +851,9 @@ export default {
         const params = [];
 
         if (search) {
-          countSql += " WHERE user_message LIKE ? OR ai_reply LIKE ?";
-          querySql += " WHERE user_message LIKE ? OR ai_reply LIKE ?";
-          params.push(`%${search}%`, `%${search}%`);
+          countSql += " WHERE user_message LIKE ? OR ai_reply LIKE ? OR client_ip LIKE ? OR user_agent LIKE ?";
+          querySql += " WHERE user_message LIKE ? OR ai_reply LIKE ? OR client_ip LIKE ? OR user_agent LIKE ?";
+          params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
         }
 
         querySql += " ORDER BY id DESC LIMIT ? OFFSET ?";
@@ -1031,20 +1084,22 @@ ${JSON.stringify(knowledge, null, 2)}
       }
 
       // ============================================================
-      // 步驟 4：記錄對話紀錄至 Cloudflare D1，並在儲存時自動檢查並清理過期紀錄（保留30天/1個月）
+      // 步驟 4：記錄對話紀錄至 Cloudflare D1（含訪客連線 IP、國家/城市、User-Agent 等完整資訊）
       // 使用 ctx.waitUntil 非阻塞執行，完全不增加訪客等待 AI 回應的時間
       // ============================================================
       if (env.DB) {
         const clientIp = request.headers.get("cf-connecting-ip") || request.headers.get("x-real-ip") || "unknown";
         const userAgent = request.headers.get("user-agent") || "unknown";
+        const clientCountry = request.cf?.country || "";
+        const clientCity = request.cf?.city || "";
 
         const saveAndCleanupTask = (async () => {
           try {
-            // 1. 寫入新紀錄
+            // 1. 寫入新紀錄（含 IP、國家、城市、User-Agent）
             await env.DB.prepare(
-              `INSERT INTO chat_logs (user_message, ai_reply, provider, client_ip, user_agent, created_at)
-               VALUES (?, ?, ?, ?, ?, datetime('now'))`
-            ).bind(message, replyText, usedProvider, clientIp, userAgent).run();
+              `INSERT INTO chat_logs (user_message, ai_reply, provider, client_ip, user_agent, client_country, client_city, created_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))`
+            ).bind(message, replyText, usedProvider, clientIp, userAgent, clientCountry, clientCity).run();
 
             // 2. 自動檢查並刪除超過 30 天（一個月）的舊紀錄
             await env.DB.prepare(
