@@ -410,24 +410,21 @@ function renderAdminHtml() {
       <!-- 📅 自動日期分組與點選切換列 -->
       <div class="date-nav-section">
         <div class="date-nav-header">
-          <span>📅 點選日期切換當日紀錄：</span>
+          <span>📅 請點選日期切換當日紀錄：</span>
           <span id="date-count-summary" style="font-size:12px;color:var(--text-muted);">載入中...</span>
         </div>
         <div class="date-tabs-container" id="date-tabs-bar">
-          <!-- 動態產生各日期標籤按鈕 -->
-          <button class="date-tab-btn active" onclick="selectDate('')">
-            🌟 全部紀錄 <span class="date-badge" id="tab-badge-all">-</span>
-          </button>
+          <div style="font-size:13px;color:var(--text-muted);padding:6px 0;">正在載入可用日期...</div>
         </div>
       </div>
 
       <!-- 搜尋與當日標題列 -->
       <div class="controls">
         <div class="current-date-heading" id="current-filter-label">
-          <span>📋 正在檢視：全部紀錄</span>
+          <span>📅 載入當日紀錄中...</span>
         </div>
         <div style="display:flex;gap:8px;flex:1;max-width:550px;">
-          <input type="text" id="search-input" class="search-input" placeholder="🔍 搜尋提問關鍵字、回覆內容、IP 或系統/瀏覽器..." />
+          <input type="text" id="search-input" class="search-input" placeholder="🔍 搜尋當日提問、回覆、IP 或系統/瀏覽器..." />
           <button class="btn btn-primary" onclick="loadLogs(1)">搜尋</button>
         </div>
       </div>
@@ -604,13 +601,9 @@ function renderAdminHtml() {
 
     // 切換點選的日期
     function selectDate(dateStr) {
+      if (selectedDate === dateStr) return;
       selectedDate = dateStr;
-      const labelEl = document.getElementById("current-filter-label");
-      if (dateStr) {
-        labelEl.innerHTML = \`<span>📅 正在檢視當日紀錄：<strong>\${dateStr}</strong></span>\`;
-      } else {
-        labelEl.innerHTML = '<span>📋 正在檢視：全部紀錄</span>';
-      }
+      updateFilterLabel();
 
       // 更新日期標籤 active 樣式
       document.querySelectorAll(".date-tab-btn").forEach(btn => {
@@ -625,18 +618,25 @@ function renderAdminHtml() {
       loadLogs(1);
     }
 
-    // 渲染日期切換按鈕列
-    function renderDateTabs(availableDates = [], totalCount = 0) {
+    // 渲染日期切換按鈕列（完全依日期區分，不包含全部紀錄）
+    function renderDateTabs(availableDates = []) {
       const tabsBar = document.getElementById("date-tabs-bar");
-      document.getElementById("tab-badge-all").innerText = totalCount;
-      document.getElementById("date-count-summary").innerText = \`共涵蓋 \${availableDates.length} 個有紀錄的日期\`;
+      const summaryEl = document.getElementById("date-count-summary");
+      if (summaryEl) {
+        summaryEl.innerText = \`共 \${availableDates.length} 個有紀錄的日期\`;
+      }
 
-      let html = \`
-        <button class="date-tab-btn \${selectedDate === '' ? 'active' : ''}" data-date="" onclick="selectDate('')">
-          🌟 全部紀錄 <span class="date-badge">\${totalCount}</span>
-        </button>
-      \`;
+      if (!availableDates || availableDates.length === 0) {
+        if (tabsBar) tabsBar.innerHTML = '<div style="font-size:13px;color:var(--text-muted);padding:6px 0;">尚無任何日期的對話紀錄。</div>';
+        return;
+      }
 
+      // 如果尚未選定日期，預設選取最新有紀錄的那一天
+      if (!selectedDate && availableDates.length > 0) {
+        selectedDate = availableDates[0].log_date;
+      }
+
+      let html = '';
       availableDates.forEach(d => {
         const isActive = selectedDate === d.log_date;
         html += \`
@@ -646,7 +646,17 @@ function renderAdminHtml() {
         \`;
       });
 
-      tabsBar.innerHTML = html;
+      if (tabsBar) tabsBar.innerHTML = html;
+      updateFilterLabel();
+    }
+
+    function updateFilterLabel() {
+      const labelEl = document.getElementById("current-filter-label");
+      if (labelEl) {
+        labelEl.innerHTML = selectedDate
+          ? \`<span>📅 正在檢視當日紀錄：<strong>\${selectedDate}</strong></span>\`
+          : '<span>📅 請點選上方日期檢視當日紀錄</span>';
+      }
     }
 
     // 載入對話紀錄
@@ -673,9 +683,17 @@ function renderAdminHtml() {
         document.getElementById("stat-gemini").innerText = data.stats?.geminiCount || 0;
         document.getElementById("stat-cf").innerText = data.stats?.cfCount || 0;
 
+        // 若尚未設定 selectedDate 且 API 回傳了可用日期，自動指定最新日期並重新載入該日
+        if (!selectedDate && data.availableDates && data.availableDates.length > 0) {
+          selectedDate = data.availableDates[0].log_date;
+          renderDateTabs(data.availableDates);
+          loadLogs(1);
+          return;
+        }
+
         // 渲染日期選單列
         if (data.availableDates) {
-          renderDateTabs(data.availableDates, data.totalAll || data.total || 0);
+          renderDateTabs(data.availableDates);
         }
 
         if (!data.items || data.items.length === 0) {
