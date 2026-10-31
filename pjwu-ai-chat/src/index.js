@@ -1,23 +1,28 @@
 import knowledge from './knowledge.json';
 
-// 後台管理 HTML 介面產生器
+// 預設 Master Token（使用者可透過 npx wrangler secret put MASTER_TOKEN 隨時覆蓋）
+const DEFAULT_MASTER_TOKEN = "pjwu-master-2026-safe-token-89f4b";
+
+// 後台管理 HTML 介面產生器（含 Master Token 設備綁定授權防護）
 function renderAdminHtml() {
   return `<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI 客服對話紀錄管理後台</title>
+  <title>AI 客服紀錄管理後台 - 設備授權安全版</title>
   <link rel="icon" href="https://wen033codes.github.io/favicon.png" type="image/png">
   <style>
     :root {
       --primary: #7c3aed;
+      --primary-hover: #6d28d9;
       --primary-light: #f5f3ff;
       --border: #e2e8f0;
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text-main: #1e293b;
       --text-muted: #64748b;
+      --danger: #ef4444;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -27,10 +32,47 @@ function renderAdminHtml() {
       padding: 24px 16px;
       line-height: 1.5;
     }
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    /* 設備綁定鎖定視窗 */
+    .auth-overlay {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 70vh;
     }
+    .auth-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+    .auth-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+    .auth-title { font-size: 20px; font-weight: 700; color: #4c1d95; margin-bottom: 8px; }
+    .auth-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
+    .form-group { text-align: left; margin-bottom: 16px; }
+    .form-label { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px; display: block; }
+    .form-control {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus { border-color: var(--primary); }
+
+    /* 主後台視圖 */
+    #dashboard-view { display: none; }
     header {
       display: flex;
       flex-wrap: wrap;
@@ -47,6 +89,18 @@ function renderAdminHtml() {
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+    .device-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
     }
     .stats-bar {
       display: grid;
@@ -95,9 +149,12 @@ function renderAdminHtml() {
       transition: all 0.2s;
     }
     .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover { background: #6d28d9; }
+    .btn-primary:hover { background: var(--primary-hover); }
     .btn-secondary { background: #f1f5f9; color: var(--text-main); border: 1px solid var(--border); }
     .btn-secondary:hover { background: #e2e8f0; }
+    .btn-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+    .btn-danger:hover { background: #fecaca; }
+
     .notice {
       font-size: 13px;
       color: #059669;
@@ -168,79 +225,271 @@ function renderAdminHtml() {
       margin-top: 24px;
       align-items: center;
     }
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-muted);
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+
+    /* 設備列表 Modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.4);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-box {
+      background: white;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 550px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-header h3 { font-size: 18px; color: #4c1d95; }
+    .modal-close { cursor: pointer; font-size: 20px; color: var(--text-muted); }
+    .device-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <div>
-        <h1>🤖 AI 客服對話紀錄查詢</h1>
-        <p style="font-size:13px;color:var(--text-muted);margin-top:4px;">DIY 無障礙輔具網站對話歷史與模型使用統計</p>
-      </div>
-      <div>
-        <a href="https://wen033codes.github.io" target="_blank" style="text-decoration:none;">
-          <button class="btn btn-secondary">🌐 返回網站首頁</button>
-        </a>
-      </div>
-    </header>
 
-    <div class="notice">
-      ℹ️ <strong>資料庫儲存維護規則：</strong>
-      系統在每一次儲存新對話時，會自動檢查並清除超過 <strong>30 天（一個月）</strong> 的過期紀錄，確保資料庫維持最佳容量，完全免人工與免伺服器排程。
-    </div>
+    <!-- 1. 設備綁定與授權區塊（未綁定設備時顯示） -->
+    <div id="auth-view" class="auth-overlay">
+      <div class="auth-card">
+        <div class="auth-icon">🛡️</div>
+        <h2 class="auth-title">設備授權與綁定</h2>
+        <p class="auth-desc">本後台受 Master Token 安全防護。<br>請輸入管理員 Master Token 將目前設備完成綁定授權，日後此設備即可直接免密存取。</p>
+        
+        <div class="form-group">
+          <label class="form-label" for="inp-master-token">Master Token：</label>
+          <input type="password" id="inp-master-token" class="form-control" placeholder="請輸入安全 Master Token" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inp-device-name">此設備備註名稱：</label>
+          <input type="text" id="inp-device-name" class="form-control" placeholder="例如：我的 iPhone、辦公室桌機" value="我的常用設備" />
+        </div>
 
-    <div class="stats-bar">
-      <div class="stat-card">
-        <div class="stat-title">總對話紀錄數（30天內）</div>
-        <div id="stat-total" class="stat-val">-</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">Gemini API 調用次數</div>
-        <div id="stat-gemini" class="stat-val" style="color:#7c3aed;">-</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">Workers AI 備援調用次數</div>
-        <div id="stat-cf" class="stat-val" style="color:#ea580c;">-</div>
+        <button id="btn-bind" class="btn btn-primary" style="width:100%;padding:11px;" onclick="bindCurrentDevice()">
+          🔐 驗證並綁定此設備
+        </button>
+        <div id="auth-error" style="color:var(--danger);font-size:13px;margin-top:12px;display:none;"></div>
       </div>
     </div>
 
-    <div class="controls">
-      <input type="text" id="search-input" class="search-input" placeholder="🔍 搜尋提問關鍵字或回覆內容..." />
-      <button class="btn btn-primary" onclick="loadLogs(1)">搜尋 / 重新整理</button>
+    <!-- 2. 主儀表板視圖（綁定成功的設備才能進入） -->
+    <div id="dashboard-view">
+      <header>
+        <div>
+          <h1>🤖 AI 客服對話紀錄管理後台</h1>
+          <p style="font-size:13px;color:var(--text-muted);margin-top:4px;">DIY 無障礙輔具網站對話歷史與模型使用統計</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="device-pill" id="current-device-label">🟢 已授權設備</span>
+          <button class="btn btn-secondary" onclick="openDevicesModal()">📱 授權設備清單</button>
+          <button class="btn btn-danger" onclick="unbindCurrentDevice()">登出/解除綁定</button>
+        </div>
+      </header>
+
+      <div class="notice">
+        ℹ️ <strong>自動容量清理維護：</strong>
+        系統於每次寫入新對話時，會自動檢查並刪除超過 <strong>30 天（一個月）</strong> 的紀錄，免維護、免排程且不佔額外資料庫容量。
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-title">總對話紀錄數（30天內）</div>
+          <div id="stat-total" class="stat-val">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Gemini API 調用次數</div>
+          <div id="stat-gemini" class="stat-val" style="color:#7c3aed;">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Workers AI 備援次數</div>
+          <div id="stat-cf" class="stat-val" style="color:#ea580c;">-</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <input type="text" id="search-input" class="search-input" placeholder="🔍 搜尋提問關鍵字或回覆內容..." />
+        <button class="btn btn-primary" onclick="loadLogs(1)">搜尋 / 重新整理</button>
+      </div>
+
+      <div id="logs-list">
+        <div class="empty-state">資料載入中...</div>
+      </div>
+
+      <div class="pagination" id="pagination-bar" style="display:none;">
+        <button id="btn-prev" class="btn btn-secondary" onclick="changePage(-1)">上一頁</button>
+        <span id="page-info" style="font-size:14px;color:var(--text-muted);">第 1 頁</span>
+        <button id="btn-next" class="btn btn-secondary" onclick="changePage(1)">下一頁</button>
+      </div>
     </div>
 
-    <div id="logs-list">
-      <div class="empty-state">資料載入中...</div>
+    <!-- 3. 已授權設備管理彈窗 -->
+    <div id="devices-modal" class="modal-backdrop">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3>📱 已綁定授權的設備列表</h3>
+          <span class="modal-close" onclick="closeDevicesModal()">✕</span>
+        </div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">
+          以下是目前通過 Master Token 授權可查閱紀錄的設備。若設備遺失或不再使用，可隨時撤銷其權限：
+        </p>
+        <div id="devices-list" style="max-height:300px;overflow-y:auto;">
+          資料載入中...
+        </div>
+      </div>
     </div>
 
-    <div class="pagination" id="pagination-bar" style="display:none;">
-      <button id="btn-prev" class="btn btn-secondary" onclick="changePage(-1)">上一頁</button>
-      <span id="page-info" style="font-size:14px;color:var(--text-muted);">第 1 頁</span>
-      <button id="btn-next" class="btn btn-secondary" onclick="changePage(1)">下一頁</button>
-    </div>
   </div>
 
   <script>
+    const STORAGE_KEY = "pjwu_device_token";
     let currentPage = 1;
     const pageSize = 20;
 
+    function getDeviceToken() {
+      return localStorage.getItem(STORAGE_KEY) || "";
+    }
+
+    // 檢查設備綁定狀態
+    async function checkDeviceAuth() {
+      const token = getDeviceToken();
+      if (!token) {
+        showAuthView();
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/auth/check", {
+          headers: { "x-device-token": token }
+        });
+        const data = await res.json();
+        if (data.valid) {
+          showDashboard(data.deviceName);
+          loadLogs(1);
+        } else {
+          localStorage.removeItem(STORAGE_KEY);
+          showAuthView("此設備授權已失效或已被撤銷，請重新輸入 Master Token 進行綁定。");
+        }
+      } catch (err) {
+        showAuthView("驗證設備狀態失敗，請稍候再試。");
+      }
+    }
+
+    // 執行設備綁定
+    async function bindCurrentDevice() {
+      const masterToken = document.getElementById("inp-master-token").value.trim();
+      const deviceName = document.getElementById("inp-device-name").value.trim() || "未命名設備";
+      const errEl = document.getElementById("auth-error");
+      const btn = document.getElementById("btn-bind");
+
+      if (!masterToken) {
+        errEl.innerText = "請輸入 Master Token！";
+        errEl.style.display = "block";
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = "綁定驗證中...";
+      errEl.style.display = "none";
+
+      try {
+        const res = await fetch("/api/auth/bind", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ masterToken, deviceName })
+        });
+        const data = await res.json();
+
+        if (data.success && data.deviceId) {
+          localStorage.setItem(STORAGE_KEY, data.deviceId);
+          showDashboard(data.deviceName);
+          loadLogs(1);
+        } else {
+          errEl.innerText = data.error || "Master Token 不正確，驗證失敗！";
+          errEl.style.display = "block";
+        }
+      } catch (e) {
+        errEl.innerText = "連線驗證發生異常：" + e.message;
+        errEl.style.display = "block";
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "🔐 驗證並綁定此設備";
+      }
+    }
+
+    // 解除目前設備綁定 / 登出
+    async function unbindCurrentDevice() {
+      if (!confirm("確定要將目前此設備解除綁定並登出嗎？解除後需重新輸入 Master Token 才能存取。")) return;
+      const token = getDeviceToken();
+      if (token) {
+        try {
+          await fetch("/api/devices/revoke", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "x-device-token": token },
+            body: JSON.stringify({ deviceId: token })
+          });
+        } catch (_) {}
+      }
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    }
+
+    function showAuthView(errorMsg) {
+      document.getElementById("auth-view").style.display = "flex";
+      document.getElementById("dashboard-view").style.display = "none";
+      if (errorMsg) {
+        const errEl = document.getElementById("auth-error");
+        errEl.innerText = errorMsg;
+        errEl.style.display = "block";
+      }
+    }
+
+    function showDashboard(deviceName) {
+      document.getElementById("auth-view").style.display = "none";
+      document.getElementById("dashboard-view").style.display = "block";
+      document.getElementById("current-device-label").innerText = "🟢 已授權設備：" + (deviceName || "本機");
+    }
+
+    // 載入對話紀錄
     async function loadLogs(page = 1) {
       currentPage = page;
+      const token = getDeviceToken();
       const search = document.getElementById("search-input").value.trim();
       const listEl = document.getElementById("logs-list");
       listEl.innerHTML = '<div class="empty-state">資料載入中...</div>';
 
       try {
         const queryParams = new URLSearchParams({ page, pageSize, search });
-        const res = await fetch('/api/logs?' + queryParams.toString());
-        const data = await res.json();
+        const res = await fetch('/api/logs?' + queryParams.toString(), {
+          headers: { "x-device-token": token }
+        });
 
-        // 更新統計卡片
+        if (res.status === 401) {
+          showAuthView("授權過期或未授權，請重新驗證 Master Token。");
+          return;
+        }
+
+        const data = await res.json();
         document.getElementById("stat-total").innerText = data.total || 0;
         document.getElementById("stat-gemini").innerText = data.stats?.geminiCount || 0;
         document.getElementById("stat-cf").innerText = data.stats?.cfCount || 0;
@@ -281,7 +530,6 @@ function renderAdminHtml() {
         });
         listEl.innerHTML = html;
 
-        // 分頁控制
         const totalPages = Math.ceil(data.total / pageSize) || 1;
         document.getElementById("page-info").innerText = \`第 \${currentPage} / \${totalPages} 頁 (共 \${data.total} 筆)\`;
         document.getElementById("btn-prev").disabled = currentPage <= 1;
@@ -295,6 +543,74 @@ function renderAdminHtml() {
 
     function changePage(delta) {
       loadLogs(currentPage + delta);
+    }
+
+    // 授權設備管理彈窗
+    async function openDevicesModal() {
+      const modal = document.getElementById("devices-modal");
+      const listEl = document.getElementById("devices-list");
+      modal.style.display = "flex";
+      listEl.innerHTML = "載入設備清單中...";
+
+      try {
+        const res = await fetch("/api/devices", {
+          headers: { "x-device-token": getDeviceToken() }
+        });
+        const devices = await res.json();
+        if (!devices || devices.length === 0) {
+          listEl.innerHTML = '<div style="color:var(--text-muted);padding:10px;">目前尚無已綁定設備。</div>';
+          return;
+        }
+
+        const currentToken = getDeviceToken();
+        let html = '';
+        devices.forEach(d => {
+          const isCurrent = d.device_id === currentToken;
+          html += \`
+            <div class="device-item">
+              <div>
+                <div style="font-weight:600;font-size:14px;">
+                  \${escapeHtml(d.device_name)} \${isCurrent ? '<span style="color:#059669;font-size:12px;">(目前這台設備)</span>' : ''}
+                </div>
+                <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">
+                  綁定時間：\${formatUtcToTaipei(d.created_at)} | 最近使用：\${formatUtcToTaipei(d.last_used_at)}
+                </div>
+              </div>
+              <div>
+                <button class="btn btn-danger" style="font-size:12px;padding:4px 10px;" onclick="revokeDevice('\${d.device_id}')">
+                  \${isCurrent ? '解除本機' : '撤銷授權'}
+                </button>
+              </div>
+            </div>
+          \`;
+        });
+        listEl.innerHTML = html;
+      } catch (e) {
+        listEl.innerHTML = '<div style="color:#ef4444;">載入設備列表失敗：' + e.message + '</div>';
+      }
+    }
+
+    async function revokeDevice(deviceId) {
+      if (!confirm("確定要撤銷此設備的授權嗎？該設備往後將無法查閱紀錄。")) return;
+      try {
+        await fetch("/api/devices/revoke", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-device-token": getDeviceToken() },
+          body: JSON.stringify({ deviceId })
+        });
+        if (deviceId === getDeviceToken()) {
+          localStorage.removeItem(STORAGE_KEY);
+          location.reload();
+        } else {
+          openDevicesModal();
+        }
+      } catch (e) {
+        alert("撤銷失敗：" + e.message);
+      }
+    }
+
+    function closeDevicesModal() {
+      document.getElementById("devices-modal").style.display = "none";
     }
 
     function formatUtcToTaipei(utcString) {
@@ -313,11 +629,29 @@ function renderAdminHtml() {
       if (e.key === "Enter") loadLogs(1);
     });
 
-    // 初始載入
-    loadLogs(1);
+    document.getElementById("inp-master-token").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") bindCurrentDevice();
+    });
+
+    // 網頁載入時檢查設備綁定狀態
+    checkDeviceAuth();
   </script>
 </body>
 </html>`;
+}
+
+// 輔助函式：檢查設備 Token 是否有效
+async function verifyDeviceToken(db, token) {
+  if (!db || !token) return null;
+  const row = await db.prepare(
+    "SELECT id, device_id, device_name FROM authorized_devices WHERE device_id = ?"
+  ).bind(token).first();
+  if (row) {
+    // 異步刷新最後使用時間
+    db.prepare("UPDATE authorized_devices SET last_used_at = datetime('now') WHERE id = ?").bind(row.id).run();
+    return row;
+  }
+  return null;
 }
 
 export default {
@@ -326,15 +660,17 @@ export default {
     const corsHeaders = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Headers": "Content-Type, x-device-token",
     };
 
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: corsHeaders });
     }
 
+    const masterToken = env.MASTER_TOKEN || DEFAULT_MASTER_TOKEN;
+
     // ============================================================
-    // 路由 1：後台管理介面（僅在 Worker 內部，不放在 GitHub Pages）
+    // 路由 1：後台管理介面（僅在 Worker 內部）
     // ============================================================
     if (request.method === "GET" && (url.pathname === "/logs" || url.pathname === "/admin/logs" || url.pathname === "/admin")) {
       return new Response(renderAdminHtml(), {
@@ -343,12 +679,110 @@ export default {
     }
 
     // ============================================================
-    // 路由 2：後台查詢 API（支援分頁與關鍵字搜尋）
+    // 路由 2：設備授權檢驗 API
+    // ============================================================
+    if (request.method === "GET" && url.pathname === "/api/auth/check") {
+      const token = request.headers.get("x-device-token") || url.searchParams.get("device_token");
+      const dev = await verifyDeviceToken(env.DB, token);
+      if (dev) {
+        return new Response(JSON.stringify({ valid: true, deviceName: dev.device_name }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      }
+      return new Response(JSON.stringify({ valid: false }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
+    }
+
+    // ============================================================
+    // 路由 3：設備綁定 API (需要 Master Token)
+    // ============================================================
+    if (request.method === "POST" && url.pathname === "/api/auth/bind") {
+      try {
+        const { masterToken: inputToken, deviceName = "未命名設備" } = await request.json();
+        if (!inputToken || inputToken !== masterToken) {
+          return new Response(JSON.stringify({ success: false, error: "Master Token 不正確" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" }
+          });
+        }
+
+        const clientIp = request.headers.get("cf-connecting-ip") || "unknown";
+        const userAgent = request.headers.get("user-agent") || "unknown";
+        const newDeviceId = "dev_" + crypto.randomUUID();
+
+        await env.DB.prepare(
+          `INSERT INTO authorized_devices (device_id, device_name, client_ip, user_agent, created_at, last_used_at)
+           VALUES (?, ?, ?, ?, datetime('now'), datetime('now'))`
+        ).bind(newDeviceId, deviceName, clientIp, userAgent).run();
+
+        return new Response(JSON.stringify({ 
+          success: true, 
+          deviceId: newDeviceId, 
+          deviceName 
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ success: false, error: err.message }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      }
+    }
+
+    // ============================================================
+    // 路由 4：授權設備清單 API（需已授權設備存取）
+    // ============================================================
+    if (request.method === "GET" && url.pathname === "/api/devices") {
+      const token = request.headers.get("x-device-token") || url.searchParams.get("device_token");
+      const dev = await verifyDeviceToken(env.DB, token);
+      if (!dev) {
+        return new Response(JSON.stringify({ error: "未授權設備" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      }
+
+      const list = await env.DB.prepare(
+        "SELECT id, device_id, device_name, client_ip, created_at, last_used_at FROM authorized_devices ORDER BY id DESC"
+      ).all();
+
+      return new Response(JSON.stringify(list.results || []), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
+    }
+
+    // ============================================================
+    // 路由 5：撤銷設備授權 API
+    // ============================================================
+    if (request.method === "POST" && url.pathname === "/api/devices/revoke") {
+      const token = request.headers.get("x-device-token");
+      const dev = await verifyDeviceToken(env.DB, token);
+      if (!dev) {
+        return new Response(JSON.stringify({ error: "未授權設備" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      }
+
+      const { deviceId } = await request.json();
+      await env.DB.prepare("DELETE FROM authorized_devices WHERE device_id = ?").bind(deviceId).run();
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
+    }
+
+    // ============================================================
+    // 路由 6：後台紀錄查詢 API（需已授權設備存取）
     // ============================================================
     if (request.method === "GET" && url.pathname === "/api/logs") {
-      if (!env.DB) {
-        return new Response(JSON.stringify({ error: "尚未綁定 Cloudflare D1 資料庫 (env.DB)" }), {
-          status: 500,
+      const token = request.headers.get("x-device-token") || url.searchParams.get("device_token");
+      const dev = await verifyDeviceToken(env.DB, token);
+      if (!dev) {
+        return new Response(JSON.stringify({ error: "此設備尚未授權或已失效，請先以 Master Token 進行綁定。" }), {
+          status: 401,
           headers: { ...corsHeaders, "Content-Type": "application/json" }
         });
       }
