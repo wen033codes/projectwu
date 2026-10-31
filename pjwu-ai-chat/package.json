@@ -1,0 +1,13 @@
+{
+  "name": "pjwu-ai-chat",
+  "version": "1.0.0",
+  "description": "AI Customer Service for DIY Assistive Technology using Cloudflare Workers & Workers AI",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^3.100.0"
+  }
+}

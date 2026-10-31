@@ -173,4 +173,11 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     });
+
+    // 自動加載 AI 客服小幫手 (chatbot.js)
+    if (!document.querySelector('script[src*="chatbot.js"]')) {
+        const chatScript = document.createElement('script');
+        chatScript.src = 'chatbot.js?t=' + Date.now();
+        document.body.appendChild(chatScript);
+    }
 });

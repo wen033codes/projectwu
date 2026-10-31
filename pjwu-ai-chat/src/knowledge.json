@@ -1,0 +1,261 @@
+{
+  "metadata": {
+    "site_name": "DIY智能家居改造及電腦、手機、平板操作輔具",
+    "author": "中華民國運動神經元疾病病友協會（漸凍人協會）會友 吳允成 (Projectwu)",
+    "mission": "讓身體不便的人不用花大錢、花時間等補助，就可以及時自己控制居家環境，操作設備、家電，使用電腦、手機、平板。",
+    "supported_devices": [
+      "電腦 (Windows / Mac)",
+      "手機與平板 (iOS / iPadOS / Android)",
+      "紅外線家電 (冷氣、電視、電扇等)",
+      "智慧音箱 (Apple HomePod、Google Nest)"
+    ]
+  },
+  "products": [
+    {
+      "id": "white-pigeon-bell",
+      "name": "小白鴿聲控叫人鈴",
+      "category": "語音呼叫 / 照護警示",
+      "target_users": "臥床、肢體無力、雙手無法按壓傳統呼叫鈴之病友。",
+      "wake_word": "你好，小白鴿",
+      "response_phrase": "在呢、請說",
+      "description": "純離線語音識別叫人鈴。使用者只要說出「你好，小白鴿」，接著說出「叫人鈴」或呼叫指令，即可透過5V繼電器驅動無線呼叫電鈴響起通知照顧者。免連網、保護隱私、反應即時。",
+      "components": [
+        "1路 5V 繼電器模組 1個",
+        "CI-03T (含喇叭、麥克風) 離線語音模組 1個",
+        "3.5mm 兩芯單聲道音源線(公頭) 1個",
+        "2.0mm(母) 轉 2.54mm(公) 杜邦線 3條",
+        "5V/1A 充電頭 1個",
+        "USB 電源線 1條",
+        "三永科藝無線電鈴 SDB-C01（發射器 + 接收器）"
+      ],
+      "manual_url": "dove-manual.html",
+      "features": [
+        "離線語音辨識",
+        "免手動按壓",
+        "低誤觸率",
+        "高響應速度"
+      ]
+    },
+    {
+      "id": "parrot-emergency-box",
+      "name": "小鸚鵡聲控緊急連絡盒",
+      "category": "緊急求救 / 電話撥打",
+      "target_users": "獨居、家中短暫無照護者在旁之行動不便病友。",
+      "wake_word": "你好小鸚鵡",
+      "response_phrase": "為您服務",
+      "description": "緊急語音求救輔具。喚醒小鸚鵡後，使用者只需說出語音命令，裝置會自動連動手機語音助理（Apple Siri 或 Google 助理）撥打 110（警察）、119（救護車/消防）或指定緊急聯絡人，同時可播放預錄的 10 秒個人身分與地址求救訊息。",
+      "components": [
+        "CI-03T / SU-03T 語音模組",
+        "音源轉接線",
+        "5V/1A 電源供應器",
+        "智慧手機 (支援 Siri 或 Google Assistant)"
+      ],
+      "manual_url": "parrot-manual.html",
+      "features": [
+        "聲控撥打 110 / 119",
+        "可預錄10秒求救身分與地址訊息",
+        "支援 Siri / Google 雙系統"
+      ]
+    },
+    {
+      "id": "puff-suck-mouse",
+      "name": "藍牙吹吸滑鼠",
+      "category": "全功能電腦操作滑鼠",
+      "target_users": "四肢完全癱瘓、頸部以下無法活動但嘴部控制良好之病友。",
+      "description": "透過吸管偵測微弱吹氣（Puff）與吸氣（Suck）訊號，搭配微控制器模擬滑鼠移動與按鍵點擊。能獨立控制電腦游標移動、點選左鍵、右鍵與拖曳，重拾自主使用電腦能力。",
+      "components": [
+        "吸管 1 根",
+        "氣壓感測模組 1 個",
+        "BBC micro:bit V2 1 片",
+        "KSB034 基礎擴充板 1 個",
+        "2.54mm(母) 轉 2.54mm(母) 杜邦線 4 條",
+        "USB-A to Micro USB 訊號線 1 條",
+        "5V/1A 充電頭 1 個",
+        "充電電池模組 (KS B040) 1 個（可選）"
+      ],
+      "github_repo": "https://github.com/wen033codes/BT-Puff-Suck-Mouse-Buttons.git",
+      "page_url": "puff-suck-mouse.html"
+    },
+    {
+      "id": "puff-suck-switch",
+      "name": "藍牙吹吸切換開關 (搭配 iOS 切換控制)",
+      "category": "平板/手機切換控制輔具",
+      "target_users": "無法手持或點選觸控螢幕之病友，透過吹氣吸氣操作 iPad 或 iPhone。",
+      "description": "利用 micro:bit 接收氣壓吹吸訊號，轉譯為藍牙 HID 開關訊號，完美配合 iOS / iPadOS 系統內建的「切換控制（Switch Control）」功能，實現自動掃描、點選 App、翻頁閱讀電子書、打字傳訊等操作。",
+      "components": [
+        "吸管 1 根",
+        "氣壓感測模組 1 個",
+        "2.54mm(母) 轉 2.54mm(母) 杜邦線 4 條",
+        "BBC micro:bit V2 1 片",
+        "KSB034 基礎擴充板"
+      ],
+      "github_repo": "https://github.com/wen033codes/BT-Blow-In-SW.git",
+      "page_url": "puff-suck-switch.html"
+    },
+    {
+      "id": "puff-suck-mouse-button",
+      "name": "藍牙吹吸滑鼠按鍵",
+      "category": "滑鼠點擊專用輔具",
+      "target_users": "能移動游標（如眼控儀、頭控滑鼠），但無法進行物理點擊的病友。",
+      "description": "獨立的吹吸點擊模組，吹氣為滑鼠左鍵、吸氣為滑鼠右鍵或雙擊，解決眼控滑鼠長時間凝視注視造成眼睛疲勞的問題。",
+      "components": [
+        "氣壓感測模組",
+        "micro:bit V2",
+        "吸管與杜邦線",
+        "擴充板"
+      ],
+      "page_url": "puff-suck-mouse-button.html"
+    },
+    {
+      "id": "orange-cat-mouse",
+      "name": "小橘喵藍牙聲控滑鼠",
+      "category": "語音控制滑鼠",
+      "target_users": "說話清楚但手部無力操作滑鼠、觸控板者。",
+      "description": "結合 SU-03T 離線語音辨識與 micro:bit 藍牙 HID 技術。病友透過簡潔口令（如「上、下、左、右、停、點擊、雙擊、右鍵」）即可聲控電腦游標精確移動與點選。",
+      "components": [
+        "BBC micro:bit V2 1 片",
+        "SU-03T (含喇叭、麥克風) 1 個",
+        "Micro USB 轉接板 1 個",
+        "KSB034 基礎擴充板 1 個",
+        "5V/1A 充電頭 1 個",
+        "USB-A 轉 Micro USB 1對2 電源線 1 條",
+        "2.0mm(母) 轉 2.54mm(母) 杜邦線 2 條",
+        "充電電池模組 (KS B040) 1 個（可選）"
+      ],
+      "github_repo": "https://github.com/wen033codes/BT-Voice-controlled.git",
+      "page_url": "orange-cat-mouse.html"
+    },
+    {
+      "id": "tadpole-switch",
+      "name": "小蝌蚪藍牙切換開關",
+      "category": "微動開關 / 切換控制",
+      "target_users": "手指或身體特定部位僅剩微弱力道者。",
+      "description": "極靈敏的微動開關輔具，可連接各式特殊按鈕（如輕觸按鍵、水銀開關等），透過 micro:bit 發射藍牙切換訊號，支援 iOS 切換控制或 Android 無障礙切換。",
+      "github_repo": "https://github.com/wen033codes/BT-switch-v1.git",
+      "page_url": "tadpole-switch.html"
+    },
+    {
+      "id": "tadpole-mouse-button",
+      "name": "小蝌蚪藍牙滑鼠按鍵",
+      "category": "輕量滑鼠按鍵",
+      "target_users": "微弱肢體力量點擊滑鼠需求者。",
+      "description": "支援單鍵、雙鍵等多種工作模式，可定義為滑鼠左鍵、右鍵、Enter鍵、拖曳等功能。",
+      "page_url": "tadpole-mouse-button.html"
+    },
+    {
+      "id": "cloud-leopard-mouse",
+      "name": "小雲豹藍牙雙鍵滑鼠",
+      "category": "雙按鍵滑鼠輔具",
+      "target_users": "僅能操控兩顆按鈕的肢障者。",
+      "description": "透過兩顆微動按鈕完成滑鼠方向輪替與點選，或設定為音量調整、網頁上下捲動等快捷操作。",
+      "github_repo": "https://github.com/wen033codes/BT-2-Button-Mouse.git",
+      "page_url": "cloud-leopard-mouse.html"
+    },
+    {
+      "id": "flying-squirrel-mouse",
+      "name": "小飛鼠藍牙穿戴式滑鼠",
+      "category": "姿態穿戴式滑鼠",
+      "target_users": "頭部或手部尚能微幅擺動，但無法抓握傳統滑鼠者。",
+      "description": "利用 micro:bit 內建的加速度感測器與陀螺儀偵測頭部或肢體姿態微動，即時對應游標座標移動，搭配輕微點頭或外接開關點擊。",
+      "github_repo": "https://github.com/wen033codes/BT-Wearable-Mouse.git",
+      "page_url": "flying-squirrel-mouse.html"
+    },
+    {
+      "id": "husky",
+      "name": "哈士奇眼控叫人鈴",
+      "category": "眼控感測 / 照護呼叫",
+      "target_users": "全身癱瘓、無法發聲說話，僅能轉動眼球之重度漸凍人病友。",
+      "description": "使用 HUSKYLENS2 (哈士奇AI鏡頭) 偵測眼睛「看左」或「看右」的特定眼球視線動作，由 Arduino Nano 或 micro:bit 進行智慧判斷，過濾眨眼等自然生理雜訊，確認後觸發蜂鳴器嗶聲或繼電器啟動叫人鈴。",
+      "components": [
+        "HUSKYLENS 2 (AI 鏡頭) 1 台",
+        "Gravity-4P 感測器連接線 1 條",
+        "BBC micro:bit V2 或 Arduino Nano V3",
+        "KSB034 擴充板 或 繼電器模組",
+        "5V/1A 充電頭 2 個"
+      ],
+      "page_url": "husky.html"
+    },
+    {
+      "id": "micro-bee-shake-bell",
+      "name": "微蜂晃動叫人鈴",
+      "category": "震動/晃動感應呼叫鈴",
+      "target_users": "無法精準按壓，但手指或腳趾尚能輕微搖晃或震動者。",
+      "description": "利用 micro:bit 的搖晃感測器或震動開關，只要偵測到輕微震動即透過無線廣播發送信號至接收端 micro:bit，發出蜂鳴聲警報。",
+      "github_repo": "https://github.com/wen033codes/micro-bee-shake-bell_v1.git",
+      "page_url": "micro-bee-shake-bell.html"
+    },
+    {
+      "id": "little-myna",
+      "name": "小八哥語音辨識播放盒",
+      "category": "語音播放與溝通輔具",
+      "target_users": "語言溝通障礙或需預錄固定日常語音之病友。",
+      "description": "結合 CI-03T / SU-03T 離線語音模組與 MP3-TF-16P 音訊播放模組，聽懂特定語音或指令後，自動播放預先存於記憶卡內的溝通話語（如「請幫我喝水」、「請幫我抽痰」等）。",
+      "components": [
+        "CI-03T / SU-03T 語音模組 1 個",
+        "MP3-TF-16P V3.0 模組 1 個",
+        "杜邦線 (公對公 8 條, 2.0mm轉2.54mm母對母 4 條)",
+        "5V/1A 變壓器 1 個"
+      ],
+      "page_url": "little-myna.html"
+    },
+    {
+      "id": "ksb040",
+      "name": "KSB040 充電電池模組",
+      "category": "電力配件",
+      "description": "專為 micro:bit 設計之鋰電池供電模組，讓各款藍牙輔具脫離電源線束縛，提升行動便利性。",
+      "precautions": [
+        "手機充電器電流不可超過 1 安培 (5V/1A)",
+        "不可邊使用邊充電",
+        "鋰電池如有膨脹、變形或異常發熱，必須立即停止使用",
+        "容量計算：Wh = (mAh / 1000) * V，100Wh 以下可隨身攜帶搭乘飛機"
+      ],
+      "page_url": "ksb040.html"
+    }
+  ],
+  "smart_home_solutions": [
+    {
+      "type": "紅外線家電語音控制",
+      "appliances": "空調冷氣、電視、第四台機上盒、電風扇",
+      "solution": "使用「空調小貝」離線語音遙控器，免聯網直接對它說口令控制冷氣開關、溫度調整與風速。"
+    },
+    {
+      "type": "實體按鍵家電聲控",
+      "solution": "利用 SwitchBot Bot（開關機器人）貼於現有壁面電燈開關、電腦主機電源鍵或電風扇按鈕上，透過物理手臂下壓按鈕，免改電線即可升級為智慧家電。"
+    },
+    {
+      "type": "插電即開家電控制",
+      "solution": "搭配 SwitchBot 智慧插座，透過 Siri / Google 助理聲控切換插座電源，控制機械式電風扇、除濕機或電暖器。"
+    },
+    {
+      "type": "智慧音箱與全屋對講",
+      "solution": "配置 Apple HomePod 或 Google Nest 智慧音箱，利用廣播（Intercom）對講功能在房間內呼叫家人，免起身走動即可對話，或語音撥打緊急電話。"
+    }
+  ],
+  "faq_and_troubleshooting": [
+    {
+      "category": "micro:bit 操作與燒錄",
+      "question": "如何將網站提供的程式燒錄進 micro:bit？",
+      "answer": "1. 開啟 MakeCode 線上編輯器 (makecode.microbit.org)。\n2. 點擊「匯入」選擇「匯入網址」，貼上各產品頁面提供的 GitHub 程式碼網址。\n3. 將 micro:bit 用 USB 線連接電腦，點擊編輯器左下角「下載」並配對裝置進行燒錄。"
+    },
+    {
+      "category": "語音模組教學",
+      "question": "SU-03T 與 CI-03T 語音模組如何更新語音指令與燒錄？",
+      "answer": "請參考 qa.html 內的 CI-03T & SU-03T 專屬燒錄教學連結，透過智慧語音平台設定喚醒詞、控制口令與回覆語，產出固件後使用 USB 轉 TTL 模組進行燒錄。"
+    },
+    {
+      "category": "無線叫人鈴改裝",
+      "question": "無線電鈴改裝需要準備哪些東西？",
+      "answer": "需要無線叫人鈴 1 組（推薦三永科藝 SDB-C01，具備 3.5mm 外接開關孔），以及 2 芯 3.5mm 音源線，將繼電器輸出端焊接或連接至 3.5mm 插頭插入電鈴發射器。"
+    },
+    {
+      "category": "藍牙配對問題",
+      "question": "吹吸滑鼠、小橘喵或小蝌蚪無法與 iPad/電腦配對怎麼辦？",
+      "answer": "1. 確認 micro:bit 供電充足（電源指示燈常亮）。\n2. 前往裝置的藍牙設定頁面，先「忘記/忽略此裝置」，重新開機後再次搜尋配對。\n3. 在 iPad 上若作為切換控制使用，需至「設定 > 輔助使用 > 切換控制 > 切換」中新增外部開關。"
+    },
+    {
+      "category": "材料購買指南",
+      "question": "製作這些輔具的材料要到哪裡購買？",
+      "answer": "網站 qa.html 列出了各大零件購買指南與關鍵字：\n- micro:bit V2：各大教育科技商城或蝦皮\n- KSB034 擴充板與 KSB040 電池：凱斯電子或各大創客商店\n- SU-03T / CI-03T 語音模組：電子街或淘寶/蝦皮創客商家\n- 氣壓感測模組：XGZP6897D 或類似微差壓感測模組\n- 杜邦線與 3.5mm 音源接頭：光華商場或電子材料行。"
+    }
+  ]
+}

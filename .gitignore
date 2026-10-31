@@ -1,3 +1,8 @@
 # Local development server files
 start.bat
 start-server.js
+
+# Cloudflare Worker artifacts
+.wrangler/
+**/node_modules/
+**/.wrangler/
