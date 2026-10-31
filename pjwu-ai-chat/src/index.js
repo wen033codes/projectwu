@@ -3,14 +3,14 @@ import knowledge from './knowledge.json';
 // 預設 Master Token（使用者可透過 npx wrangler secret put MASTER_TOKEN 隨時覆蓋）
 const DEFAULT_MASTER_TOKEN = "pjwu-master-2026-safe-token-89f4b";
 
-// 後台管理 HTML 介面產生器（含 Master Token 設備綁定與訪客設備/瀏覽器/IP解析展示）
+// 後台管理 HTML 介面產生器（含 Master Token 設備綁定、自動依日期分類與點選切換當日紀錄）
 function renderAdminHtml() {
   return `<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI 客服紀錄管理後台 - 設備授權安全版</title>
+  <title>AI 客服紀錄管理後台 - 依日期分類版</title>
   <link rel="icon" href="https://wen033codes.github.io/favicon.png" type="image/png">
   <style>
     :root {
@@ -75,7 +75,7 @@ function renderAdminHtml() {
       justify-content: space-between;
       align-items: center;
       gap: 16px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       padding-bottom: 16px;
       border-bottom: 1px solid var(--border);
     }
@@ -102,28 +102,98 @@ function renderAdminHtml() {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 16px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
     .stat-card {
       background: var(--card-bg);
-      padding: 16px 20px;
+      padding: 14px 18px;
       border-radius: 12px;
       border: 1px solid var(--border);
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
-    .stat-title { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
-    .stat-val { font-size: 24px; font-weight: 700; color: var(--text-main); }
+    .stat-title { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+    .stat-val { font-size: 22px; font-weight: 700; color: var(--text-main); }
+
+    /* 日期分類選擇列 (Date Tabs) */
+    .date-nav-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .date-nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .date-tabs-container {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: thin;
+    }
+    .date-tab-btn {
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .date-tab-btn:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .date-tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+    }
+    .date-badge {
+      font-size: 11px;
+      background: rgba(0,0,0,0.06);
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+    .date-tab-btn.active .date-badge {
+      background: rgba(255,255,255,0.25);
+      color: white;
+    }
+
     .controls {
       background: var(--card-bg);
-      padding: 16px 20px;
+      padding: 14px 18px;
       border-radius: 12px;
       border: 1px solid var(--border);
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       align-items: center;
       justify-content: space-between;
+    }
+    .current-date-heading {
+      font-size: 15px;
+      font-weight: 600;
+      color: #4c1d95;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .search-input {
       flex: 1;
@@ -131,16 +201,16 @@ function renderAdminHtml() {
       padding: 8px 14px;
       border: 1px solid var(--border);
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
       outline: none;
     }
     .search-input:focus { border-color: var(--primary); }
     .btn {
-      padding: 8px 16px;
+      padding: 7px 14px;
       border-radius: 8px;
       border: none;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       transition: all 0.2s;
     }
@@ -155,10 +225,10 @@ function renderAdminHtml() {
       font-size: 13px;
       color: #059669;
       background: #ecfdf5;
-      padding: 10px 14px;
+      padding: 8px 14px;
       border-radius: 8px;
       border: 1px solid #a7f3d0;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -167,8 +237,8 @@ function renderAdminHtml() {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 18px 20px;
-      margin-bottom: 16px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.03);
       transition: border-color 0.2s;
     }
@@ -234,7 +304,7 @@ function renderAdminHtml() {
       margin-top: 24px;
       align-items: center;
     }
-    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); }
 
     /* 設備列表 Modal */
     .modal-backdrop {
@@ -307,7 +377,7 @@ function renderAdminHtml() {
       <header>
         <div>
           <h1>🤖 AI 客服對話紀錄管理後台</h1>
-          <p style="font-size:13px;color:var(--text-muted);margin-top:4px;">DIY 無障礙輔具網站對話歷史、訪客連線設備與模型統計</p>
+          <p style="font-size:13px;color:var(--text-muted);margin-top:4px;">DIY 無障礙輔具網站對話歷史、日期分類與設備統計</p>
         </div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
           <span class="device-pill" id="current-device-label">🟢 已授權設備</span>
@@ -321,6 +391,7 @@ function renderAdminHtml() {
         系統於每次寫入新對話時，會自動檢查並刪除超過 <strong>30 天（一個月）</strong> 的紀錄，免維護、免排程且不佔額外資料庫容量。
       </div>
 
+      <!-- 統計數據 -->
       <div class="stats-bar">
         <div class="stat-card">
           <div class="stat-title">總對話紀錄數（30天內）</div>
@@ -336,15 +407,37 @@ function renderAdminHtml() {
         </div>
       </div>
 
-      <div class="controls">
-        <input type="text" id="search-input" class="search-input" placeholder="🔍 搜尋提問關鍵字、回覆內容、IP 或系統/瀏覽器..." />
-        <button class="btn btn-primary" onclick="loadLogs(1)">搜尋 / 重新整理</button>
+      <!-- 📅 自動日期分組與點選切換列 -->
+      <div class="date-nav-section">
+        <div class="date-nav-header">
+          <span>📅 點選日期切換當日紀錄：</span>
+          <span id="date-count-summary" style="font-size:12px;color:var(--text-muted);">載入中...</span>
+        </div>
+        <div class="date-tabs-container" id="date-tabs-bar">
+          <!-- 動態產生各日期標籤按鈕 -->
+          <button class="date-tab-btn active" onclick="selectDate('')">
+            🌟 全部紀錄 <span class="date-badge" id="tab-badge-all">-</span>
+          </button>
+        </div>
       </div>
 
+      <!-- 搜尋與當日標題列 -->
+      <div class="controls">
+        <div class="current-date-heading" id="current-filter-label">
+          <span>📋 正在檢視：全部紀錄</span>
+        </div>
+        <div style="display:flex;gap:8px;flex:1;max-width:550px;">
+          <input type="text" id="search-input" class="search-input" placeholder="🔍 搜尋提問關鍵字、回覆內容、IP 或系統/瀏覽器..." />
+          <button class="btn btn-primary" onclick="loadLogs(1)">搜尋</button>
+        </div>
+      </div>
+
+      <!-- 紀錄卡片列表 -->
       <div id="logs-list">
         <div class="empty-state">資料載入中...</div>
       </div>
 
+      <!-- 分頁控制 -->
       <div class="pagination" id="pagination-bar" style="display:none;">
         <button id="btn-prev" class="btn btn-secondary" onclick="changePage(-1)">上一頁</button>
         <span id="page-info" style="font-size:14px;color:var(--text-muted);">第 1 頁</span>
@@ -374,6 +467,7 @@ function renderAdminHtml() {
     const STORAGE_KEY = "pjwu_device_token";
     let currentPage = 1;
     const pageSize = 20;
+    let selectedDate = ""; // 空字串表示全部，例如 "2026-10-31"
 
     function getDeviceToken() {
       return localStorage.getItem(STORAGE_KEY) || "";
@@ -508,6 +602,53 @@ function renderAdminHtml() {
       document.getElementById("current-device-label").innerText = "🟢 已授權設備：" + (deviceName || "本機");
     }
 
+    // 切換點選的日期
+    function selectDate(dateStr) {
+      selectedDate = dateStr;
+      const labelEl = document.getElementById("current-filter-label");
+      if (dateStr) {
+        labelEl.innerHTML = \`<span>📅 正在檢視當日紀錄：<strong>\${dateStr}</strong></span>\`;
+      } else {
+        labelEl.innerHTML = '<span>📋 正在檢視：全部紀錄</span>';
+      }
+
+      // 更新日期標籤 active 樣式
+      document.querySelectorAll(".date-tab-btn").forEach(btn => {
+        const btnDate = btn.getAttribute("data-date") || "";
+        if (btnDate === dateStr) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+
+      loadLogs(1);
+    }
+
+    // 渲染日期切換按鈕列
+    function renderDateTabs(availableDates = [], totalCount = 0) {
+      const tabsBar = document.getElementById("date-tabs-bar");
+      document.getElementById("tab-badge-all").innerText = totalCount;
+      document.getElementById("date-count-summary").innerText = \`共涵蓋 \${availableDates.length} 個有紀錄的日期\`;
+
+      let html = \`
+        <button class="date-tab-btn \${selectedDate === '' ? 'active' : ''}" data-date="" onclick="selectDate('')">
+          🌟 全部紀錄 <span class="date-badge">\${totalCount}</span>
+        </button>
+      \`;
+
+      availableDates.forEach(d => {
+        const isActive = selectedDate === d.log_date;
+        html += \`
+          <button class="date-tab-btn \${isActive ? 'active' : ''}" data-date="\${d.log_date}" onclick="selectDate('\${d.log_date}')">
+            📅 \${d.log_date} <span class="date-badge">\${d.count} 則</span>
+          </button>
+        \`;
+      });
+
+      tabsBar.innerHTML = html;
+    }
+
     // 載入對話紀錄
     async function loadLogs(page = 1) {
       currentPage = page;
@@ -517,7 +658,7 @@ function renderAdminHtml() {
       listEl.innerHTML = '<div class="empty-state">資料載入中...</div>';
 
       try {
-        const queryParams = new URLSearchParams({ page, pageSize, search });
+        const queryParams = new URLSearchParams({ page, pageSize, search, date: selectedDate });
         const res = await fetch('/api/logs?' + queryParams.toString(), {
           headers: { "x-device-token": token }
         });
@@ -528,12 +669,20 @@ function renderAdminHtml() {
         }
 
         const data = await res.json();
-        document.getElementById("stat-total").innerText = data.total || 0;
+        document.getElementById("stat-total").innerText = data.totalAll || data.total || 0;
         document.getElementById("stat-gemini").innerText = data.stats?.geminiCount || 0;
         document.getElementById("stat-cf").innerText = data.stats?.cfCount || 0;
 
+        // 渲染日期選單列
+        if (data.availableDates) {
+          renderDateTabs(data.availableDates, data.totalAll || data.total || 0);
+        }
+
         if (!data.items || data.items.length === 0) {
-          listEl.innerHTML = '<div class="empty-state">尚無符合的對話紀錄。</div>';
+          const emptyText = selectedDate 
+            ? \`📅 \${selectedDate} 當日尚無對話紀錄。\` 
+            : '尚無符合的對話紀錄。';
+          listEl.innerHTML = \`<div class="empty-state">\${emptyText}</div>\`;
           document.getElementById("pagination-bar").style.display = "none";
           return;
         }
@@ -580,7 +729,7 @@ function renderAdminHtml() {
         listEl.innerHTML = html;
 
         const totalPages = Math.ceil(data.total / pageSize) || 1;
-        document.getElementById("page-info").innerText = \`第 \${currentPage} / \${totalPages} 頁 (共 \${data.total} 筆)\`;
+        document.getElementById("page-info").innerText = \`第 \${currentPage} / \${totalPages} 頁 (本條件共 \${data.total} 筆)\`;
         document.getElementById("btn-prev").disabled = currentPage <= 1;
         document.getElementById("btn-next").disabled = currentPage >= totalPages;
         document.getElementById("pagination-bar").style.display = totalPages > 1 ? "flex" : "none";
@@ -828,7 +977,7 @@ export default {
     }
 
     // ============================================================
-    // 路由 6：後台紀錄查詢 API（需已授權設備存取）
+    // 路由 6：後台紀錄查詢 API（支援日期篩選與可用日期分組清單）
     // ============================================================
     if (request.method === "GET" && url.pathname === "/api/logs") {
       const token = request.headers.get("x-device-token") || url.searchParams.get("device_token");
@@ -844,38 +993,55 @@ export default {
         const page = parseInt(url.searchParams.get("page") || "1", 10);
         const pageSize = parseInt(url.searchParams.get("pageSize") || "20", 10);
         const search = (url.searchParams.get("search") || "").trim();
+        const dateFilter = (url.searchParams.get("date") || "").trim();
         const offset = (page - 1) * pageSize;
 
-        let countSql = "SELECT COUNT(*) as total FROM chat_logs";
-        let querySql = "SELECT * FROM chat_logs";
+        let whereClauses = [];
         const params = [];
 
-        if (search) {
-          countSql += " WHERE user_message LIKE ? OR ai_reply LIKE ? OR client_ip LIKE ? OR user_agent LIKE ?";
-          querySql += " WHERE user_message LIKE ? OR ai_reply LIKE ? OR client_ip LIKE ? OR user_agent LIKE ?";
-          params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
+        if (dateFilter) {
+          whereClauses.push("date(created_at, '+8 hours') = ?");
+          params.push(dateFilter);
         }
 
-        querySql += " ORDER BY id DESC LIMIT ? OFFSET ?";
+        if (search) {
+          whereClauses.push("(user_message LIKE ? OR ai_reply LIKE ? OR client_ip LIKE ? OR user_agent LIKE ? OR client_city LIKE ?)");
+          params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
+        }
+
+        const whereSql = whereClauses.length > 0 ? " WHERE " + whereClauses.join(" AND ") : "";
+
+        const countSql = `SELECT COUNT(*) as total FROM chat_logs${whereSql}`;
+        const querySql = `SELECT * FROM chat_logs${whereSql} ORDER BY id DESC LIMIT ? OFFSET ?`;
         const queryParams = [...params, pageSize, offset];
 
-        const [totalRes, itemsRes, statsRes] = await Promise.all([
+        // 同時取得當前過濾筆數、紀錄列表、全站總筆數、模型統計與日期分組統計
+        const [totalRes, itemsRes, totalAllRes, statsRes, dateGroupsRes] = await Promise.all([
           env.DB.prepare(countSql).bind(...params).first(),
           env.DB.prepare(querySql).bind(...queryParams).all(),
+          env.DB.prepare("SELECT COUNT(*) as totalAll FROM chat_logs").first(),
           env.DB.prepare(`
             SELECT 
               COUNT(CASE WHEN provider LIKE '%gemini%' THEN 1 END) as geminiCount,
               COUNT(CASE WHEN provider LIKE '%cloudflare%' THEN 1 END) as cfCount
             FROM chat_logs
-          `).first()
+          `).first(),
+          env.DB.prepare(`
+            SELECT date(created_at, '+8 hours') as log_date, COUNT(*) as count 
+            FROM chat_logs 
+            GROUP BY log_date 
+            ORDER BY log_date DESC
+          `).all()
         ]);
 
         return new Response(JSON.stringify({
           total: totalRes?.total || 0,
+          totalAll: totalAllRes?.totalAll || 0,
           page,
           pageSize,
           items: itemsRes?.results || [],
-          stats: statsRes || { geminiCount: 0, cfCount: 0 }
+          stats: statsRes || { geminiCount: 0, cfCount: 0 },
+          availableDates: dateGroupsRes?.results || []
         }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" }
         });
