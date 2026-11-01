@@ -180,4 +180,43 @@ document.addEventListener("DOMContentLoaded", function() {
         chatScript.src = 'chatbot.js?t=' + Date.now();
         document.body.appendChild(chatScript);
     }
+
+    // 自動訪客瀏覽統計上報 (pjwu-ai-chat 第一方追蹤)
+    (function initAnalytics() {
+        try {
+            const TRACK_STORAGE_KEY = 'pjwu_visitor_uuid';
+            let visitorId = localStorage.getItem(TRACK_STORAGE_KEY);
+            if (!visitorId) {
+                visitorId = 'v_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+                localStorage.setItem(TRACK_STORAGE_KEY, visitorId);
+            }
+
+            let pagePath = window.location.pathname || '/';
+            // 本機檔案開啟 (file://) 時，取得檔案名稱作為路徑以利測試
+            if (window.location.protocol === 'file:') {
+                const parts = pagePath.split(/[\\/]/);
+                pagePath = '/' + (parts.pop() || 'index.html');
+            } else if (pagePath === '/' || pagePath === '/projectwu' || pagePath === '/projectwu/') {
+                pagePath = '/projectwu/index.html';
+            }
+
+            const pageData = JSON.stringify({
+                path: pagePath,
+                title: document.title || '',
+                referrer: document.referrer || '',
+                visitorId: visitorId
+            });
+
+            const trackUrl = 'https://pjwu-ai-chat.aicoding.workers.dev/api/track';
+            fetch(trackUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: pageData,
+                mode: 'cors',
+                keepalive: true
+            }).catch(() => {});
+        } catch (e) {
+            // 靜默處理，不影響任何網頁交互
+        }
+    })();
 });

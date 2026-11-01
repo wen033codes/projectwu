@@ -10,8 +10,8 @@ function renderAdminHtml() {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI 客服紀錄管理後台 - 依日期分類版</title>
-  <link rel="icon" href="https://wen033codes.github.io/favicon.png" type="image/png">
+  <title>AI 客服紀錄與網站訪客統計管理後台</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Cdefs%3E%3ClinearGradient%20id='bg'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3E%3Cstop%20offset='0%25'%20stop-color='%23a855f7'/%3E%3Cstop%20offset='100%25'%20stop-color='%237c3aed'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle%20cx='32'%20cy='32'%20r='30'%20fill='url(%23bg)'/%3E%3Cg%20transform='translate(14,14)%20scale(1.5)'%20stroke='%23ffffff'%20stroke-width='2.2'%20stroke-linecap='round'%20stroke-linejoin='round'%20fill='none'%3E%3Cpath%20d='M3%2011h3a2%202%200%200%201%202%202v4a2%202%200%200%201-2%202H5a2%202%200%200%201-2-2v-6a9%209%200%200%201%2018%200v6a2%202%200%200%201-2%202h-1a2%202%200%200%201-2-2v-4a2%202%200%200%201%202-2h3'/%3E%3Cpath%20d='M19%2017v2a3%203%200%200%201-3%203h-4'/%3E%3Ccircle%20cx='11.5'%20cy='22'%20r='1.4'%20fill='%23ffffff'%20stroke='none'/%3E%3C/g%3E%3C/svg%3E">
   <style>
     :root {
       --primary: #7c3aed;
@@ -344,6 +344,233 @@ function renderAdminHtml() {
       border-radius: 8px;
       margin-bottom: 10px;
     }
+
+    /* 主分頁切換導覽 (Main Nav Tabs) */
+    .main-nav-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 2px;
+    }
+    .main-tab-btn {
+      background: none;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 10px 10px 0 0;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .main-tab-btn:hover {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+    .main-tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: white;
+    }
+
+    /* 訪客統計儀表板專用樣式 */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 860px) {
+      .analytics-grid { grid-template-columns: 1fr; }
+    }
+    .analytics-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      margin-bottom: 16px;
+    }
+    .analytics-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .analytics-card-title .badge {
+      font-size: 11px;
+      font-weight: 500;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+    
+    /* 趨勢長條圖 (Trend Bar Chart) */
+    .trend-chart-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .trend-chart-legend {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      align-items: center;
+    }
+    .legend-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      margin-right: 5px;
+    }
+    .trend-chart-container {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      height: 170px;
+      padding: 20px 6px 30px 6px;
+      border-bottom: 1px dashed var(--border);
+      position: relative;
+      margin-top: 10px;
+    }
+    .trend-bar-group {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      position: relative;
+      cursor: pointer;
+    }
+    .trend-bars-wrapper {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      width: 100%;
+      justify-content: center;
+      height: 100%;
+    }
+    .trend-bar-pv {
+      background: #7c3aed;
+      border-radius: 4px 4px 0 0;
+      width: 45%;
+      min-height: 4px;
+      transition: height 0.3s ease;
+    }
+    .trend-bar-uv {
+      background: #38bdf8;
+      border-radius: 4px 4px 0 0;
+      width: 45%;
+      min-height: 4px;
+      transition: height 0.3s ease;
+    }
+    .trend-bar-group:hover .trend-bar-pv { background: #6d28d9; }
+    .trend-bar-group:hover .trend-bar-uv { background: #0284c7; }
+    .trend-date-label {
+      position: absolute;
+      bottom: -24px;
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .trend-tooltip {
+      visibility: hidden;
+      position: absolute;
+      bottom: 105%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: white;
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-size: 11px;
+      white-space: nowrap;
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      line-height: 1.5;
+    }
+    .trend-bar-group:hover .trend-tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* 排行榜與分佈 */
+    .rank-list { list-style: none; margin: 0; padding: 0; }
+    .rank-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 13px;
+      gap: 12px;
+    }
+    .rank-item:last-child { border-bottom: none; }
+    .rank-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .rank-num.top1 { background: #fef3c7; color: #b45309; }
+    .rank-num.top2 { background: #e2e8f0; color: #475569; }
+    .rank-num.top3 { background: #ffedd5; color: #c2410c; }
+    .rank-info { flex: 1; min-width: 0; }
+    .rank-title { font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rank-sub { font-size: 11px; color: var(--text-muted); font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rank-val { font-weight: 700; color: #4c1d95; text-align: right; flex-shrink: 0; font-size: 13px; }
+    .rank-bar-bg { height: 4px; background: #f1f5f9; border-radius: 2px; margin-top: 5px; overflow: hidden; }
+    .rank-bar-fill { height: 100%; background: linear-gradient(90deg, #a855f7, #7c3aed); border-radius: 2px; }
+
+    /* 訪客即時串流清單 */
+    .table-container {
+      overflow-x: auto;
+    }
+    .stream-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+    }
+    .stream-table th {
+      padding: 10px 12px;
+      background: #f8fafc;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .stream-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .stream-table tr:hover td { background: #fbfbfe; }
   </style>
 </head>
 <body>
@@ -376,7 +603,16 @@ function renderAdminHtml() {
     <div id="dashboard-view">
       <header>
         <div>
-          <h1>🤖 AI 客服對話紀錄管理後台</h1>
+          <h1 style="display:flex;align-items:center;gap:10px;">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg, #a855f7, #7c3aed);color:white;box-shadow:0 2px 6px rgba(124,58,237,0.3);flex-shrink:0;">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 11h3a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-6a9 9 0 0 1 18 0v6a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h3"></path>
+                <path d="M19 17v2a3 3 0 0 1-3 3h-4"></path>
+                <circle cx="11.5" cy="22" r="1.4" fill="currentColor"></circle>
+              </svg>
+            </span>
+            AI 客服對話紀錄管理後台
+          </h1>
           <p style="font-size:13px;color:var(--text-muted);margin-top:4px;">DIY 無障礙輔具網站對話歷史、日期分類與設備統計</p>
         </div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
@@ -386,8 +622,27 @@ function renderAdminHtml() {
         </div>
       </header>
 
-      <div class="notice">
-        ℹ️ <strong>自動容量清理維護：</strong>
+      <!-- 導覽分頁切換 -->
+      <div class="main-nav-tabs">
+        <button class="main-tab-btn active" id="btn-tab-chat" onclick="switchDashboardView('chat')">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg, #a855f7, #7c3aed);color:white;flex-shrink:0;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 11h3a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-6a9 9 0 0 1 18 0v6a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h3"></path>
+              <path d="M19 17v2a3 3 0 0 1-3 3h-4"></path>
+              <circle cx="11.5" cy="22" r="1.4" fill="currentColor"></circle>
+            </svg>
+          </span>
+          AI 客服對話紀錄
+        </button>
+        <button class="main-tab-btn" id="btn-tab-stats" onclick="switchDashboardView('stats')">
+          📊 網站訪客瀏覽統計
+        </button>
+      </div>
+
+      <!-- 分頁 1：AI 客服紀錄視圖 -->
+      <div id="view-chat">
+        <div class="notice">
+          ℹ️ <strong>自動容量清理維護：</strong>
         系統於每次寫入新對話時，會自動檢查並刪除超過 <strong>30 天（一個月）</strong> 的紀錄，免維護、免排程且不佔額外資料庫容量。
       </div>
 
@@ -435,11 +690,120 @@ function renderAdminHtml() {
       </div>
 
       <!-- 分頁控制 -->
-      <div class="pagination" id="pagination-bar" style="display:none;">
-        <button id="btn-prev" class="btn btn-secondary" onclick="changePage(-1)">上一頁</button>
-        <span id="page-info" style="font-size:14px;color:var(--text-muted);">第 1 頁</span>
-        <button id="btn-next" class="btn btn-secondary" onclick="changePage(1)">下一頁</button>
-      </div>
+        <div class="pagination" id="pagination-bar" style="display:none;">
+          <button id="btn-prev" class="btn btn-secondary" onclick="changePage(-1)">上一頁</button>
+          <span id="page-info" style="font-size:14px;color:var(--text-muted);">第 1 頁</span>
+          <button id="btn-next" class="btn btn-secondary" onclick="changePage(1)">下一頁</button>
+        </div>
+      </div><!-- end view-chat -->
+
+      <!-- 分頁 2：網站訪客統計視圖 -->
+      <div id="view-stats" style="display:none;">
+        <div class="notice" style="background:#f0fdf4;border-color:#bbf7d0;color:#166534;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+          <div>
+            📈 <strong>第一方訪客追蹤（AdBlock 免疫）：</strong>
+            所有造訪紀錄皆由 Cloudflare Worker 第一方 API 記錄，資料保留 60 天並自動滾動清理。
+          </div>
+          <button class="btn btn-secondary" style="padding:4px 10px;font-size:12px;" onclick="loadVisitorStats()">
+            🔄 重新整理
+          </button>
+        </div>
+
+        <!-- 4 大核心數據卡片 -->
+        <div class="stats-bar">
+          <div class="stat-card">
+            <div class="stat-title">今日頁面瀏覽量 (PV)</div>
+            <div id="stat-today-pv" class="stat-val" style="color:#7c3aed;">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">今日獨立訪客 (UV)</div>
+            <div id="stat-today-uv" class="stat-val" style="color:#0284c7;">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">30 天累計瀏覽量 (PV)</div>
+            <div id="stat-total-pv" class="stat-val">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">30 天累計獨立訪客 (UV)</div>
+            <div id="stat-total-uv" class="stat-val" style="color:#059669;">-</div>
+          </div>
+        </div>
+
+        <!-- 近 14 天每日走勢長條圖 -->
+        <div class="trend-chart-box">
+          <div class="analytics-card-title">
+            <span>📅 過去 14 天瀏覽趨勢 (每日 PV / UV)</span>
+            <div class="trend-chart-legend">
+              <span><span class="legend-dot" style="background:#7c3aed;"></span>瀏覽量 (PV)</span>
+              <span><span class="legend-dot" style="background:#38bdf8;"></span>獨立訪客 (UV)</span>
+            </div>
+          </div>
+          <div id="trend-chart-content" class="trend-chart-container">
+            <div style="font-size:13px;color:var(--text-muted);text-align:center;width:100%;padding:40px 0;">載入趨勢圖表中...</div>
+          </div>
+        </div>
+
+        <!-- 排行榜與分佈分析 -->
+        <div class="analytics-grid">
+          <!-- 左欄：熱門頁面排行 -->
+          <div class="analytics-card">
+            <div class="analytics-card-title">
+              <span>🔥 熱門瀏覽頁面 Top 10</span>
+              <span class="badge">依瀏覽次數</span>
+            </div>
+            <div id="top-pages-list">
+              <div style="font-size:13px;color:var(--text-muted);padding:20px 0;text-align:center;">載入中...</div>
+            </div>
+          </div>
+
+          <!-- 右欄：來源與裝置分佈 -->
+          <div>
+            <div class="analytics-card">
+              <div class="analytics-card-title">
+                <span>🌐 訪客主要來源</span>
+                <span class="badge">Referrer</span>
+              </div>
+              <div id="top-referrers-list">
+                <div style="font-size:13px;color:var(--text-muted);padding:14px 0;text-align:center;">載入中...</div>
+              </div>
+            </div>
+
+            <div class="analytics-card">
+              <div class="analytics-card-title">
+                <span>💻 造訪裝置比例</span>
+                <span class="badge">設備分佈</span>
+              </div>
+              <div id="device-stats-list">
+                <div style="font-size:13px;color:var(--text-muted);padding:14px 0;text-align:center;">載入中...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 最新即時訪客造訪串流 -->
+        <div class="analytics-card">
+          <div class="analytics-card-title">
+            <span>⚡ 最新即時造訪動態 (最近 25 筆)</span>
+            <span class="badge" id="recent-views-badge">即時串流</span>
+          </div>
+          <div class="table-container">
+            <table class="stream-table">
+              <thead>
+                <tr>
+                  <th>時間 (台北)</th>
+                  <th>造訪頁面</th>
+                  <th>訪客來源</th>
+                  <th>IP / 地區</th>
+                  <th>裝置與瀏覽器</th>
+                </tr>
+              </thead>
+              <tbody id="recent-views-tbody">
+                <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:30px;">載入動態中...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div><!-- end view-stats -->
     </div>
 
     <!-- 3. 已授權設備管理彈窗 -->
@@ -853,11 +1217,272 @@ function renderAdminHtml() {
       if (e.key === "Enter") bindCurrentDevice();
     });
 
+    var currentDashboardView = 'chat';
+    function switchDashboardView(view) {
+      currentDashboardView = view;
+      document.getElementById('btn-tab-chat').classList.toggle('active', view === 'chat');
+      document.getElementById('btn-tab-stats').classList.toggle('active', view === 'stats');
+      document.getElementById('view-chat').style.display = view === 'chat' ? 'block' : 'none';
+      document.getElementById('view-stats').style.display = view === 'stats' ? 'block' : 'none';
+      if (view === 'stats') {
+        loadVisitorStats();
+      }
+    }
+
+    async function loadVisitorStats() {
+      var token = getDeviceToken();
+      if (!token) return;
+      try {
+        var res = await fetch('/api/stats', {
+          headers: { 'x-device-token': token }
+        });
+        if (!res.ok) throw new Error('取得統計失敗 (' + res.status + ')');
+        var data = await res.json();
+        renderVisitorStats(data);
+      } catch (err) {
+        console.error('載入統計失敗：', err);
+      }
+    }
+
+    function getPageFullUrl(path) {
+      if (!path || path === '/' || path === '/projectwu' || path === '/projectwu/') {
+        return 'https://wen033codes.github.io/projectwu/index.html';
+      }
+      if (path.indexOf('http') === 0) return path;
+      var cleanPath = path.indexOf('/') === 0 ? path : '/' + path;
+      if (cleanPath.indexOf('/projectwu') === 0) {
+        return 'https://wen033codes.github.io' + cleanPath;
+      }
+      return 'https://wen033codes.github.io/projectwu' + cleanPath;
+    }
+
+    function renderVisitorStats(data) {
+      document.getElementById('stat-today-pv').innerText = (data.todayPv || 0).toLocaleString();
+      document.getElementById('stat-today-uv').innerText = (data.todayUv || 0).toLocaleString();
+      document.getElementById('stat-total-pv').innerText = (data.totalPv || 0).toLocaleString();
+      document.getElementById('stat-total-uv').innerText = (data.totalUv || 0).toLocaleString();
+
+      // 1. 趨勢長條圖
+      var trendContainer = document.getElementById('trend-chart-content');
+      if (data.dailyTrend && data.dailyTrend.length > 0) {
+        var maxPv = Math.max.apply(Math, data.dailyTrend.map(function(d) { return d.pv; }).concat([1]));
+        var trendHtml = '';
+        data.dailyTrend.forEach(function(d) {
+          var pvHeight = Math.max(Math.round((d.pv / maxPv) * 100), 5);
+          var uvHeight = Math.max(Math.round((d.uv / maxPv) * 100), 5);
+          var shortDate = d.stat_date.substring(5);
+          trendHtml += '<div class="trend-bar-group">' +
+            '<div class="trend-tooltip">' +
+              '<strong>' + escapeHtml(d.stat_date) + '</strong><br>' +
+              '瀏覽量 (PV)：' + d.pv + '<br>' +
+              '獨立訪客 (UV)：' + d.uv +
+            '</div>' +
+            '<div class="trend-bars-wrapper">' +
+              '<div class="trend-bar-pv" style="height:' + pvHeight + '%;"></div>' +
+              '<div class="trend-bar-uv" style="height:' + uvHeight + '%;"></div>' +
+            '</div>' +
+            '<span class="trend-date-label">' + shortDate + '</span>' +
+          '</div>';
+        });
+        trendContainer.innerHTML = trendHtml;
+      } else {
+        trendContainer.innerHTML = '<div style="font-size:13px;color:var(--text-muted);text-align:center;width:100%;padding:40px 0;">尚無足夠趨勢資料（訪客開始瀏覽後將自動累積）</div>';
+      }
+
+      // 2. 熱門頁面 Top 10
+      var topPagesContainer = document.getElementById('top-pages-list');
+      if (data.topPages && data.topPages.length > 0) {
+        var maxPagePv = (data.topPages[0] && data.topPages[0].pv) || 1;
+        var pagesHtml = '<ul class="rank-list">';
+        data.topPages.forEach(function(p, idx) {
+          var rankCls = idx === 0 ? 'top1' : (idx === 1 ? 'top2' : (idx === 2 ? 'top3' : ''));
+          var fillWidth = Math.round((p.pv / maxPagePv) * 100);
+          var displayTitle = p.title ? escapeHtml(p.title) : escapeHtml(p.path);
+          var pageUrl = getPageFullUrl(p.path);
+          pagesHtml += '<li class="rank-item">' +
+            '<div class="rank-num ' + rankCls + '">' + (idx + 1) + '</div>' +
+            '<div class="rank-info">' +
+              '<div class="rank-title" title="' + displayTitle + '">' + displayTitle + '</div>' +
+              '<div class="rank-sub">' +
+                '<a href="' + escapeHtml(pageUrl) + '" target="_blank" rel="noopener noreferrer" style="color:#7c3aed;text-decoration:none;display:inline-flex;align-items:center;gap:3px;" title="在新分頁開啟此網頁">' +
+                  '🔗 <span style="text-decoration:underline;">' + escapeHtml(p.path) + '</span> ↗' +
+                '</a>' +
+              '</div>' +
+              '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + fillWidth + '%;"></div></div>' +
+            '</div>' +
+            '<div class="rank-val">' +
+              p.pv.toLocaleString() + ' <span style="font-size:11px;font-weight:normal;color:var(--text-muted);">PV</span>' +
+              '<div style="font-size:11px;font-weight:normal;color:var(--text-muted);">' + p.uv + ' UV</div>' +
+            '</div>' +
+          '</li>';
+        });
+        pagesHtml += '</ul>';
+        topPagesContainer.innerHTML = pagesHtml;
+      } else {
+        topPagesContainer.innerHTML = '<div style="font-size:13px;color:var(--text-muted);padding:20px 0;text-align:center;">暫無頁面瀏覽資料</div>';
+      }
+
+      // 3. 訪客主要來源 Top Referrers
+      var topRefContainer = document.getElementById('top-referrers-list');
+      if (data.topReferrers && data.topReferrers.length > 0) {
+        var refHtml = '<ul class="rank-list">';
+        data.topReferrers.forEach(function(r) {
+          var refText = r.ref;
+          var isHttp = refText.indexOf('http') === 0;
+          try {
+            if (isHttp) {
+              var u = new URL(refText);
+              refText = u.hostname + (u.pathname !== '/' ? u.pathname : '');
+            }
+          } catch (_) {}
+          var refContent = isHttp
+            ? '<a href="' + escapeHtml(r.ref) + '" target="_blank" rel="noopener noreferrer" style="color:#2563eb;text-decoration:none;display:inline-flex;align-items:center;gap:3px;" title="' + escapeHtml(r.ref) + '">🔗 ' + escapeHtml(refText) + ' ↗</a>'
+            : '<span style="color:var(--text-muted);">📍 ' + escapeHtml(refText) + '</span>';
+
+          refHtml += '<li class="rank-item" style="padding:6px 0;">' +
+            '<div class="rank-info">' +
+              '<div class="rank-title" style="font-size:12px;">' + refContent + '</div>' +
+            '</div>' +
+            '<div class="rank-val" style="font-size:12px;">' + r.count.toLocaleString() + ' 次</div>' +
+          '</li>';
+        });
+        refHtml += '</ul>';
+        topRefContainer.innerHTML = refHtml;
+      } else {
+        topRefContainer.innerHTML = '<div style="font-size:13px;color:var(--text-muted);padding:14px 0;text-align:center;">暫無來源資料</div>';
+      }
+
+      // 4. 造訪裝置比例
+      var devContainer = document.getElementById('device-stats-list');
+      if (data.deviceStats && data.deviceStats.length > 0) {
+        var totalDevCount = data.deviceStats.reduce(function(sum, d) { return sum + d.count; }, 0) || 1;
+        var devHtml = '<div style="display:flex;flex-direction:column;gap:8px;">';
+        data.deviceStats.forEach(function(d) {
+          var pct = Math.round((d.count / totalDevCount) * 100);
+          devHtml += '<div>' +
+            '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">' +
+              '<span>' + escapeHtml(d.device_type) + '</span>' +
+              '<span style="font-weight:600;">' + d.count + ' 次 (' + pct + '%)</span>' +
+            '</div>' +
+            '<div class="rank-bar-bg" style="margin-top:0;"><div class="rank-bar-fill" style="width:' + pct + '%;background:#38bdf8;"></div></div>' +
+          '</div>';
+        });
+        devHtml += '</div>';
+        devContainer.innerHTML = devHtml;
+      } else {
+        devContainer.innerHTML = '<div style="font-size:13px;color:var(--text-muted);padding:14px 0;text-align:center;">暫無裝置資料</div>';
+      }
+
+      // 5. 最新即時串流 (Recent Views)
+      var tbody = document.getElementById('recent-views-tbody');
+      if (data.recentViews && data.recentViews.length > 0) {
+        var rowsHtml = '';
+        data.recentViews.forEach(function(v) {
+          var timeStr = formatUtcToTaipei(v.created_at);
+          var refDisplay = v.referrer || '直接訪問';
+          if (refDisplay.length > 35) refDisplay = refDisplay.substring(0, 32) + '...';
+          var pageTitle = v.title ? escapeHtml(v.title) : escapeHtml(v.path);
+          var pageUrl = getPageFullUrl(v.path);
+          var isRefHttp = v.referrer && v.referrer.indexOf('http') === 0;
+          var refCell = isRefHttp
+            ? '<a href="' + escapeHtml(v.referrer) + '" target="_blank" rel="noopener noreferrer" style="color:#2563eb;text-decoration:none;display:inline-flex;align-items:center;gap:3px;" title="' + escapeHtml(v.referrer) + '">🔗 ' + escapeHtml(refDisplay) + ' ↗</a>'
+            : '<span>' + (v.referrer ? '🔗 ' : '📍 ') + escapeHtml(refDisplay) + '</span>';
+
+          rowsHtml += '<tr>' +
+            '<td style="color:var(--text-muted);font-size:12px;white-space:nowrap;">' + timeStr + '</td>' +
+            '<td>' +
+              '<div style="font-weight:600;color:var(--text-main);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + pageTitle + '">' +
+                pageTitle +
+              '</div>' +
+              '<div style="font-size:11px;font-family:monospace;margin-top:2px;">' +
+                '<a href="' + escapeHtml(pageUrl) + '" target="_blank" rel="noopener noreferrer" style="color:#7c3aed;text-decoration:none;display:inline-flex;align-items:center;gap:3px;" title="在新分頁開啟此網頁">' +
+                  '🔗 <span style="text-decoration:underline;">' + escapeHtml(v.path) + '</span> ↗' +
+                '</a>' +
+              '</div>' +
+            '</td>' +
+            '<td style="font-size:12px;color:var(--text-muted);">' +
+              refCell +
+            '</td>' +
+            '<td style="font-size:12px;">' +
+              '<div>' + escapeHtml(v.client_ip || '-') + '</div>' +
+              '<div style="font-size:11px;color:var(--text-muted);">' + escapeHtml(v.client_country || '') + ' ' + escapeHtml(v.client_city || '') + '</div>' +
+            '</td>' +
+            '<td style="font-size:12px;">' +
+              '<div>' + escapeHtml(v.device_type || '電腦') + ' · ' + escapeHtml(v.os || '-') + '</div>' +
+              '<div style="font-size:11px;color:var(--text-muted);">' + escapeHtml(v.browser || '-') + '</div>' +
+            '</td>' +
+          '</tr>';
+        });
+        tbody.innerHTML = rowsHtml;
+      } else {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:30px;">尚無訪客瀏覽紀錄</td></tr>';
+      }
+    }
+
     // 網頁載入時檢查設備綁定狀態
     checkDeviceAuth();
   </script>
 </body>
 </html>`;
+}
+
+// 輔助函式：確保訪客統計表存在
+let isStatsTableChecked = false;
+async function ensureStatsTable(db) {
+  if (isStatsTableChecked || !db) return;
+  try {
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS page_views (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        path TEXT NOT NULL,
+        title TEXT,
+        referrer TEXT,
+        visitor_id TEXT,
+        client_ip TEXT,
+        user_agent TEXT,
+        device_type TEXT,
+        os TEXT,
+        browser TEXT,
+        client_country TEXT,
+        client_city TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run();
+    await db.prepare(`CREATE INDEX IF NOT EXISTS idx_pv_created_at ON page_views(created_at)`).run();
+    await db.prepare(`CREATE INDEX IF NOT EXISTS idx_pv_path ON page_views(path)`).run();
+    isStatsTableChecked = true;
+  } catch (e) {
+    console.error("Failed to ensure page_views table:", e);
+  }
+}
+
+// 輔助函式：伺服器端解析 User-Agent
+function parseUserAgentServer(ua) {
+  if (!ua) return { os: "未知系統", browser: "未知瀏覽器", deviceType: "💻 電腦" };
+
+  let os = "其他系統";
+  if (/windows nt 10/i.test(ua)) os = "Windows 10/11";
+  else if (/windows nt 6\.3/i.test(ua)) os = "Windows 8.1";
+  else if (/windows nt 6\.1/i.test(ua)) os = "Windows 7";
+  else if (/iphone/i.test(ua)) os = "iPhone (iOS)";
+  else if (/ipad/i.test(ua)) os = "iPad (iPadOS)";
+  else if (/macintosh|mac os x/i.test(ua)) os = "macOS";
+  else if (/android/i.test(ua)) os = "Android";
+  else if (/linux/i.test(ua)) os = "Linux";
+
+  let browser = "其他瀏覽器";
+  if (/edg/i.test(ua)) browser = "Microsoft Edge";
+  else if (/line/i.test(ua)) browser = "LINE";
+  else if (/fban|fbav/i.test(ua)) browser = "Facebook";
+  else if (/chrome|crios/i.test(ua) && !/edg/i.test(ua)) browser = "Chrome";
+  else if (/safari/i.test(ua) && !/chrome|crios/i.test(ua)) browser = "Safari";
+  else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
+
+  let deviceType = "💻 電腦";
+  if (/mobile|iphone|android.*mobile/i.test(ua)) deviceType = "📱 手機";
+  else if (/ipad|tablet|android(?!.*mobile)/i.test(ua)) deviceType = "平板";
+
+  return { os, browser, deviceType };
 }
 
 // 輔助函式：檢查設備 Token 是否有效
@@ -1064,6 +1689,182 @@ export default {
           headers: { ...corsHeaders, "Content-Type": "application/json" }
         });
 
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      }
+    }
+
+    // ============================================================
+    // 路由 6：前台頁面瀏覽統計接收 API (Beacon / Fetch 第一方上報)
+    // ============================================================
+    if (request.method === "POST" && url.pathname === "/api/track") {
+      try {
+        await ensureStatsTable(env.DB);
+        let body = {};
+        try {
+          body = await request.json();
+        } catch (_) {}
+
+        // 來源安全性防護：若有 Origin / Referer 標頭，驗證是否為本網站 (防外部盜連灌水)
+        const originHeader = (request.headers.get("origin") || "").toLowerCase();
+        const refererHeader = (request.headers.get("referer") || "").toLowerCase();
+        const isTrusted = !originHeader || originHeader === "null" || originHeader.includes("github.io") || originHeader.includes("localhost") || originHeader.includes("127.0.0.1") || refererHeader.includes("github.io");
+        if (!isTrusted) {
+          return new Response(JSON.stringify({ success: false, reason: "Untrusted origin" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" }
+          });
+        }
+
+        const path = (body.path || "/").substring(0, 255);
+        const title = (body.title || "").substring(0, 255);
+        const referrer = (body.referrer || "").substring(0, 500);
+        const visitorId = (body.visitorId || "").substring(0, 100);
+
+        const clientIp = request.headers.get("cf-connecting-ip") || "unknown";
+        const userAgent = request.headers.get("user-agent") || "unknown";
+        const clientCountry = request.cf?.country || "TW";
+        const clientCity = request.cf?.city || "unknown";
+
+        const { os, browser, deviceType } = parseUserAgentServer(userAgent);
+
+        ctx.waitUntil(
+          (async () => {
+            try {
+              await env.DB.prepare(`
+                INSERT INTO page_views (path, title, referrer, visitor_id, client_ip, user_agent, device_type, os, browser, client_country, client_city, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+              `).bind(path, title, referrer, visitorId, clientIp, userAgent, deviceType, os, browser, clientCountry, clientCity).run();
+
+              // 自動清理逾 60 天舊資料 (保持免費輕量無負擔)
+              await env.DB.prepare(`DELETE FROM page_views WHERE created_at < datetime('now', '-60 days')`).run();
+            } catch (e) {
+              console.error("Failed to insert page_view:", e);
+            }
+          })()
+        );
+
+        return new Response(JSON.stringify({ success: true }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ success: false, error: err.message }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      }
+    }
+
+    // ============================================================
+    // 路由 7：後台訪客統計數據 API (需驗證設備 Token)
+    // ============================================================
+    if (request.method === "GET" && url.pathname === "/api/stats") {
+      const token = request.headers.get("x-device-token") || url.searchParams.get("device_token");
+      const dev = await verifyDeviceToken(env.DB, token);
+      if (!dev) {
+        return new Response(JSON.stringify({ error: "尚未通過 Master Token 設備授權" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      }
+
+      await ensureStatsTable(env.DB);
+
+      try {
+        const [todayStats, totalStats, dailyTrend, topPages, topReferrers, deviceStats, recentViews] = await Promise.all([
+          // 1. 今日 PV 與 UV (+8 小時台北時間)
+          env.DB.prepare(`
+            SELECT 
+              COUNT(*) as todayPv,
+              COUNT(DISTINCT visitor_id) as todayUv
+            FROM page_views 
+            WHERE date(created_at, '+8 hours') = date('now', '+8 hours')
+          `).first(),
+
+          // 2. 30 天累計 PV 與 UV
+          env.DB.prepare(`
+            SELECT 
+              COUNT(*) as totalPv,
+              COUNT(DISTINCT visitor_id) as totalUv
+            FROM page_views
+          `).first(),
+
+          // 3. 過去 14 天每日走勢
+          env.DB.prepare(`
+            SELECT 
+              date(created_at, '+8 hours') as stat_date,
+              COUNT(*) as pv,
+              COUNT(DISTINCT visitor_id) as uv
+            FROM page_views
+            WHERE created_at >= datetime('now', '-14 days')
+            GROUP BY stat_date
+            ORDER BY stat_date ASC
+          `).all(),
+
+          // 4. 熱門瀏覽頁面 Top 10
+          env.DB.prepare(`
+            SELECT 
+              path,
+              title,
+              COUNT(*) as pv,
+              COUNT(DISTINCT visitor_id) as uv
+            FROM page_views
+            GROUP BY path
+            ORDER BY pv DESC
+            LIMIT 10
+          `).all(),
+
+          // 5. 訪客來源 Top 8
+          env.DB.prepare(`
+            SELECT 
+              CASE 
+                WHEN referrer = '' OR referrer IS NULL THEN '直接訪問 (Direct / 書籤)'
+                ELSE referrer 
+              END as ref,
+              COUNT(*) as count
+            FROM page_views
+            GROUP BY ref
+            ORDER BY count DESC
+            LIMIT 8
+          `).all(),
+
+          // 6. 裝置類型分佈
+          env.DB.prepare(`
+            SELECT 
+              COALESCE(device_type, '💻 電腦') as device_type,
+              COUNT(*) as count
+            FROM page_views
+            GROUP BY device_type
+            ORDER BY count DESC
+          `).all(),
+
+          // 7. 最近 25 筆詳細紀錄
+          env.DB.prepare(`
+            SELECT 
+              id, path, title, referrer, client_ip, client_country, client_city,
+              device_type, os, browser, created_at
+            FROM page_views
+            ORDER BY id DESC
+            LIMIT 25
+          `).all()
+        ]);
+
+        return new Response(JSON.stringify({
+          todayPv: todayStats?.todayPv || 0,
+          todayUv: todayStats?.todayUv || 0,
+          totalPv: totalStats?.totalPv || 0,
+          totalUv: totalStats?.totalUv || 0,
+          dailyTrend: dailyTrend?.results || [],
+          topPages: topPages?.results || [],
+          topReferrers: topReferrers?.results || [],
+          deviceStats: deviceStats?.results || [],
+          recentViews: recentViews?.results || []
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
       } catch (err) {
         return new Response(JSON.stringify({ error: err.message }), {
           status: 500,
