@@ -180,43 +180,75 @@ document.addEventListener("DOMContentLoaded", function() {
         chatScript.src = 'chatbot.js?t=' + Date.now();
         document.body.appendChild(chatScript);
     }
+});
 
-    // 自動訪客瀏覽統計上報 (pjwu-ai-chat 第一方追蹤)
-    (function initAnalytics() {
+// 自動訪客瀏覽統計上報 (pjwu-ai-chat 第一方追蹤，支援 Beacon / Fetch / 影像 Ping)
+(function initAnalytics() {
+    try {
+        let visitorId = '';
         try {
             const TRACK_STORAGE_KEY = 'pjwu_visitor_uuid';
-            let visitorId = localStorage.getItem(TRACK_STORAGE_KEY);
+            visitorId = localStorage.getItem(TRACK_STORAGE_KEY);
             if (!visitorId) {
                 visitorId = 'v_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
                 localStorage.setItem(TRACK_STORAGE_KEY, visitorId);
             }
-
-            let pagePath = window.location.pathname || '/';
-            // 本機檔案開啟 (file://) 時，取得檔案名稱作為路徑以利測試
-            if (window.location.protocol === 'file:') {
-                const parts = pagePath.split(/[\\/]/);
-                pagePath = '/' + (parts.pop() || 'index.html');
-            } else if (pagePath === '/' || pagePath === '/projectwu' || pagePath === '/projectwu/') {
-                pagePath = '/projectwu/index.html';
-            }
-
-            const pageData = JSON.stringify({
-                path: pagePath,
-                title: document.title || '',
-                referrer: document.referrer || '',
-                visitorId: visitorId
-            });
-
-            const trackUrl = 'https://pjwu-ai-chat.aicoding.workers.dev/api/track';
-            fetch(trackUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: pageData,
-                mode: 'cors',
-                keepalive: true
-            }).catch(() => {});
-        } catch (e) {
-            // 靜默處理，不影響任何網頁交互
+        } catch (_) {
+            visitorId = 'v_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
         }
-    })();
-});
+
+        let pagePath = window.location.pathname || '/';
+        if (window.location.protocol === 'file:') {
+            const parts = pagePath.split(/[\\/]/);
+            pagePath = '/' + (parts.pop() || 'index.html');
+        } else if (pagePath === '/' || pagePath === '/projectwu' || pagePath === '/projectwu/') {
+            pagePath = '/projectwu/index.html';
+        }
+
+        const pageTitle = document.title || '';
+        const pageRef = document.referrer || '';
+        const pageData = JSON.stringify({
+            path: pagePath,
+            title: pageTitle,
+            referrer: pageRef,
+            visitorId: visitorId
+        });
+
+        const trackUrl = 'https://pjwu-ai-chat.aicoding.workers.dev/api/track';
+
+        let sent = false;
+        if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
+            try {
+                const blob = new Blob([pageData], { type: 'text/plain' });
+                sent = navigator.sendBeacon(trackUrl, blob);
+            } catch (_) {}
+        }
+
+        if (!sent) {
+            if (typeof fetch === 'function') {
+                fetch(trackUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: pageData,
+                    mode: 'cors',
+                    keepalive: true
+                }).catch(function() {
+                    sendPingFallback();
+                });
+            } else {
+                sendPingFallback();
+            }
+        }
+
+        function sendPingFallback() {
+            try {
+                const q = '?path=' + encodeURIComponent(pagePath) +
+                          '&title=' + encodeURIComponent(pageTitle) +
+                          '&referrer=' + encodeURIComponent(pageRef) +
+                          '&visitorId=' + encodeURIComponent(visitorId);
+                const img = new Image();
+                img.src = trackUrl + q;
+            } catch (_) {}
+        }
+    } catch (_) {}
+})();

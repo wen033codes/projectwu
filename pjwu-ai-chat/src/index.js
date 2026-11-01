@@ -1698,15 +1698,29 @@ export default {
     }
 
     // ============================================================
-    // 路由 6：前台頁面瀏覽統計接收 API (Beacon / Fetch 第一方上報)
+    // 路由 6：前台頁面瀏覽統計接收 API (Beacon / Fetch / GET Ping 第一方上報)
     // ============================================================
-    if (request.method === "POST" && url.pathname === "/api/track") {
+    if ((request.method === "POST" || request.method === "GET") && url.pathname === "/api/track") {
       try {
         await ensureStatsTable(env.DB);
         let body = {};
-        try {
-          body = await request.json();
-        } catch (_) {}
+        if (request.method === "GET") {
+          body = {
+            path: url.searchParams.get("path") || "/",
+            title: url.searchParams.get("title") || "",
+            referrer: url.searchParams.get("referrer") || "",
+            visitorId: url.searchParams.get("visitorId") || ""
+          };
+        } else {
+          try {
+            body = await request.json();
+          } catch (_) {
+            try {
+              const text = await request.text();
+              body = JSON.parse(text);
+            } catch (__) {}
+          }
+        }
 
         // 來源安全性防護：若有 Origin / Referer 標頭，驗證是否為本網站 (防外部盜連灌水)
         const originHeader = (request.headers.get("origin") || "").toLowerCase();
@@ -1746,6 +1760,21 @@ export default {
             }
           })()
         );
+
+        if (request.method === "GET") {
+          const transparentGif = new Uint8Array([
+            0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00, 0x80, 0x00, 0x00, 0xff, 0xff, 0xff,
+            0x00, 0x00, 0x00, 0x21, 0xf9, 0x04, 0x01, 0x00, 0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00,
+            0x01, 0x00, 0x01, 0x00, 0x00, 0x02, 0x02, 0x44, 0x01, 0x00, 0x3b
+          ]);
+          return new Response(transparentGif, {
+            headers: {
+              ...corsHeaders,
+              "Content-Type": "image/gif",
+              "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0"
+            }
+          });
+        }
 
         return new Response(JSON.stringify({ success: true }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" }
