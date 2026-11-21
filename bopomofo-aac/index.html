@@ -79,9 +79,9 @@
 
     .communication-board {
       display: grid;
-      /* 最左：回首頁 | 左1：系統品牌標題 | 左2：已選注音 | 中：專屬學習顯示幕 | 右：6 個一致大小的無障礙大按鈕 */
-      grid-template-columns: 64px 200px 145px 1fr 420px;
-      gap: 8px;
+      /* 最左：回首頁 | 左1：操作說明 | 左2：系統品牌標題 | 左3：已選注音 | 中：專屬學習顯示幕 | 右：6 個一致大小的無障礙大按鈕 */
+      grid-template-columns: 60px 60px 192px 140px 1fr 414px;
+      gap: 7px;
       align-items: stretch;
       height: clamp(76px, 12.8vh, 98px);
       min-height: 0;
@@ -1197,10 +1197,67 @@
       color: #fecaca;
     }
 
+    /* 操作說明彈窗內容樣式 */
+    .help-guide-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 720px) {
+      .help-guide-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .help-section-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .help-section-card h3 {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: #fde047;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .help-section-card ol,
+    .help-section-card ul {
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.94rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+
+    .help-section-card strong {
+      color: #7dd3fc;
+    }
+
+    .help-tip-banner {
+      background: rgba(245, 158, 11, 0.14);
+      border: 1px solid #f59e0b;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.93rem;
+      color: #fef08a;
+      line-height: 1.5;
+    }
+
     /* 響應式微調：平板直向或窄螢幕避免頂部控制列被裁切 */
     @media (max-width: 960px) {
       .communication-board {
-        grid-template-columns: 58px 115px 1fr;
+        grid-template-columns: 56px 56px 110px 1fr;
         grid-template-rows: auto auto;
         height: auto;
       }
@@ -1236,11 +1293,15 @@
     <!-- ==================== 1. 頂部：單列整合「系統標題＋已選注音＋專屬學習顯示幕＋6個操作與控制大按鈕」 ==================== -->
     <header class="top-section">
       <div class="communication-board">
-        <!-- 最左上角：返回首頁按鈕 -->
+        <!-- 最左上角：返回首頁與簡易操作說明按鈕 -->
         <a href="../index.html" class="home-nav-btn" title="回到首頁" aria-label="回到首頁">
           <span class="btn-icon">🏠</span>
           <span class="btn-text">首頁</span>
         </a>
+        <button id="btnOpenHelpModal" class="home-nav-btn" type="button" title="簡易操作說明" aria-label="開啟簡易操作說明">
+          <span class="btn-icon">📖</span>
+          <span class="btn-text">說明</span>
+        </button>
 
         <!-- 欄位 0 (左1)：系統品牌標題 -->
         <div class="system-brand-box">
@@ -1472,6 +1533,65 @@
       <div class="modal-footer">
         <button id="btnAddFromDictModal" class="btn-primary-gold" type="button">➕ 新增學習語詞</button>
         <button id="btnCloseDictFooter" class="btn-secondary" type="button">關閉視窗</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 互動視窗 3：簡易操作說明 ==================== -->
+  <div id="helpModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle">
+    <div class="modal-card modal-card-wide">
+      <div class="modal-header">
+        <h2 id="helpModalTitle">📖 ㄅㄆㄇㄈ輔助溝通系統 — 簡易操作說明</h2>
+        <button id="btnCloseHelpModal" class="modal-close-btn" type="button" aria-label="關閉">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="help-tip-banner">
+          💡 <strong>設計目的：</strong>專為手部不便打字且無法言語的病友設計，只需點選「語詞第一個字的注音」即可快速表達需求並自動語音朗讀，完全免費且免安裝。
+        </div>
+
+        <div class="help-guide-grid">
+          <div class="help-section-card">
+            <h3>1️⃣ 快速上手（3 步驟溝通）</h3>
+            <ol>
+              <li><strong>點選注音：</strong>點下方任一注音符號（例如想喝水點 <strong>ㄏ</strong>、想抽痰點 <strong>ㄔ</strong>）。</li>
+              <li><strong>選擇語詞：</strong>中段候選區會立即顯示對應語詞，點選卡片即會<strong>大字顯示＋語音朗讀</strong>。</li>
+              <li><strong>縮小範圍／翻頁：</strong>可繼續點第 2 個注音精準篩選，或點右側 <strong>◀ 上一頁／下一頁 ▶</strong> 瀏覽更多語詞。</li>
+            </ol>
+          </div>
+
+          <div class="help-section-card">
+            <h3>2️⃣ 三種無障礙操作模式（右上角切換）</h3>
+            <ul>
+              <li><strong>🖱️ 大按鈕點擊：</strong>直接以滑鼠、觸控螢幕或吹吸／眼動滑鼠點擊。</li>
+              <li><strong>⏱️ 游標停留選：</strong>游標停在按鈕上 <strong>0.8～1.8 秒</strong>（可調整）即自動選取，免按滑鼠鍵。</li>
+              <li><strong>🔄 自動掃描：</strong>適合單鍵開關（如小蝌蚪／吹吸開關），系統自動逐列→逐格高亮，按 <strong>空白鍵 / Enter</strong> 或點底部大按鈕即可確認。</li>
+            </ul>
+          </div>
+
+          <div class="help-section-card">
+            <h3>3️⃣ 智慧學習與個人化詞庫</h3>
+            <ul>
+              <li><strong>常用自動置頂：</strong>每點選一次語詞，系統都會自動記錄次數，<strong>最常用的語詞會優先排在第 1 頁</strong>。</li>
+              <li><strong>➕ 記錄新語詞：</strong>若沒有想說的句子，家屬或照護者可點鍵盤右下角「<strong>➕ 記錄新語詞</strong>」輸入國字，系統會自動建立注音索引並置頂。</li>
+              <li><strong>📚 詞庫管理與備份：</strong>點上方「<strong>📚 詞庫管理</strong>」可編輯／刪除語詞，並用「<strong>📤 匯出備份／📥 匯入詞庫</strong>」將紀錄轉移到其他電腦或平板。</li>
+            </ul>
+          </div>
+
+          <div class="help-section-card">
+            <h3>4️⃣ 快速功能鍵與緊急呼叫</h3>
+            <ul>
+              <li><strong>🔊 再說一次：</strong>重新朗讀上方顯示幕目前的語詞。</li>
+              <li><strong>🔔 緊急呼叫：</strong>立即發出高音量警示鈴聲與求救語音。</li>
+              <li><strong>⌫ 退回注音：</strong>刪除最後點選的一個注音符號。</li>
+              <li><strong>🗑️ 清除重選：</strong>清除已選注音，回到常用語詞總覽。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btnCloseHelpFooter" class="btn-primary-gold" type="button">我知道了，開始使用</button>
       </div>
     </div>
   </div>
@@ -2438,6 +2558,14 @@
       document.getElementById('dictModal').classList.add('hidden');
     }
 
+    function openHelpModal() {
+      document.getElementById('helpModal').classList.remove('hidden');
+    }
+
+    function closeHelpModal() {
+      document.getElementById('helpModal').classList.add('hidden');
+    }
+
     function renderDictList() {
       const container = document.getElementById('dictListContainer');
       let list = [...state.phrases];
@@ -2593,7 +2721,8 @@
 
     function stepAutoScan() {
       if (!document.getElementById('learnModal').classList.contains('hidden') ||
-          !document.getElementById('dictModal').classList.contains('hidden')) {
+          !document.getElementById('dictModal').classList.contains('hidden') ||
+          !document.getElementById('helpModal').classList.contains('hidden')) {
         return;
       }
 
@@ -2875,10 +3004,12 @@
       window.addEventListener('keydown', e => {
         const learnOpen = !document.getElementById('learnModal').classList.contains('hidden');
         const dictOpen = !document.getElementById('dictModal').classList.contains('hidden');
-        if (learnOpen || dictOpen) {
+        const helpOpen = !document.getElementById('helpModal').classList.contains('hidden');
+        if (learnOpen || dictOpen || helpOpen) {
           if (e.key === 'Escape') {
             closeLearnModal();
             closeDictModal();
+            closeHelpModal();
           }
           return;
         }
@@ -2887,6 +3018,13 @@
           e.preventDefault();
           handleScanTriggerAction();
         }
+      });
+
+      document.getElementById('btnOpenHelpModal').addEventListener('click', openHelpModal);
+      document.getElementById('btnCloseHelpModal').addEventListener('click', closeHelpModal);
+      document.getElementById('btnCloseHelpFooter').addEventListener('click', closeHelpModal);
+      document.getElementById('helpModal').addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeHelpModal();
       });
 
       document.getElementById('btnCloseLearnModal').addEventListener('click', closeLearnModal);
