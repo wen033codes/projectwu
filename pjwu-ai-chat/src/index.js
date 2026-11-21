@@ -1256,6 +1256,16 @@ function renderAdminHtml() {
       return 'https://wen033codes.github.io/projectwu' + cleanPath;
     }
 
+    function cleanPageTitle(rawTitle, path) {
+      if (!rawTitle) return path || '';
+      var title = rawTitle.trim();
+      var splitIdx = Math.max(title.lastIndexOf(' - '), title.lastIndexOf(' — '));
+      if (splitIdx !== -1) {
+        return title.substring(0, splitIdx).trim();
+      }
+      return title;
+    }
+
     function renderVisitorStats(data) {
       document.getElementById('stat-today-pv').innerText = (data.todayPv || 0).toLocaleString();
       document.getElementById('stat-today-uv').innerText = (data.todayUv || 0).toLocaleString();
@@ -1297,12 +1307,13 @@ function renderAdminHtml() {
         data.topPages.forEach(function(p, idx) {
           var rankCls = idx === 0 ? 'top1' : (idx === 1 ? 'top2' : (idx === 2 ? 'top3' : ''));
           var fillWidth = Math.round((p.pv / maxPagePv) * 100);
-          var displayTitle = p.title ? escapeHtml(p.title) : escapeHtml(p.path);
+          var fullTitle = p.title || p.path;
+          var displayTitle = cleanPageTitle(fullTitle, p.path);
           var pageUrl = getPageFullUrl(p.path);
           pagesHtml += '<li class="rank-item">' +
             '<div class="rank-num ' + rankCls + '">' + (idx + 1) + '</div>' +
             '<div class="rank-info">' +
-              '<div class="rank-title" title="' + displayTitle + '">' + displayTitle + '</div>' +
+              '<div class="rank-title" title="' + escapeHtml(fullTitle) + '">' + escapeHtml(displayTitle) + '</div>' +
               '<div class="rank-sub">' +
                 '<a href="' + escapeHtml(pageUrl) + '" target="_blank" rel="noopener noreferrer" style="color:#7c3aed;text-decoration:none;display:inline-flex;align-items:center;gap:3px;" title="在新分頁開啟此網頁">' +
                   '🔗 <span style="text-decoration:underline;">' + escapeHtml(p.path) + '</span> ↗' +
@@ -1381,7 +1392,8 @@ function renderAdminHtml() {
           var timeStr = formatUtcToTaipei(v.created_at);
           var refDisplay = v.referrer || '直接訪問';
           if (refDisplay.length > 35) refDisplay = refDisplay.substring(0, 32) + '...';
-          var pageTitle = v.title ? escapeHtml(v.title) : escapeHtml(v.path);
+          var fullTitle = v.title || v.path;
+          var pageTitle = cleanPageTitle(fullTitle, v.path);
           var pageUrl = getPageFullUrl(v.path);
           var isRefHttp = v.referrer && v.referrer.indexOf('http') === 0;
           var refCell = isRefHttp
@@ -1391,8 +1403,8 @@ function renderAdminHtml() {
           rowsHtml += '<tr>' +
             '<td style="color:var(--text-muted);font-size:12px;white-space:nowrap;">' + timeStr + '</td>' +
             '<td>' +
-              '<div style="font-weight:600;color:var(--text-main);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + pageTitle + '">' +
-                pageTitle +
+              '<div style="font-weight:600;color:var(--text-main);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escapeHtml(fullTitle) + '">' +
+                escapeHtml(pageTitle) +
               '</div>' +
               '<div style="font-size:11px;font-family:monospace;margin-top:2px;">' +
                 '<a href="' + escapeHtml(pageUrl) + '" target="_blank" rel="noopener noreferrer" style="color:#7c3aed;text-decoration:none;display:inline-flex;align-items:center;gap:3px;" title="在新分頁開啟此網頁">' +

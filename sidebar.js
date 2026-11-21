@@ -205,7 +205,11 @@ document.addEventListener("DOMContentLoaded", function() {
             pagePath = '/projectwu/index.html';
         }
 
-        const pageTitle = document.title || '';
+        let pageTitle = document.title || '';
+        const splitIdx = Math.max(pageTitle.lastIndexOf(' - '), pageTitle.lastIndexOf(' — '));
+        if (splitIdx !== -1) {
+            pageTitle = pageTitle.substring(0, splitIdx).trim();
+        }
         const pageRef = document.referrer || '';
         const pageData = JSON.stringify({
             path: pagePath,
