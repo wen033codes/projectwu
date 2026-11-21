@@ -79,12 +79,41 @@
 
     .communication-board {
       display: grid;
-      /* 最左：系統品牌標題 | 左2：已選注音 | 中：專屬學習顯示幕 | 右：6 個一致大小的無障礙大按鈕 */
-      grid-template-columns: 205px 150px 1fr 425px;
+      /* 最左：回首頁 | 左1：系統品牌標題 | 左2：已選注音 | 中：專屬學習顯示幕 | 右：6 個一致大小的無障礙大按鈕 */
+      grid-template-columns: 64px 200px 145px 1fr 420px;
       gap: 8px;
       align-items: stretch;
       height: clamp(76px, 12.8vh, 98px);
       min-height: 0;
+    }
+
+    /* 最左上角：返回首頁按鈕 */
+    .home-nav-btn {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 2px solid #38bdf8;
+      border-radius: 12px;
+      color: #f8fafc;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 3px;
+      font-weight: 800;
+      padding: 4px 2px;
+      min-height: 0;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.2);
+      transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .home-nav-btn:hover {
+      background: linear-gradient(135deg, #0284c7 0%, #1e3a8a 100%);
+      border-color: #fde047;
+    }
+
+    .home-nav-btn:active {
+      transform: scale(0.96);
     }
 
     /* 最左側：系統標題與圖示區塊 */
@@ -514,19 +543,25 @@
     .phrase-card-top {
       width: 100%;
       display: flex;
+      flex-wrap: nowrap;
       justify-content: space-between;
       align-items: center;
       gap: 4px;
+      flex-shrink: 0;
+      min-width: 0;
     }
 
     .phrase-zy-tag {
       background: rgba(15, 23, 42, 0.65);
       color: #38bdf8;
-      font-size: clamp(0.82rem, 1.55vh, 0.96rem);
+      font-size: clamp(0.74rem, 1.35vh, 0.88rem);
       font-weight: 900;
-      padding: 1px 6px;
+      padding: 1px 5px;
       border-radius: 5px;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      flex-shrink: 0;
+      line-height: 1.2;
     }
 
     .phrase-card.is-learned .phrase-zy-tag {
@@ -534,11 +569,15 @@
     }
 
     .phrase-status-badge {
-      font-size: clamp(0.75rem, 1.4vh, 0.88rem);
+      font-size: clamp(0.68rem, 1.2vh, 0.8rem);
       font-weight: 800;
       padding: 1px 5px;
       border-radius: 5px;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+      line-height: 1.2;
     }
 
     .badge-learned {
@@ -552,11 +591,12 @@
     }
 
     .phrase-main-text {
-      font-size: clamp(1.25rem, 2.75vh, 1.72rem);
+      font-size: clamp(1.08rem, 2.3vh, 1.52rem);
       font-weight: 900;
       color: #ffffff;
-      line-height: 1.12;
-      margin-top: 1px;
+      line-height: 1.18;
+      margin-top: auto;
+      margin-bottom: auto;
       width: 100%;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -1160,7 +1200,7 @@
     /* 響應式微調：平板直向或窄螢幕避免頂部控制列被裁切 */
     @media (max-width: 960px) {
       .communication-board {
-        grid-template-columns: 120px 1fr;
+        grid-template-columns: 58px 115px 1fr;
         grid-template-rows: auto auto;
         height: auto;
       }
@@ -1196,7 +1236,13 @@
     <!-- ==================== 1. 頂部：單列整合「系統標題＋已選注音＋專屬學習顯示幕＋6個操作與控制大按鈕」 ==================== -->
     <header class="top-section">
       <div class="communication-board">
-        <!-- 欄位 0 (最左)：系統品牌標題 -->
+        <!-- 最左上角：返回首頁按鈕 -->
+        <a href="../index.html" class="home-nav-btn" title="回到首頁" aria-label="回到首頁">
+          <span class="btn-icon">🏠</span>
+          <span class="btn-text">首頁</span>
+        </a>
+
+        <!-- 欄位 0 (左1)：系統品牌標題 -->
         <div class="system-brand-box">
           <div class="brand-logo-icon" aria-hidden="true">ㄅ</div>
           <div class="brand-title-group">
