@@ -1,0 +1,2981 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ㄅㄆㄇㄈ輔助溝通系統 Bopomofo-AAC</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230284c7'/%3E%3Cstop offset='100%25' stop-color='%231e3a8a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)' stroke='%2338bdf8' stroke-width='3'/%3E%3Cpath d='M12 14h40a4 4 0 0 1 4 4v24a4 4 0 0 1-4 4H26l-10 8v-8h-4a4 4 0 0 1-4-4V18a4 4 0 0 1 4-4z' fill='%230f172a' fill-opacity='0.35'/%3E%3Ctext x='32' y='40' font-family='Microsoft JhengHei, PingFang TC, sans-serif' font-size='32' font-weight='900' fill='%23fde047' text-anchor='middle'%3Eㄅ%3C/text%3E%3Ccircle cx='50' cy='15' r='5' fill='%23fbbf24'/%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --bg-main: #0f172a;
+      --bg-panel: #1e293b;
+      --bg-card: #26354d;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+
+      /* 注音聲母與韻母高對比色彩 */
+      --zy-initial-bg: #1e3a8a;
+      --zy-initial-border: #3b82f6;
+      --zy-initial-hover: #2563eb;
+
+      --zy-final-bg: #115e59;
+      --zy-final-border: #14b8a6;
+      --zy-final-hover: #0d9488;
+
+      /* 學習語詞與候選卡片強調色 */
+      --learned-bg: #422006;
+      --learned-border: #f59e0b;
+      --learned-badge: #fbbf24;
+
+      --frequent-bg: #172554;
+      --frequent-border: #60a5fa;
+
+      /* 自動掃描與停留視覺焦點 */
+      --scan-row-outline: #facc15;
+      --scan-item-outline: #f97316;
+      --dwell-bar-color: #38bdf8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      max-height: 100dvh;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+      overflow: hidden;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      max-height: 100dvh;
+      padding: 6px 10px;
+      gap: 6px;
+      overflow: hidden;
+    }
+
+    /* ==================== 1. 頂部：單列整合溝通顯示幕＋操作模式＋控制鍵 ==================== */
+    .top-section {
+      flex-shrink: 0;
+    }
+
+    .communication-board {
+      display: grid;
+      /* 最左：系統品牌標題 | 左2：已選注音 | 中：專屬學習顯示幕 | 右：6 個一致大小的無障礙大按鈕 */
+      grid-template-columns: 205px 150px 1fr 425px;
+      gap: 8px;
+      align-items: stretch;
+      height: clamp(76px, 12.8vh, 98px);
+      min-height: 0;
+    }
+
+    /* 最左側：系統標題與圖示區塊 */
+    .system-brand-box {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 2px solid #38bdf8;
+      border-radius: 12px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 0;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.2);
+    }
+
+    .brand-logo-icon {
+      width: clamp(36px, 5.2vh, 44px);
+      height: clamp(36px, 5.2vh, 44px);
+      flex-shrink: 0;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0284c7 0%, #1e3a8a 100%);
+      border: 2px solid #7dd3fc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: clamp(1.25rem, 2.5vh, 1.55rem);
+      font-weight: 900;
+      color: #fde047;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    .brand-title-group {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+      gap: 2px;
+    }
+
+    .brand-title-zh {
+      font-size: clamp(0.88rem, 1.7vh, 1.05rem);
+      font-weight: 900;
+      color: #f8fafc;
+      line-height: 1.15;
+      white-space: nowrap;
+    }
+
+    .brand-title-zh .zy-accent {
+      color: #fde047;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-title-en {
+      font-size: clamp(0.72rem, 1.35vh, 0.84rem);
+      font-weight: 800;
+      color: #38bdf8;
+      letter-spacing: 0.03em;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    /* 左側：已選注音符號框 */
+    .zy-indicator-box {
+      background: var(--bg-panel);
+      border: 2px solid #475569;
+      border-radius: 12px;
+      padding: 4px 6px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 3px;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .zy-indicator-label {
+      font-size: clamp(0.74rem, 1.35vh, 0.85rem);
+      color: var(--text-secondary);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .zy-badges-container {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 4px;
+      justify-content: center;
+      align-items: center;
+      min-height: 0;
+      width: 100%;
+    }
+
+    .zy-empty-placeholder {
+      font-size: clamp(0.75rem, 1.4vh, 0.86rem);
+      color: var(--text-muted);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .selected-zy-pill {
+      background: #f59e0b;
+      color: #0f172a;
+      font-size: clamp(1.05rem, 2.2vh, 1.4rem);
+      font-weight: 900;
+      padding: 1px 7px;
+      border-radius: 7px;
+      line-height: 1.2;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.45);
+    }
+
+    /* 中左：縮小後的專屬學習＆語詞顯示幕 */
+    .main-expression-display {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border: 3px solid #38bdf8;
+      border-radius: 14px;
+      padding: 4px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      min-height: 0;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.12);
+      transition: transform 0.2s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+
+    .main-expression-display.speaking-active {
+      border-color: #fbbf24;
+      background: linear-gradient(135deg, #1e293b 0%, #312e81 100%);
+      box-shadow: 0 0 22px rgba(251, 191, 36, 0.45);
+    }
+
+    .expression-tag {
+      position: absolute;
+      top: 4px;
+      left: 8px;
+      background: #0284c7;
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+
+    .confirmed-phrase-text {
+      font-size: clamp(1.25rem, 2.9vh, 2.05rem);
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 0.02em;
+      line-height: 1.15;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .learning-status-hint {
+      margin-top: 2px;
+      font-size: clamp(0.72rem, 1.3vh, 0.82rem);
+      color: #93c5fd;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    /* 最右側：統一規格的 6 個大按鈕區（操作模式3 + 詞庫管理1 + 再說一次 + 緊急呼叫） */
+    .top-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      min-height: 0;
+    }
+
+    .action-btn {
+      border: 2px solid transparent;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      color: #fff;
+      font-weight: 800;
+      padding: 4px 2px;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.12s ease, filter 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .action-btn:hover {
+      filter: brightness(1.15);
+    }
+
+    .action-btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-icon {
+      font-size: clamp(1.1rem, 2.2vh, 1.4rem);
+      line-height: 1;
+    }
+
+    .btn-text {
+      font-size: clamp(0.75rem, 1.45vh, 0.9rem);
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    /* 操作模式按鈕（與再說一次同尺寸） */
+    .mode-pill {
+      background: #1e293b;
+      border-color: #475569;
+      color: #cbd5e1;
+    }
+
+    .mode-pill.active {
+      background: #0284c7;
+      border-color: #7dd3fc;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+    }
+
+    /* 詞庫管理大按鈕 */
+    .btn-dict-box {
+      background: #334155;
+      border-color: #94a3b8;
+    }
+
+    .count-badge {
+      position: absolute;
+      top: 3px;
+      right: 4px;
+      background: #fbbf24;
+      color: #0f172a;
+      font-size: 0.7rem;
+      font-weight: 900;
+      padding: 0px 5px;
+      border-radius: 999px;
+      line-height: 1.2;
+    }
+
+    /* 停留與掃描秒數微調浮動角標 */
+    .mode-inline-select {
+      margin-top: 1px;
+      background: #0f172a;
+      color: #fde047;
+      border: 1px solid #7dd3fc;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 0 2px;
+      cursor: pointer;
+    }
+
+    .btn-speak {
+      background: #0284c7;
+      border-color: #38bdf8;
+    }
+
+    .btn-back {
+      background: #475569;
+      border-color: #94a3b8;
+    }
+
+    .btn-clear {
+      background: #64748b;
+      border-color: #cbd5e1;
+    }
+
+    .btn-emergency {
+      background: #b91c1c;
+      border-color: #f87171;
+    }
+
+    /* ==================== 2. 中段：智慧學習語詞候選區 ==================== */
+    .candidate-section {
+      background: var(--bg-panel);
+      border: 2px solid #334155;
+      border-radius: 12px;
+      padding: 5px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      height: clamp(98px, 16.8vh, 130px);
+      min-height: 0;
+      flex-shrink: 0;
+    }
+
+    .candidate-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .candidate-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    .candidate-title {
+      font-size: clamp(0.86rem, 1.65vh, 1rem);
+      font-weight: 800;
+      color: #fde047;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .candidate-count-info {
+      font-size: clamp(0.76rem, 1.4vh, 0.85rem);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .page-indicator-header {
+      font-size: clamp(0.8rem, 1.5vh, 0.92rem);
+      font-weight: 800;
+      color: #7dd3fc;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 1px 10px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* 候選語詞卡片網格（5 個語詞卡片 ＋ 上一頁 ＋ 下一頁 共 7 欄等寬等高） */
+    .candidate-grid {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      grid-auto-rows: 1fr;
+      gap: 6px;
+    }
+
+    /* 與常用語詞同列、同大小高度的「上一頁／下一頁」大按鈕卡片 */
+    .phrase-card.page-nav-card {
+      background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+      border: 2px solid #7dd3fc;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+    }
+
+    .phrase-card.page-nav-card:hover:not(:disabled) {
+      background: linear-gradient(145deg, #0284c7 0%, #1e3a8a 100%);
+      border-color: #fde047;
+    }
+
+    .phrase-card.page-nav-card:disabled {
+      opacity: 0.38;
+      border-color: #475569;
+      background: #1e293b;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .phrase-card.page-nav-card .phrase-zy-tag {
+      color: #fde047;
+    }
+
+    .phrase-card.page-nav-card .page-nav-main-text {
+      font-size: clamp(1.22rem, 2.65vh, 1.65rem);
+      font-weight: 900;
+      color: #ffffff;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      width: 100%;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    .phrase-card {
+      background: var(--bg-card);
+      border: 2px solid #475569;
+      border-radius: 10px;
+      padding: 4px 8px;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      cursor: pointer;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .phrase-card:hover {
+      border-color: #93c5fd;
+      background: #2e415f;
+    }
+
+    .phrase-card:active {
+      transform: scale(0.97);
+    }
+
+    /* 已學習語詞專屬高亮樣式 (排在第一順位) */
+    .phrase-card.is-learned {
+      background: linear-gradient(145deg, #451a03 0%, #78350f 100%);
+      border-color: var(--learned-border);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.28);
+    }
+
+    /* 常用語詞樣式 */
+    .phrase-card.is-frequent:not(.is-learned) {
+      background: linear-gradient(145deg, #172554 0%, #1e3a8a 100%);
+      border-color: var(--frequent-border);
+    }
+
+    .phrase-card-top {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .phrase-zy-tag {
+      background: rgba(15, 23, 42, 0.65);
+      color: #38bdf8;
+      font-size: clamp(0.82rem, 1.55vh, 0.96rem);
+      font-weight: 900;
+      padding: 1px 6px;
+      border-radius: 5px;
+      letter-spacing: 0.04em;
+    }
+
+    .phrase-card.is-learned .phrase-zy-tag {
+      color: #fde047;
+    }
+
+    .phrase-status-badge {
+      font-size: clamp(0.75rem, 1.4vh, 0.88rem);
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    .badge-learned {
+      background: #fbbf24;
+      color: #0f172a;
+    }
+
+    .badge-used {
+      background: #38bdf8;
+      color: #0f172a;
+    }
+
+    .phrase-main-text {
+      font-size: clamp(1.25rem, 2.75vh, 1.72rem);
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.12;
+      margin-top: 1px;
+      width: 100%;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: break-word;
+    }
+
+    /* 候選區內的「➕ 記錄新語詞（學習）」大卡片 */
+    .phrase-card.add-learn-card {
+      background: rgba(217, 119, 6, 0.18);
+      border: 2px dashed #fbbf24;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 1px;
+    }
+
+    .phrase-card.add-learn-card:hover {
+      background: rgba(217, 119, 6, 0.32);
+    }
+
+    .add-learn-icon {
+      font-size: clamp(1.05rem, 2vh, 1.3rem);
+      line-height: 1;
+    }
+
+    .add-learn-title {
+      font-size: clamp(1rem, 1.95vh, 1.2rem);
+      font-weight: 900;
+      color: #fde047;
+      line-height: 1.12;
+    }
+
+    .add-learn-sub {
+      font-size: clamp(0.76rem, 1.4vh, 0.9rem);
+      color: #fed7aa;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    /* ==================== 3. 下段：37 個注音符號特大鍵盤區 ==================== */
+    .keyboard-section {
+      flex: 1 1 0%;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .bopomofo-keyboard {
+      flex: 1 1 0%;
+      min-height: 0;
+      height: 100%;
+      display: grid;
+      grid-template-rows: repeat(6, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    .keyboard-row {
+      min-height: 0;
+      height: 100%;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+      border-radius: 10px;
+      padding: 1px;
+    }
+
+    .zy-key {
+      min-height: 0;
+      height: 100%;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      padding: 2px 4px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.1s ease, filter 0.15s ease, border-color 0.15s ease;
+    }
+
+    .zy-key.type-initial {
+      background: var(--zy-initial-bg);
+      border-color: var(--zy-initial-border);
+    }
+
+    .zy-key.type-initial:hover {
+      background: var(--zy-initial-hover);
+    }
+
+    .zy-key.type-final {
+      background: var(--zy-final-bg);
+      border-color: var(--zy-final-border);
+    }
+
+    .zy-key.type-final:hover {
+      background: var(--zy-final-hover);
+    }
+
+    .zy-key.active-selected {
+      background: #f59e0b !important;
+      border-color: #fef08a !important;
+      color: #0f172a !important;
+    }
+
+    .zy-key.active-selected .zy-symbol,
+    .zy-key.active-selected .zy-hint {
+      color: #0f172a !important;
+    }
+
+    .zy-symbol {
+      font-size: clamp(1.35rem, 3.05vh, 2.05rem);
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 0.95;
+    }
+
+    .zy-hint {
+      font-size: clamp(0.95rem, 1.95vh, 1.25rem);
+      color: #f8fafc;
+      font-weight: 800;
+      margin-top: 2px;
+      line-height: 1.05;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+
+    /* 注音按鍵右上角的「🌟 已學習數量」標記 */
+    .zy-learned-indicator {
+      position: absolute;
+      top: 3px;
+      right: 5px;
+      background: #fbbf24;
+      color: #0f172a;
+      font-size: clamp(0.7rem, 1.3vh, 0.82rem);
+      font-weight: 900;
+      padding: 0px 5px;
+      border-radius: 999px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+    }
+
+    /* 第 6 列右側快捷功能鍵 */
+    .zy-key.shortcut-key {
+      background: #334155;
+      border-color: #64748b;
+    }
+
+    .zy-key.shortcut-key.shortcut-learn {
+      background: #78350f;
+      border-color: #f59e0b;
+    }
+
+    .zy-key.shortcut-key .shortcut-title {
+      font-size: clamp(1.02rem, 2.25vh, 1.32rem);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.12;
+      white-space: nowrap;
+    }
+
+    .zy-key.shortcut-key .shortcut-sub {
+      font-size: clamp(0.8rem, 1.55vh, 0.98rem);
+      color: #e2e8f0;
+      font-weight: 700;
+      line-height: 1.08;
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+
+    /* ==================== 無障礙：游標停留進度條與行列自動掃描高亮 ==================== */
+    .dwell-progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 7px;
+      background: var(--dwell-bar-color);
+      width: 0%;
+      pointer-events: none;
+      transition: width linear;
+    }
+
+    .scan-row.scan-row-highlight {
+      outline: 4px solid var(--scan-row-outline) !important;
+      outline-offset: 1px;
+      background-color: rgba(250, 204, 21, 0.12) !important;
+      border-radius: 12px;
+    }
+
+    .scan-item.scan-item-highlight {
+      outline: 5px solid var(--scan-item-outline) !important;
+      outline-offset: -2px;
+      transform: scale(1.02);
+      z-index: 10;
+      box-shadow: 0 0 22px rgba(249, 115, 22, 0.85) !important;
+    }
+
+    /* 自動掃描底部單鍵大觸發板 */
+    .scan-trigger-bar {
+      flex-shrink: 0;
+    }
+
+    .scan-trigger-pad {
+      width: 100%;
+      background: linear-gradient(90deg, #ca8a04 0%, #ea580c 100%);
+      border: 2px solid #fef08a;
+      border-radius: 10px;
+      padding: 5px 14px;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 900;
+    }
+
+    .scan-pad-status {
+      font-size: 0.98rem;
+    }
+
+    .scan-pad-instruction {
+      font-size: 0.95rem;
+      color: #fef08a;
+    }
+
+    /* ==================== 互動視窗 Modal ==================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.82);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .modal-card {
+      background: #1e293b;
+      border: 2px solid #475569;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 92dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-card-wide {
+      max-width: 860px;
+    }
+
+    .modal-header {
+      padding: 14px 20px;
+      background: #0f172a;
+      border-bottom: 1px solid #334155;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      font-size: 1.35rem;
+      color: #fde047;
+    }
+
+    .modal-close-btn {
+      background: #334155;
+      color: #fff;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 16px 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-desc {
+      font-size: 0.98rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #f8fafc;
+    }
+
+    .selected-zy-preview-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-zy-badge {
+      background: #f59e0b;
+      color: #0f172a;
+      font-size: 2rem;
+      font-weight: 900;
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-zy-explain {
+      font-size: 0.95rem;
+      color: #fde047;
+    }
+
+    .modal-zy-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 4px;
+    }
+
+    .mini-zy-btn {
+      background: #334155;
+      color: #fff;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      width: 36px;
+      height: 36px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .mini-zy-btn.active {
+      background: #f59e0b;
+      color: #0f172a;
+      border-color: #fff;
+    }
+
+    .form-input-large {
+      background: #0f172a;
+      color: #fff;
+      border: 2px solid #38bdf8;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 1.35rem;
+      font-weight: 800;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .quick-suggestions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .suggestion-chip {
+      background: #334155;
+      color: #e2e8f0;
+      border: 1px solid #64748b;
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+
+    .suggestion-chip:hover {
+      background: #475569;
+      color: #fff;
+    }
+
+    .form-row-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-input-code, .form-select {
+      background: #0f172a;
+      color: #fff;
+      border: 2px solid #475569;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .form-hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .modal-footer {
+      padding: 12px 20px;
+      background: #0f172a;
+      border-top: 1px solid #334155;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      background: #475569;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-primary-outline {
+      background: transparent;
+      color: #38bdf8;
+      border: 2px solid #38bdf8;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-primary-gold {
+      background: #f59e0b;
+      color: #0f172a;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 1.05rem;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    /* 詞庫管理列表 */
+    .dict-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .dict-tabs {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dict-tab {
+      background: #334155;
+      color: var(--text-secondary);
+      border: none;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .dict-tab.active {
+      background: #f59e0b;
+      color: #0f172a;
+    }
+
+    .dict-filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-select-sm {
+      background: #0f172a;
+      color: #fff;
+      border: 1px solid #64748b;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.9rem;
+    }
+
+    .btn-sm-outline {
+      background: #334155;
+      color: #fff;
+      border: 1px solid #64748b;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .dict-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 48dvh;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .dict-item-row {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dict-item-row.learned-row {
+      border-color: #f59e0b;
+      background: rgba(120, 53, 15, 0.25);
+    }
+
+    .dict-item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dict-zy-pill {
+      background: #1e3a8a;
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 900;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .dict-item-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .dict-item-text {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .dict-item-meta {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .dict-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dict-act-btn {
+      background: #334155;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .dict-act-btn.btn-star-active {
+      background: #f59e0b;
+      color: #0f172a;
+    }
+
+    .dict-act-btn.btn-del {
+      background: #7f1d1d;
+      color: #fecaca;
+    }
+
+    /* 響應式微調：平板直向或窄螢幕避免頂部控制列被裁切 */
+    @media (max-width: 960px) {
+      .communication-board {
+        grid-template-columns: 120px 1fr;
+        grid-template-rows: auto auto;
+        height: auto;
+      }
+      .system-brand-box {
+        display: none;
+      }
+      .top-actions-grid {
+        grid-column: 1 / -1;
+        height: clamp(56px, 9vh, 72px);
+      }
+    }
+
+    /* 浮動通知 Toast */
+    .toast-notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: #fde047;
+      border: 2px solid #f59e0b;
+      border-radius: 999px;
+      padding: 10px 24px;
+      font-size: 1.05rem;
+      font-weight: 900;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.65);
+      z-index: 200;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- ==================== 1. 頂部：單列整合「系統標題＋已選注音＋專屬學習顯示幕＋6個操作與控制大按鈕」 ==================== -->
+    <header class="top-section">
+      <div class="communication-board">
+        <!-- 欄位 0 (最左)：系統品牌標題 -->
+        <div class="system-brand-box">
+          <div class="brand-logo-icon" aria-hidden="true">ㄅ</div>
+          <div class="brand-title-group">
+            <div class="brand-title-zh"><span class="zy-accent">ㄅㄆㄇㄈ</span>輔助溝通系統</div>
+            <div class="brand-title-en">Bopomofo-AAC</div>
+          </div>
+        </div>
+
+        <!-- 欄位 1 (左2)：已選注音符號提示 -->
+        <div class="zy-indicator-box" aria-live="polite">
+          <div class="zy-indicator-label">目前已選注音</div>
+          <div id="selectedZyBadges" class="zy-badges-container">
+            <span class="zy-empty-placeholder">尚未選擇（顯示常用）</span>
+          </div>
+        </div>
+
+        <!-- 欄位 2 (中)：確認要表達的語詞與專屬學習顯示幕 -->
+        <div id="mainDisplayBox" class="main-expression-display" role="status" aria-live="assertive">
+          <div id="expressionCategoryTag" class="expression-tag hidden">準備溝通</div>
+          <div id="confirmedPhraseText" class="confirmed-phrase-text">
+            請點選下方「注音符號」選擇語詞
+          </div>
+          <div id="learningStatusHint" class="learning-status-hint">
+            💡 選取注音並確認語詞後，系統會自動記憶學習，下次選同一注音優先出現！
+          </div>
+        </div>
+
+        <!-- 欄位 3 (最右)：6 個等高直立大按鈕（操作模式 3 顆 ＋ 詞庫管理 1 顆 ＋ 再說一次 ＋ 緊急呼叫） -->
+        <div class="top-actions-grid scan-row" data-scan-row="0" data-scan-label="頂部控制列" role="region" aria-label="操作模式與快速功能">
+          <button id="modeBtnClick" class="action-btn mode-pill active" data-mode="click" type="button" title="大按鈕點擊模式">
+            <span class="btn-icon">🖱️</span>
+            <span class="btn-text">大按鈕點擊</span>
+          </button>
+
+          <button id="modeBtnDwell" class="action-btn mode-pill" data-mode="dwell" type="button" title="游標停留自動選取模式">
+            <span class="btn-icon">⏱️</span>
+            <span class="btn-text">游標停留選</span>
+            <span id="dwellSettingsGroup" class="hidden" onclick="event.stopPropagation();">
+              <select id="dwellTimeSelect" class="mode-inline-select" aria-label="停留秒數">
+                <option value="800">0.8秒</option>
+                <option value="1200" selected>1.2秒</option>
+                <option value="1800">1.8秒</option>
+              </select>
+            </span>
+          </button>
+
+          <button id="modeBtnScan" class="action-btn mode-pill" data-mode="scan" type="button" title="單鍵行列自動掃描模式">
+            <span class="btn-icon">🔄</span>
+            <span class="btn-text">自動掃描</span>
+            <span id="scanSettingsGroup" class="hidden" onclick="event.stopPropagation();">
+              <select id="scanSpeedSelect" class="mode-inline-select" aria-label="掃描速度">
+                <option value="2200">2.2秒</option>
+                <option value="1500" selected>1.5秒</option>
+                <option value="1000">1.0秒</option>
+              </select>
+            </span>
+          </button>
+
+          <button id="btnOpenDictModal" class="action-btn btn-dict-box scan-item" type="button" title="詞庫管理與學習紀錄">
+            <span id="learnedCountBadge" class="count-badge">0</span>
+            <span class="btn-icon">📚</span>
+            <span class="btn-text">詞庫管理</span>
+          </button>
+
+          <button id="btnSpeakAgain" class="action-btn btn-speak scan-item" type="button" title="再次語音朗讀顯示幕上的語詞">
+            <span class="btn-icon">🔊</span>
+            <span class="btn-text">再說一次</span>
+          </button>
+          <button id="btnEmergencyBell" class="action-btn btn-emergency scan-item" type="button" title="發出緊急呼叫鈴聲與求救語音">
+            <span class="btn-icon">🔔</span>
+            <span class="btn-text">緊急呼叫</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ==================== 2. 中段：智慧學習語詞候選區 ==================== -->
+    <section class="candidate-section" aria-label="語詞選擇區">
+      <div class="candidate-header">
+        <div class="candidate-title-wrap">
+          <span id="candidateHeaderTitle" class="candidate-title">
+            ⭐ 常用置頂與已學習語詞（點選下方注音符號可立即篩選）
+          </span>
+          <span id="candidateCountInfo" class="candidate-count-info"></span>
+        </div>
+        <span id="pageIndicator" class="page-indicator-header">第 1 / 1 頁</span>
+      </div>
+
+      <!-- 語詞候選卡片網格 (掃描第 1 列：包含常用/候選語詞卡片 ＋ 上一頁 ＋ 下一頁 同列等高大按鈕) -->
+      <div id="candidateGrid" class="candidate-grid scan-row" data-scan-row="1" data-scan-label="語詞選擇區">
+        <!-- 動態渲染候選語詞卡片與同列「◀ 上一頁」「下一頁 ▶」大按鈕 -->
+      </div>
+    </section>
+
+    <!-- ==================== 3. 下段：37 個注音符號特大鍵盤區 ==================== -->
+    <main class="keyboard-section" aria-label="注音符號鍵盤">
+      <div id="bopomofoKeyboard" class="bopomofo-keyboard">
+        <!-- 依據 BOPOMOFO_ROWS 動態產生 6 列無障礙大按鍵 (掃描第 2~7 列) -->
+      </div>
+    </main>
+
+    <!-- 自動掃描模式專用底部單一觸發大面板 (當開啟自動掃描時顯示) -->
+    <div id="scanTriggerBar" class="scan-trigger-bar hidden">
+      <button id="btnScanTriggerPad" class="scan-trigger-pad" type="button">
+        <span class="scan-pad-status" id="scanStatusText">🔄 自動掃描中：正在掃描【列】...</span>
+        <span class="scan-pad-instruction">👉 請按鍵盤【空白鍵 / Enter】或【點擊此大按鈕】確認選取 👈</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 互動視窗 1：新增與記錄學習語詞 ==================== -->
+  <div id="learnModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="learnModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="learnModalTitle">🌟 記錄並學習新語詞</h2>
+        <button id="btnCloseLearnModal" class="modal-close-btn" type="button" aria-label="關閉">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-desc">
+          當病友選擇一個注音符號後，與病友確認要表達的語詞並記錄下來。<strong>下次再點選同一個注音符號時，系統會立即優先出現此語詞！</strong>
+        </p>
+
+        <!-- 步驟 1：對應的觸發注音符號 -->
+        <div class="form-group">
+          <label class="form-label">1. 病友選擇的注音符號（點擊可更改主要注音）：</label>
+          <div class="selected-zy-preview-row">
+            <div id="modalPrimaryZyBadge" class="modal-zy-badge">ㄏ</div>
+            <span class="modal-zy-explain">
+              下次病友點選「<strong id="modalExplainZy">ㄏ</strong>」時，此語詞將立即排在第一順位顯示。
+            </span>
+          </div>
+          <!-- 37 注音快速切換小鍵盤 -->
+          <div id="modalZyPicker" class="modal-zy-picker"></div>
+        </div>
+
+        <!-- 步驟 2：輸入確認要表達的語詞 -->
+        <div class="form-group">
+          <label for="inputNewPhraseText" class="form-label">2. 確認病友要表達的語詞內容：</label>
+          <input
+            id="inputNewPhraseText"
+            type="text"
+            class="form-input-large"
+            placeholder="例如：換枕頭、想喝果汁、幫我戴眼鏡..."
+            autocomplete="off"
+          />
+          <div id="quickPhraseSuggestions" class="quick-suggestions-row"></div>
+        </div>
+
+        <!-- 步驟 3：自動推導的多字首注音索引與分類 -->
+        <div class="form-row-two-col">
+          <div class="form-group">
+            <label for="inputNewPhraseZyCode" class="form-label">
+              自動對應注音字首碼（支援多字首篩選）：
+            </label>
+            <input
+              id="inputNewPhraseZyCode"
+              type="text"
+              class="form-input-code"
+              placeholder="例如：ㄏㄓㄊ"
+            />
+            <small class="form-hint">系統已根據國字自動帶入字首注音，您也可手動修改</small>
+          </div>
+
+          <div class="form-group">
+            <label for="selectNewPhraseCategory" class="form-label">語詞分類：</label>
+            <select id="selectNewPhraseCategory" class="form-select">
+              <option value="專屬學習">🌟 病友專屬學習</option>
+              <option value="生理需求">💧 生理需求（飲食/如廁）</option>
+              <option value="身體照護">🛏️ 身體照護（姿勢/清潔）</option>
+              <option value="緊急醫療">🚨 緊急醫療（疼痛/呼吸/抽痰）</option>
+              <option value="環境舒適">🌡️ 環境舒適（冷熱/燈光）</option>
+              <option value="心理支持">❤️ 心理支持與家人互動</option>
+              <option value="日常回應">💬 日常回應</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btnCancelLearn" class="btn-secondary" type="button">取消</button>
+        <button id="btnSaveOnlyLearn" class="btn-primary-outline" type="button">
+          💾 儲存至學習詞庫
+        </button>
+        <button id="btnSpeakAndSaveLearn" class="btn-primary-gold" type="button">
+          🔊 立即發聲表達 ＋ 記錄學習
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 互動視窗 2：學習詞庫管理 ==================== -->
+  <div id="dictModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="dictModalTitle">
+    <div class="modal-card modal-card-wide">
+      <div class="modal-header">
+        <h2 id="dictModalTitle">📚 學習詞庫與使用頻率管理</h2>
+        <button id="btnCloseDictModal" class="modal-close-btn" type="button" aria-label="關閉">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="dict-toolbar">
+          <div class="dict-tabs">
+            <button id="tabLearnedOnly" class="dict-tab active" type="button">
+              🌟 已學習與曾選取語詞
+            </button>
+            <button id="tabAllPhrases" class="dict-tab" type="button">
+              📋 全部語詞（含系統預設）
+            </button>
+          </div>
+
+          <div class="dict-filter-actions">
+            <select id="dictFilterZySelect" class="form-select-sm">
+              <option value="">全部注音符號 (37)</option>
+            </select>
+            <button id="btnResetDefaultDict" class="btn-sm-outline" type="button" style="border-color:#f87171;color:#fecaca;" title="將詞庫重設為系統預設的 37 注音基礎語詞">🔄 回復預設語詞</button>
+            <button id="btnExportDict" class="btn-sm-outline" type="button">📤 匯出備份</button>
+            <label class="btn-sm-outline file-upload-label">
+              📥 匯入詞庫
+              <input id="inputImportDict" type="file" accept=".json" class="hidden" />
+            </label>
+          </div>
+        </div>
+
+        <div id="dictListContainer" class="dict-list-container"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btnAddFromDictModal" class="btn-primary-gold" type="button">➕ 新增學習語詞</button>
+        <button id="btnCloseDictFooter" class="btn-secondary" type="button">關閉視窗</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 學習成功浮動通知 Toast -->
+  <div id="toastNotification" class="toast-notification hidden" role="status" aria-live="polite"></div>
+
+  <script>
+    // ==================== 37 個注音符號定義與無障礙鍵盤行列配置 ====================
+    const BOPOMOFO_ROWS = [
+      [
+        { symbol: 'ㄅ', type: 'initial', hint: '杯、抱、不' },
+        { symbol: 'ㄆ', type: 'initial', hint: '拍、怕、平' },
+        { symbol: 'ㄇ', type: 'initial', hint: '悶、沒、毛' },
+        { symbol: 'ㄈ', type: 'initial', hint: '翻、飯、扶' },
+        { symbol: 'ㄉ', type: 'initial', hint: '燈、等、大' },
+        { symbol: 'ㄊ', type: 'initial', hint: '痛、痰、頭' },
+        { symbol: 'ㄋ', type: 'initial', hint: '尿、拿、哪' }
+      ],
+      [
+        { symbol: 'ㄌ', type: 'initial', hint: '冷、累、拉' },
+        { symbol: 'ㄍ', type: 'initial', hint: '蓋、乾、高' },
+        { symbol: 'ㄎ', type: 'initial', hint: '渴、看、開' },
+        { symbol: 'ㄏ', type: 'initial', hint: '喝、好、換' },
+        { symbol: 'ㄐ', type: 'initial', hint: '救、緊、腳' },
+        { symbol: 'ㄑ', type: 'initial', hint: '起、請、氣' },
+        { symbol: 'ㄒ', type: 'initial', hint: '吸、想、謝' }
+      ],
+      [
+        { symbol: 'ㄓ', type: 'initial', hint: '枕、抓、紙' },
+        { symbol: 'ㄔ', type: 'initial', hint: '抽、吃、床' },
+        { symbol: 'ㄕ', type: 'initial', hint: '水、手、睡' },
+        { symbol: 'ㄖ', type: 'initial', hint: '熱、揉、軟' },
+        { symbol: 'ㄗ', type: 'initial', hint: '坐、早、嘴' },
+        { symbol: 'ㄘ', type: 'initial', hint: '廁、擦、側' },
+        { symbol: 'ㄙ', type: 'initial', hint: '痠、鬆' }
+      ],
+      [
+        { symbol: 'ㄧ', type: 'final', hint: '癢、醫、衣' },
+        { symbol: 'ㄨ', type: 'final', hint: '我、溫、襪' },
+        { symbol: 'ㄩ', type: 'final', hint: '暈、預、浴' },
+        { symbol: 'ㄚ', type: 'final', hint: '啊、按' },
+        { symbol: 'ㄛ', type: 'final', hint: '喔' },
+        { symbol: 'ㄜ', type: 'final', hint: '餓、噁' },
+        { symbol: 'ㄝ', type: 'final', hint: '耶、也' }
+      ],
+      [
+        { symbol: 'ㄞ', type: 'final', hint: '愛、矮' },
+        { symbol: 'ㄟ', type: 'final', hint: '欸' },
+        { symbol: 'ㄠ', type: 'final', hint: '襖、熬' },
+        { symbol: 'ㄡ', type: 'final', hint: '嘔、偶' },
+        { symbol: 'ㄢ', type: 'final', hint: '按、安' },
+        { symbol: 'ㄣ', type: 'final', hint: '嗯、恩' },
+        { symbol: 'ㄤ', type: 'final', hint: '髒、昂' }
+      ],
+      [
+        { symbol: 'ㄥ', type: 'final', hint: '冷、痛(韻)' },
+        { symbol: 'ㄦ', type: 'final', hint: '耳、兒、二' }
+      ]
+    ];
+
+    // 預設醫療與日常照護基礎詞庫（37 個注音符號皆設計 1~2 個精準預設語詞）
+    const DEFAULT_PHRASES = [
+      // ㄅ
+      { id: 'def-b-1', text: '不要、不是這個', zy: 'ㄅㄧ', primaryZy: 'ㄅ', category: '日常回應', isLearned: false, useCount: 0, lastUsedAt: 0, pinned: true },
+      { id: 'def-b-2', text: '幫我蓋被子', zy: 'ㄅㄨㄍㄅㄗ', primaryZy: 'ㄅ', category: '環境舒適', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄆ
+      { id: 'def-p-1', text: '幫我拍背', zy: 'ㄆㄅ', primaryZy: 'ㄆ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-p-2', text: '陪我說說話', zy: 'ㄆㄨㄕㄏ', primaryZy: 'ㄆ', category: '心理支持', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄇ
+      { id: 'def-m-1', text: '胸口悶悶的', zy: 'ㄇㄇㄉ', primaryZy: 'ㄇ', category: '緊急醫療', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-m-2', text: '沒事，不用擔心', zy: 'ㄇㄕ', primaryZy: 'ㄇ', category: '日常回應', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄈ
+      { id: 'def-f-1', text: '請幫我翻身', zy: 'ㄈㄕ', primaryZy: 'ㄈ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0, pinned: true },
+      { id: 'def-f-2', text: '扶我起來坐著', zy: 'ㄈㄨㄑㄌ', primaryZy: 'ㄈ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄉ
+      { id: 'def-d-1', text: '幫我開燈', zy: 'ㄉ', primaryZy: 'ㄉ', category: '環境舒適', isLearned: false, useCount: 0, lastUsedAt: 0, pinned: true },
+      { id: 'def-d-2', text: '幫我關燈', zy: 'ㄉ', primaryZy: 'ㄉ', category: '環境舒適', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄊ
+      { id: 'def-t-1', text: '我覺得很痛', zy: 'ㄊ', primaryZy: 'ㄊ', category: '緊急醫療', isLearned: false, useCount: 0, lastUsedAt: 0, pinned: true },
+      { id: 'def-t-2', text: '喉嚨有痰', zy: 'ㄊ', primaryZy: 'ㄊ', category: '緊急醫療', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄋ
+      { id: 'def-n-1', text: '我想尿尿（小便）', zy: 'ㄋㄋ', primaryZy: 'ㄋ', category: '生理需求', isLearned: false, useCount: 0, lastUsedAt: 0, pinned: true },
+      { id: 'def-n-2', text: '幫我拿衛生紙', zy: 'ㄋㄨㄕㄓ', primaryZy: 'ㄋ', category: '日常需求', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄌ
+      { id: 'def-l-1', text: '我覺得很冷', zy: 'ㄌ', primaryZy: 'ㄌ', category: '環境舒適', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-l-2', text: '我累了，想睡覺', zy: 'ㄌㄌ', primaryZy: 'ㄌ', category: '生理需求', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄍ
+      { id: 'def-g-1', text: '嘴巴很乾，想沾水', zy: 'ㄍ', primaryZy: 'ㄍ', category: '生理需求', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-g-2', text: '枕頭墊高一點', zy: 'ㄍㄧㄉ', primaryZy: 'ㄍ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄎ
+      { id: 'def-k-1', text: '我口渴了', zy: 'ㄎㄎ', primaryZy: 'ㄎ', category: '生理需求', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-k-2', text: '想看電視', zy: 'ㄎㄉㄕ', primaryZy: 'ㄎ', category: '日常需求', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄏ
+      { id: 'def-h-1', text: '我想喝水', zy: 'ㄏㄕ', primaryZy: 'ㄏ', category: '生理需求', isLearned: false, useCount: 0, lastUsedAt: 0, pinned: true },
+      { id: 'def-h-2', text: '換姿勢', zy: 'ㄏㄗㄕ', primaryZy: 'ㄏ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄐ
+      { id: 'def-j-1', text: '幫我叫醫生或護理師', zy: 'ㄐㄧㄕ', primaryZy: 'ㄐ', category: '緊急醫療', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-j-2', text: '腳很痠、腳麻了', zy: 'ㄐㄏㄙ', primaryZy: 'ㄐ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄑ
+      { id: 'def-q-1', text: '開冷氣', zy: 'ㄑ', primaryZy: 'ㄑ', category: '環境舒適', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-q-2', text: '關冷氣', zy: 'ㄑ', primaryZy: 'ㄑ', category: '環境舒適', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄒ
+      { id: 'def-x-1', text: '謝謝你，辛苦了', zy: 'ㄒㄒㄋ', primaryZy: 'ㄒ', category: '日常回應', isLearned: false, useCount: 0, lastUsedAt: 0, pinned: true },
+      { id: 'def-x-2', text: '我想休息睡覺', zy: 'ㄒㄒㄒㄐ', primaryZy: 'ㄒ', category: '生理需求', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄓ
+      { id: 'def-zh-1', text: '枕頭不舒服，幫我喬一下', zy: 'ㄓㄊ', primaryZy: 'ㄓ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-zh-2', text: '幫我抓癢', zy: 'ㄓㄧ', primaryZy: 'ㄓ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄔ
+      { id: 'def-ch-1', text: '請幫我抽痰', zy: 'ㄔㄊ', primaryZy: 'ㄔ', category: '緊急醫療', isLearned: false, useCount: 0, lastUsedAt: 0, pinned: true },
+      { id: 'def-ch-2', text: '床頭搖高一點', zy: 'ㄔㄊㄧㄍ', primaryZy: 'ㄔ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄕ
+      { id: 'def-sh-1', text: '手很麻，幫我動一動', zy: 'ㄕㄏㄇ', primaryZy: 'ㄕ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-sh-2', text: '身體不舒服', zy: 'ㄕㄊㄅㄕㄈ', primaryZy: 'ㄕ', category: '緊急醫療', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄖ
+      { id: 'def-r-1', text: '我覺得很熱', zy: 'ㄖ', primaryZy: 'ㄖ', category: '環境舒適', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-r-2', text: '幫我揉一揉肩膀', zy: 'ㄖㄧㄖ', primaryZy: 'ㄖ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄗ
+      { id: 'def-z-1', text: '我想坐起來', zy: 'ㄗㄑㄌ', primaryZy: 'ㄗ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-z-2', text: '嘴巴乾，想塗護唇膏', zy: 'ㄗㄅㄍ', primaryZy: 'ㄗ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄘ
+      { id: 'def-c-1', text: '我想上廁所', zy: 'ㄘㄙ', primaryZy: 'ㄘ', category: '生理需求', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-c-2', text: '我想側躺', zy: 'ㄘㄊ', primaryZy: 'ㄘ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄙ
+      { id: 'def-s-1', text: '腰跟背很痠', zy: 'ㄙ', primaryZy: 'ㄙ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-s-2', text: '幫我放鬆手腳', zy: 'ㄙ', primaryZy: 'ㄙ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄧ
+      { id: 'def-yi-1', text: '身體很癢，幫我抓癢', zy: 'ㄧ', primaryZy: 'ㄧ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0, pinned: true },
+      { id: 'def-yi-2', text: '衣服濕了，想換衣服', zy: 'ㄧㄈ', primaryZy: 'ㄧ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄨ
+      { id: 'def-wu-1', text: '我不舒服', zy: 'ㄨㄅㄕㄈ', primaryZy: 'ㄨ', category: '緊急醫療', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-wu-2', text: '幫我穿襪子，腳冷', zy: 'ㄨㄗ', primaryZy: 'ㄨ', category: '環境舒適', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄩ
+      { id: 'def-yu-1', text: '我覺得頭暈', zy: 'ㄩ', primaryZy: 'ㄩ', category: '緊急醫療', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-yu-2', text: '幫我預約看診', zy: 'ㄩㄧ', primaryZy: 'ㄩ', category: '醫療照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄚ
+      { id: 'def-a-1', text: '幫我按摩一下', zy: 'ㄚㄇ', primaryZy: 'ㄚ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-a-2', text: '啊，請等一下', zy: 'ㄚ', primaryZy: 'ㄚ', category: '日常回應', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄛ
+      { id: 'def-o-1', text: '喔，我知道了', zy: 'ㄛ', primaryZy: 'ㄛ', category: '日常回應', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-o-2', text: '喔，好的謝謝', zy: 'ㄛㄏㄉ', primaryZy: 'ㄛ', category: '日常回應', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄜ
+      { id: 'def-e-1', text: '我肚子餓了', zy: 'ㄜㄌ', primaryZy: 'ㄜ', category: '生理需求', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-e-2', text: '覺得噁心想吐', zy: 'ㄜㄒㄒㄊ', primaryZy: 'ㄜ', category: '緊急醫療', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄝ
+      { id: 'def-ye-1', text: '我也要', zy: 'ㄝ', primaryZy: 'ㄝ', category: '日常回應', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-ye-2', text: '耶，太好了', zy: 'ㄝ', primaryZy: 'ㄝ', category: '日常回應', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄞ
+      { id: 'def-ai-1', text: '愛你們，謝謝陪伴', zy: 'ㄞㄋㄇ', primaryZy: 'ㄞ', category: '心理支持', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-ai-2', text: '枕頭太矮了，幫我墊高', zy: 'ㄞ', primaryZy: 'ㄞ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄟ
+      { id: 'def-ei-1', text: '欸，請看我這邊', zy: 'ㄟ', primaryZy: 'ㄟ', category: '日常需求', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-ei-2', text: '欸，我有話想說', zy: 'ㄟ', primaryZy: 'ㄟ', category: '日常需求', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄠ
+      { id: 'def-ao-1', text: '幫我穿外套（襖）', zy: 'ㄠ', primaryZy: 'ㄠ', category: '環境舒適', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-ao-2', text: '想喝熬的熱湯或粥', zy: 'ㄠ', primaryZy: 'ㄠ', category: '生理需求', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄡ
+      { id: 'def-ou-1', text: '想嘔吐，請拿袋子', zy: 'ㄡㄊ', primaryZy: 'ㄡ', category: '緊急醫療', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-ou-2', text: '偶爾有點痛', zy: 'ㄡㄦ', primaryZy: 'ㄡ', category: '緊急醫療', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄢ
+      { id: 'def-an-1', text: '幫我按摩肩膀與腿', zy: 'ㄢㄇ', primaryZy: 'ㄢ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-an-2', text: '幫我按呼叫鈴', zy: 'ㄢ', primaryZy: 'ㄢ', category: '緊急醫療', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄣ
+      { id: 'def-en-1', text: '嗯，對的！', zy: 'ㄣ', primaryZy: 'ㄣ', category: '日常回應', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-en-2', text: '嗯，謝謝你的幫忙', zy: 'ㄣ', primaryZy: 'ㄣ', category: '心理支持', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄤ
+      { id: 'def-ang-1', text: '身體覺得髒，想擦澡', zy: 'ㄤ', primaryZy: 'ㄤ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-ang-2', text: '衣服弄髒了，想換掉', zy: 'ㄤ', primaryZy: 'ㄤ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄥ
+      { id: 'def-eng-1', text: '覺得好冷（ㄥ韻）', zy: 'ㄥ', primaryZy: 'ㄥ', category: '環境舒適', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-eng-2', text: '身體好痛（ㄥ韻）', zy: 'ㄥ', primaryZy: 'ㄥ', category: '緊急醫療', isLearned: false, useCount: 0, lastUsedAt: 0 },
+
+      // ㄦ
+      { id: 'def-er-1', text: '耳朵不舒服或很癢', zy: 'ㄦㄉ', primaryZy: 'ㄦ', category: '身體照護', isLearned: false, useCount: 0, lastUsedAt: 0 },
+      { id: 'def-er-2', text: '想找兒子／女兒（家人）', zy: 'ㄦ', primaryZy: 'ㄦ', category: '心理支持', isLearned: false, useCount: 0, lastUsedAt: 0 }
+    ];
+
+    // 常用繁體中文字首注音對照表
+    const CHAR_INITIAL_GROUPS = {
+      'ㄅ': '八巴把爸吧白百北杯被背抱報保飽包幫邦板半辦病並冰兵不布步部鼻比筆閉必邊變便表別憋脖伯補',
+      'ㄆ': '怕拍排牌盤旁胖跑泡陪培配盆朋捧批披皮疲屁篇偏片漂票平瓶憑破婆頗撲鋪普',
+      'ㄇ': '媽麻馬罵嗎買賣邁滿慢忙毛冒帽沒枚每美妹門悶們夢孟米迷密蜜眠棉麵秒妙滅民敏名明命摸模膜末沫莫某母木目幕',
+      'ㄈ': '發乏伐罰法帆番翻凡煩反返飯泛方坊芳防妨房放非飛肥匪吠肺廢沸費分吩紛芬墳粉份奮憤風瘋豐縫鳳佛否夫膚扶服福撫斧俯腐付婦負附復富副父',
+      'ㄉ': '大呆代帶待袋戴單擔丹淡但旦彈當擋黨刀導島倒到道得德的燈登等低滴迪敵底抵地弟帝第點典電店墊掉釣爹碟疊丁叮頂定訂東冬懂動凍洞都兜斗抖陡豆逗讀獨肚度渡端短段斷堆隊對噸蹲盾頓多奪朵躲',
+      'ㄊ': '他她它塌塔踏胎台抬太態談彈痰毯嘆探湯堂塘糖躺燙掏逃桃陶討套特疼騰梯踢題提體替天添田甜填挑條跳貼鐵廳聽停庭挺通同桐銅童統桶筒痛偷頭投透凸禿突圖徒塗土吐兔團推腿退吞屯托拖脫駝妥',
+      'ㄋ': '拿哪那吶納乃奶奈男南難囊撓腦惱鬧呢內嫩能妮泥你妳逆年念娘釀鳥尿捏您寧凝牛扭鈕農濃弄奴努怒女暖挪諾',
+      'ㄌ': '拉啦喇辣來萊藍欄攔籃覽懶爛郎狼廊朗浪撈勞牢老佬酪樂雷累淚類冷厘梨狸離禮李里理力歷厲立粒麗連簾憐蓮聯臉練涼良糧兩亮諒輛聊療僚了料列裂鄰林臨淋鈴零靈領嶺另溜劉流留六龍聾籠隆壟攏樓嘍良露盧爐魯陸錄鹿路驢旅屢律慮率綠亂掠略輪倫論羅蘿邏螺裸落絡駱',
+      'ㄍ': '咖該改蓋鈣乾甘桿肝趕敢感剛崗綱缸鋼港高膏糕搞稿告哥歌擱割革格閣隔個各給根跟更耕工弓公功攻供宮恭鞏共貢勾溝狗夠構購估孤姑古谷股骨鼓固故顧刮瓜寡掛乖拐怪官冠觀管館罐慣光廣逛歸圭龜規閨軌鬼櫃貴桂滾棍鍋國果裹過',
+      'ㄎ': '卡開揩慨刊堪砍看康慷糠扛抗炕考烤靠科棵顆殼咳可渴克刻客課肯啃懇坑空孔恐控摳口扣枯哭苦庫褲誇垮挎跨快寬款匡筐狂況礦框曠虧盔窺葵愧潰坤昆捆困擴括闊',
+      'ㄏ': '哈嗨孩海害亥含函寒韓罕喊汗旱悍焊漢杭航毫豪好號喝禾合何和河核盒荷賀褐赫鶴黑痕很狠恨哼恆橫衡轟哄紅宏洪虹喉猴吼後厚候乎呼忽狐胡壺湖糊蝴虎唬互戶護花華滑猾化劃畫話懷槐壞歡環還緩換患喚渙宦幻荒慌皇黃煌晃灰恢揮輝回毀悔匯會繪賄昏婚渾魂混活火伙夥或貨獲禍惑霍',
+      'ㄐ': '幾肌飢跡激雞積績緝吉極棘集及急疾即級擠幾脊己計記紀忌技際劑季既寄寂加佳家嘉夾頰甲賈假價駕架嫁稼尖堅間肩艱兼監減剪檢簡鹼見件建健艦漸踐鑑鍵箭江姜將漿僵疆講獎槳匠降蕉椒焦膠交郊澆驕嬌嚼角狡絞餃腳攪叫轎較教階皆接揭街節劫傑潔結捷睫截姐解介戒屆界借巾今斤金津筋僅緊錦盡勁近進晉浸禁京經莖驚晶睛精鯨井警頸靜境敬鏡徑竟競淨糾究揪久九酒救舊舅就居拘鞠局菊橘咀舉矩句巨拒具俱劇懼據距聚捐娟圈倦眷卷絹均菌軍君窘',
+      'ㄑ': '七妻凄戚期欺漆齊其奇歧騎棋旗乞企豈起氣汽棄器契砌掐恰洽千仟牽鉛謙簽前錢鉗潛淺遣欠歉槍腔強牆搶悄敲鍬橋瞧巧切茄且怯竊親侵欽芹琴禽勤擒寢沁青氫輕傾清情晴氰請慶窮瓊秋丘邱球求囚區曲軀趨渠取娶去趣圈全權泉拳犬勸缺瘸卻雀確鵲群裙',
+      'ㄒ': '夕汐西吸希昔析矽息犧悉惜烯硒晰犀稀溪錫熄熙膝習席襲媳洗喜戲系細隙瞎蝦匣霞轄暇峽狹下夏嚇掀先仙鮮纖咸賢銜嫌顯險縣現線限憲陷餡羨獻鄉相香廂湘箱襄詳祥翔享響想向巷項象像橡削宵消霄逍蕭銷瀟小曉孝效校笑些歇協脅挾諧攜鞋寫泄瀉卸屑械謝心辛欣新薪馨信興星腥猩刑行形型醒杏姓幸性兄凶胸雄熊休修羞朽秀袖繡銹嗅須虛需徐許蓄敘緒續軒宣掀懸旋選癬穴學雪血勳熏尋巡旬馴詢循訓訊迅速遜',
+      'ㄓ': '之支汁芝枝知肢織脂隻執侄直值職植殖止只旨址紙指趾至志制幟治炙質峙秩致擲智滯置中忠終鐘腫種仲眾州舟周洲粥軸肘帚咒宙晝皺驟朱株珠諸豬蛛竹燭逐主煮囑住助注貯駐柱祝著築抓爪扎專磚轉撰賺篆樁庄裝妝撞壯狀椎錐追墜綴準捉桌濁酌啄著枕針診陣鎮振震爭睜箏蒸整正證症鄭掌漲脹丈杖帳障照罩召兆趙',
+      'ㄔ': '吃痴池馳遲持匙尺齒恥斥赤翅充沖蟲崇寵抽仇綢疇愁稠籌酬丑醜出初除廚鋤礎儲楚處觸川穿傳船喘串瘡窗床闖吹炊垂錘春純唇醇蠢戳綽茶察拆柴豺攙纏產闡顫昌猖長腸常償廠敞暢倡唱抄鈔超巢朝嘲潮吵炒車扯徹撤塵臣辰陳晨襯稱撐成呈承誠城乘懲澄橙逞秤臭插叉差',
+      'ㄕ': '尸失師詩施獅濕十什石時識實拾蝕食史矢使始駛屎士氏世市示式事侍勢視試飾室恃拭是柿適逝釋收手守首壽受獸售授瘦書抒叔樞殊梳淑疏舒輸蔬熟贖暑黍署屬鼠數薯曙術束述樹豎恕刷耍衰摔甩帥拴栓雙霜爽誰水稅睡順舜說爍朔碩殺沙紗傻啥煞篩晒山刪衫珊閃陝扇善傷商裳晌賞上尚捎梢燒稍勺芍韶少哨邵紹奢賒舌蛇舍捨設社射涉攝申伸身深娠神審嬸腎甚滲慎升生聲牲勝繩省聖盛剩屍',
+      'ㄖ': '日仁人忍刃認任扔仍日絨榮融熔溶容絨揉柔肉如儒乳辱入軟銳瑞潤若弱熱讓饒擾繞惹',
+      'ㄗ': '匝砸雜災栽宰載再在咱攢暫贊臟髒遭糟鑿早澡藻灶皂造噪燥躁則擇澤責賊怎增憎曾贈姿茲資滋籽子紫字自宗綜棕蹤總縱走奏租足卒族詛阻組鑽纂嘴醉最罪尊遵昨左佐作坐座做',
+      'ㄘ': '擦猜才材財裁采彩踩菜蔡餐參蠶殘慚慘燦倉蒼艙藏操糙槽草冊側廁測策層蹭挫措錯催摧脆翠粹存寸搓撮',
+      'ㄙ': '撒洒薩腮鰓塞賽三叁傘散桑嗓喪搔騷掃嫂色澀森僧私司絲思斯撕死四寺似飼巳松鬆聳訟頌送宋誦搜艘擻嗽蘇俗訴肅素速宿塑酸蒜算雖綏隨歲碎穗孫損筍縮梭唆鎖所痠',
+      'ㄧ': '一衣醫依儀姨夷宜移遺疑乙已以椅義議亦億役抑易疫益誼意溢毅翼因音陰姻銀引飲隱印應英嬰鷹迎盈營蠅贏影穎硬映喲優憂悠尤由郵猶油游友有酉又右幼誘紆淤於榆愚輿與宇羽雨語育郁獄裕預域欲諭愈禦猶癢養氧樣腰邀搖遙咬藥要爺也頁夜液葉一壹揖眼演厭咽驗鹽顏言嚴岩沿炎研掩仰',
+      'ㄨ': '屋烏污誣無吳吾五午伍武侮捂舞勿務物誤悟霧威微危韋違圍唯惟為維偉偽尾緯未味畏胃喂魏位謂慰溫瘟文紋聞蚊吻穩問翁嗡窩蝸我沃臥握沃巫嗚鎢吳蜈唔襪晚碗萬汪亡王網往妄忘旺望',
+      'ㄩ': '迂淤於予余魚娛漁隅愉逾愚與宇羽雨語玉育芋冤淵元員園原圓源緣遠怨院願曰約月岳悅閱躍雲勻隕允孕運暈醞韻擁永泳勇用',
+      'ㄚ': '啊阿呵吖腌锕',
+      'ㄛ': '喔哦噢',
+      'ㄜ': '阿額惡餓鄂厄扼鱷鵝蛾俄噁',
+      'ㄝ': '耶椰爺也頁夜液葉',
+      'ㄞ': '哎哀埃挨癌矮藹艾愛礙隘',
+      'ㄟ': '欸誒',
+      'ㄠ': '凹熬敖翱襖傲奧澳懊',
+      'ㄡ': '歐毆鷗嘔偶藕慪',
+      'ㄢ': '安氨庵鞍俺岸按案胺暗黯',
+      'ㄣ': '恩摁嗯',
+      'ㄤ': '骯昂盎',
+      'ㄥ': '鞥',
+      'ㄦ': '兒而耳爾餌二貳邇'
+    };
+
+    const CHAR_TO_ZY_MAP = {};
+    Object.entries(CHAR_INITIAL_GROUPS).forEach(([zy, chars]) => {
+      for (const ch of chars) {
+        if (!CHAR_TO_ZY_MAP[ch]) {
+          CHAR_TO_ZY_MAP[ch] = zy;
+        }
+      }
+    });
+
+    function extractBopomofoInitials(text, fallbackPrefix = '') {
+      if (!text) return fallbackPrefix;
+      const clean = text.replace(/[，。！？、（）()\s,.!?]/g, '');
+      let result = '';
+      for (let i = 0; i < clean.length && result.length < 4; i++) {
+        const ch = clean[i];
+        if (CHAR_TO_ZY_MAP[ch]) {
+          result += CHAR_TO_ZY_MAP[ch];
+        } else if (i === 0 && fallbackPrefix) {
+          result += fallbackPrefix[0];
+        }
+      }
+      return result || fallbackPrefix || 'ㄏ';
+    }
+
+    // ==================== 系統主邏輯 ====================
+    const STORAGE_KEY_PHRASES = 'bopomofo_aac_phrases_v1';
+    const STORAGE_KEY_SETTINGS = 'bopomofo_aac_settings_v1';
+
+    const state = {
+      phrases: [],
+      selectedZySequence: [],
+      confirmedPhrase: null,
+      candidatePage: 0,
+      candidatesPerPage: 5,
+      inputMode: 'click',
+      dwellTimeMs: 1200,
+      scanSpeedMs: 1500,
+      modalPrimaryZy: 'ㄏ',
+      dictTab: 'learned',
+      dictFilterZy: ''
+    };
+
+    let dwellTimer = null;
+    let currentDwellEl = null;
+
+    const scanState = {
+      timer: null,
+      phase: 'row',
+      rowIndex: 0,
+      itemIndex: 0,
+      itemLoopCount: 0
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+      loadPhrases();
+      initOfflineSpeechEngine();
+      initKeyboard();
+      initModalZyPicker();
+      initDictFilterSelect();
+      bindEvents();
+      updateUI();
+      applyInputMode();
+    });
+
+    function loadSettings() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_SETTINGS);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.inputMode) state.inputMode = parsed.inputMode;
+          if (parsed.dwellTimeMs) state.dwellTimeMs = Number(parsed.dwellTimeMs);
+          if (parsed.scanSpeedMs) state.scanSpeedMs = Number(parsed.scanSpeedMs);
+        }
+      } catch (e) {
+        console.warn('無法讀取設定:', e);
+      }
+      document.getElementById('dwellTimeSelect').value = String(state.dwellTimeMs);
+      document.getElementById('scanSpeedSelect').value = String(state.scanSpeedMs);
+    }
+
+    function saveSettings() {
+      try {
+        localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify({
+          inputMode: state.inputMode,
+          dwellTimeMs: state.dwellTimeMs,
+          scanSpeedMs: state.scanSpeedMs
+        }));
+      } catch (e) {
+        console.warn('無法儲存設定:', e);
+      }
+    }
+
+    function loadPhrases() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_PHRASES);
+        if (raw) {
+          const saved = JSON.parse(raw);
+          if (Array.isArray(saved) && saved.length > 0) {
+            const existingIds = new Set(saved.map(p => p.id));
+            const merged = [...saved];
+            DEFAULT_PHRASES.forEach(def => {
+              if (!existingIds.has(def.id)) {
+                merged.push({ ...def });
+              }
+            });
+            state.phrases = merged;
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('無法讀取學習詞庫，使用預設詞庫:', e);
+      }
+      state.phrases = DEFAULT_PHRASES.map(p => ({ ...p }));
+    }
+
+    function savePhrases() {
+      try {
+        localStorage.setItem(STORAGE_KEY_PHRASES, JSON.stringify(state.phrases));
+      } catch (e) {
+        console.warn('無法儲存學習詞庫:', e);
+      }
+    }
+
+    function initKeyboard() {
+      const container = document.getElementById('bopomofoKeyboard');
+      container.innerHTML = '';
+
+      BOPOMOFO_ROWS.forEach((rowItems, rIdx) => {
+        const rowEl = document.createElement('div');
+        rowEl.className = 'keyboard-row scan-row';
+        rowEl.dataset.scanRow = String(rIdx + 2);
+        rowEl.dataset.scanLabel = `注音第 ${rIdx + 1} 列`;
+
+        rowItems.forEach(item => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `zy-key type-${item.type} scan-item`;
+          btn.dataset.zy = item.symbol;
+          btn.innerHTML = `
+            <span class="zy-learned-indicator hidden" data-zy-badge="${item.symbol}"></span>
+            <span class="zy-symbol">${item.symbol}</span>
+            <span class="zy-hint">${item.hint}</span>
+          `;
+          btn.addEventListener('click', () => handleSelectBopomofo(item.symbol));
+          rowEl.appendChild(btn);
+        });
+
+        if (rIdx === 5) {
+          const shortcuts = [
+            {
+              title: '➕ 記錄新語詞',
+              sub: '學習並記住語詞',
+              cls: 'shortcut-learn',
+              onClick: () => openLearnModal()
+            },
+            {
+              title: '🔊 再說一次',
+              sub: '重播目前語詞',
+              cls: '',
+              onClick: () => repeatConfirmedPhrase()
+            },
+            {
+              title: '⌫ 退回注音',
+              sub: '刪最後一個注音',
+              cls: '',
+              onClick: () => handleBackspaceBopomofo()
+            },
+            {
+              title: '🗑️ 清除重選',
+              sub: '回到全部常用',
+              cls: '',
+              onClick: () => handleClearAll()
+            },
+            {
+              title: '🔔 緊急呼叫',
+              sub: '發出求救鈴聲',
+              cls: '',
+              onClick: () => triggerEmergencyCall()
+            }
+          ];
+
+          shortcuts.forEach(sc => {
+            const sBtn = document.createElement('button');
+            sBtn.type = 'button';
+            sBtn.className = `zy-key shortcut-key ${sc.cls} scan-item`;
+            sBtn.innerHTML = `
+              <span class="shortcut-title">${sc.title}</span>
+              <span class="shortcut-sub">${sc.sub}</span>
+            `;
+            sBtn.addEventListener('click', sc.onClick);
+            rowEl.appendChild(sBtn);
+          });
+        }
+
+        container.appendChild(rowEl);
+      });
+    }
+
+    function handleSelectBopomofo(symbol) {
+      playKeyClickTone(520, 0.05);
+      if (state.selectedZySequence.length === 0) {
+        state.selectedZySequence = [symbol];
+      } else if (state.selectedZySequence.length === 1 && state.selectedZySequence[0] === symbol) {
+        state.selectedZySequence = [symbol];
+      } else if (state.selectedZySequence.length < 4) {
+        const testSeq = [...state.selectedZySequence, symbol];
+        const testSeqStr = testSeq.join('');
+        const firstZy = testSeq[0];
+        const hasMatch = state.phrases.some(p => {
+          if (p.zy && p.zy.startsWith(testSeqStr)) return true;
+          if (p.primaryZy !== firstZy && (!p.zy || !p.zy.startsWith(firstZy))) return false;
+          return testSeq.every(z => (p.zy || '').includes(z));
+        });
+        if (hasMatch) {
+          state.selectedZySequence = testSeq;
+        } else {
+          state.selectedZySequence = [symbol];
+        }
+      } else {
+        state.selectedZySequence = [symbol];
+      }
+      state.candidatePage = 0;
+      updateUI();
+    }
+
+    function handleBackspaceBopomofo() {
+      playKeyClickTone(380, 0.05);
+      if (state.selectedZySequence.length > 0) {
+        state.selectedZySequence.pop();
+        state.candidatePage = 0;
+        updateUI();
+      }
+    }
+
+    function handleClearAll() {
+      playKeyClickTone(320, 0.06);
+      state.selectedZySequence = [];
+      state.candidatePage = 0;
+      updateUI();
+    }
+
+    function getFilteredAndSortedCandidates() {
+      const seqStr = state.selectedZySequence.join('');
+
+      if (!seqStr) {
+        const list = state.phrases.filter(p => p.isLearned || p.useCount > 0 || p.pinned);
+        return sortPhrasesByLearningPriority(list, '');
+      }
+
+      const firstZy = state.selectedZySequence[0];
+
+      if (state.selectedZySequence.length === 1) {
+        const matched = state.phrases.filter(
+          p => p.primaryZy === firstZy || (p.zy && p.zy.startsWith(firstZy))
+        );
+        return sortPhrasesByLearningPriority(matched, firstZy);
+      }
+
+      const exactPrefixMatched = state.phrases.filter(p => p.zy && p.zy.startsWith(seqStr));
+      if (exactPrefixMatched.length > 0) {
+        return sortPhrasesByLearningPriority(exactPrefixMatched, seqStr);
+      }
+
+      const looseMatched = state.phrases.filter(p => {
+        if (p.primaryZy !== firstZy && (!p.zy || !p.zy.startsWith(firstZy))) return false;
+        return state.selectedZySequence.every(z => (p.zy || '').includes(z));
+      });
+
+      return sortPhrasesByLearningPriority(looseMatched, seqStr);
+    }
+
+    function sortPhrasesByLearningPriority(list, activePrefix) {
+      return [...list].sort((a, b) => {
+        if (activePrefix && activePrefix.length > 1) {
+          const aExact = (a.zy || '').startsWith(activePrefix) ? 1 : 0;
+          const bExact = (b.zy || '').startsWith(activePrefix) ? 1 : 0;
+          if (aExact !== bExact) return bExact - aExact;
+        }
+
+        const aLearned = a.isLearned ? 1 : 0;
+        const bLearned = b.isLearned ? 1 : 0;
+        if (aLearned !== bLearned) return bLearned - aLearned;
+
+        const aCount = a.useCount || 0;
+        const bCount = b.useCount || 0;
+        if (aCount !== bCount) return bCount - aCount;
+
+        const aTime = a.lastUsedAt || 0;
+        const bTime = b.lastUsedAt || 0;
+        if (aTime !== bTime) return bTime - aTime;
+
+        return 0;
+      });
+    }
+
+    function confirmAndSpeakPhrase(phraseObj) {
+      if (!phraseObj) return;
+
+      const target = state.phrases.find(p => p.id === phraseObj.id);
+      const currentPrimaryZy = state.selectedZySequence[0] || phraseObj.primaryZy || (phraseObj.zy ? phraseObj.zy[0] : 'ㄏ');
+
+      if (target) {
+        target.useCount = (target.useCount || 0) + 1;
+        target.lastUsedAt = Date.now();
+        target.isLearned = true;
+        savePhrases();
+      }
+
+      state.confirmedPhrase = target || phraseObj;
+
+      const displayBox = document.getElementById('mainDisplayBox');
+      const categoryTag = document.getElementById('expressionCategoryTag');
+      const phraseTextEl = document.getElementById('confirmedPhraseText');
+      const hintEl = document.getElementById('learningStatusHint');
+
+      categoryTag.textContent = `${state.confirmedPhrase.category || '溝通表達'} ｜ 注音：${state.confirmedPhrase.zy || currentPrimaryZy}`;
+      categoryTag.classList.remove('hidden');
+
+      phraseTextEl.textContent = state.confirmedPhrase.text;
+      hintEl.textContent = `✅ 已記憶學習！下次點選注音「${currentPrimaryZy}」時，「${state.confirmedPhrase.text}」將立即優先顯示（累積使用 ${state.confirmedPhrase.useCount} 次）`;
+
+      displayBox.classList.add('speaking-active');
+      setTimeout(() => displayBox.classList.remove('speaking-active'), 1800);
+
+      speakText(state.confirmedPhrase.text);
+
+      state.selectedZySequence = [];
+      state.candidatePage = 0;
+      updateUI();
+
+      showToast(`🔊 已表達「${state.confirmedPhrase.text}」並記錄至注音「${currentPrimaryZy}」優先學習詞庫！`);
+    }
+
+    function repeatConfirmedPhrase() {
+      if (state.confirmedPhrase && state.confirmedPhrase.text) {
+        const displayBox = document.getElementById('mainDisplayBox');
+        displayBox.classList.add('speaking-active');
+        setTimeout(() => displayBox.classList.remove('speaking-active'), 1500);
+        speakText(state.confirmedPhrase.text);
+      } else {
+        speakText('請先選擇注音符號與要表達的語詞');
+      }
+    }
+
+    function triggerEmergencyCall() {
+      playEmergencyAlarmTone();
+      const emergencyPhrase = {
+        id: 'emergency-call',
+        text: '請過來幫幫我！我有緊急需求！',
+        zy: 'ㄐㄐ',
+        primaryZy: 'ㄐ',
+        category: '緊急呼叫',
+        useCount: 1
+      };
+      state.confirmedPhrase = emergencyPhrase;
+
+      const displayBox = document.getElementById('mainDisplayBox');
+      const categoryTag = document.getElementById('expressionCategoryTag');
+      const phraseTextEl = document.getElementById('confirmedPhraseText');
+      const hintEl = document.getElementById('learningStatusHint');
+
+      categoryTag.textContent = '🚨 緊急求助';
+      categoryTag.classList.remove('hidden');
+      phraseTextEl.textContent = emergencyPhrase.text;
+      hintEl.textContent = '🔔 已發出緊急呼叫鈴聲與語音！';
+
+      displayBox.classList.add('speaking-active');
+      setTimeout(() => {
+        speakText('請過來幫幫我！我有緊急需求！');
+      }, 450);
+    }
+
+    function updateUI() {
+      renderSelectedZyBadges();
+      renderCandidates();
+      updateKeyboardIndicators();
+      updateLearnedCountBadge();
+    }
+
+    function renderSelectedZyBadges() {
+      const container = document.getElementById('selectedZyBadges');
+      if (state.selectedZySequence.length === 0) {
+        container.innerHTML = `<span class="zy-empty-placeholder">尚未選擇（顯示常用）</span>`;
+        return;
+      }
+      container.innerHTML = state.selectedZySequence
+        .map(z => `<span class="selected-zy-pill">${z}</span>`)
+        .join('');
+    }
+
+    function renderCandidates() {
+      const grid = document.getElementById('candidateGrid');
+      const titleEl = document.getElementById('candidateHeaderTitle');
+      const countInfoEl = document.getElementById('candidateCountInfo');
+      const pageInd = document.getElementById('pageIndicator');
+
+      const candidates = getFilteredAndSortedCandidates();
+      const seqStr = state.selectedZySequence.join('');
+
+      if (!seqStr) {
+        titleEl.textContent = '⭐ 常用置頂與已學習語詞（請點選下方注音符號立即篩選）';
+      } else {
+        titleEl.textContent = `🎯 注音【 ${seqStr} 】的語詞選擇（🌟 已學習語詞排在最前面，可繼續點選注音縮小範圍）`;
+      }
+
+      const totalPages = Math.max(1, Math.ceil(candidates.length / state.candidatesPerPage));
+      if (state.candidatePage >= totalPages) {
+        state.candidatePage = totalPages - 1;
+      }
+      if (state.candidatePage < 0) {
+        state.candidatePage = 0;
+      }
+
+      const startIdx = state.candidatePage * state.candidatesPerPage;
+      const pageItems = candidates.slice(startIdx, startIdx + state.candidatesPerPage);
+
+      const learnedInList = candidates.filter(c => c.isLearned).length;
+      countInfoEl.textContent = `共 ${candidates.length} 個語詞（含 ${learnedInList} 個已學習語詞）`;
+
+      const pageStatusText = `${state.candidatePage + 1} / ${totalPages}`;
+      if (pageInd) {
+        pageInd.textContent = `第 ${pageStatusText} 頁`;
+      }
+
+      grid.innerHTML = '';
+
+      if (pageItems.length === 0) {
+        const emptyHint = document.createElement('div');
+        emptyHint.style.cssText = 'grid-column: 1 / 6; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:1.1rem; font-weight:800;';
+        emptyHint.textContent = `目前注音【${seqStr}】尚無對應語詞，請點選下方「➕ 記錄新語詞」新增學習！`;
+        grid.appendChild(emptyHint);
+      } else {
+        pageItems.forEach(item => {
+          const card = document.createElement('button');
+          card.type = 'button';
+          const learnedClass = item.isLearned ? 'is-learned' : '';
+          const freqClass = (item.useCount || 0) > 0 ? 'is-frequent' : '';
+          card.className = `phrase-card ${learnedClass} ${freqClass} scan-item`;
+
+          let badgeHtml = '';
+          if (item.isLearned) {
+            badgeHtml = `<span class="phrase-status-badge badge-learned">🌟 已學習 ${item.useCount > 0 ? `(${item.useCount}次)` : ''}</span>`;
+          } else if (item.useCount > 0) {
+            badgeHtml = `<span class="phrase-status-badge badge-used">常用 ${item.useCount}次</span>`;
+          } else {
+            badgeHtml = `<span class="phrase-status-badge" style="color:#94a3b8;">${escapeHtml(item.category || '')}</span>`;
+          }
+
+          card.innerHTML = `
+            <div class="phrase-card-top">
+              <span class="phrase-zy-tag">${escapeHtml(item.zy || item.primaryZy || '')}</span>
+              ${badgeHtml}
+            </div>
+            <div class="phrase-main-text">${escapeHtml(item.text)}</div>
+          `;
+
+          card.addEventListener('click', () => confirmAndSpeakPhrase(item));
+          grid.appendChild(card);
+        });
+      }
+
+      // 與常用詞同一列、一樣大小高度的「上一頁」與「下一頁」大按鈕（固定於第 6、7 欄，支援自動掃描與游標停留選取）
+      const canFlipPage = totalPages > 1;
+
+      const prevBtn = document.createElement('button');
+      prevBtn.id = 'btnPrevPage';
+      prevBtn.type = 'button';
+      prevBtn.className = 'phrase-card page-nav-card scan-item';
+      prevBtn.style.gridColumn = '6';
+      prevBtn.disabled = !canFlipPage;
+      prevBtn.innerHTML = `
+        <div class="phrase-card-top">
+          <span class="phrase-zy-tag">翻頁控制</span>
+          <span class="phrase-status-badge" style="color:#cbd5e1;">${pageStatusText}</span>
+        </div>
+        <div class="phrase-main-text page-nav-main-text">◀ 上一頁</div>
+      `;
+      prevBtn.addEventListener('click', () => {
+        if (totalPages <= 1) return;
+        playKeyClickTone(460, 0.05);
+        state.candidatePage = (state.candidatePage - 1 + totalPages) % totalPages;
+        renderCandidates();
+      });
+      grid.appendChild(prevBtn);
+
+      const nextBtn = document.createElement('button');
+      nextBtn.id = 'btnNextPage';
+      nextBtn.type = 'button';
+      nextBtn.className = 'phrase-card page-nav-card scan-item';
+      nextBtn.style.gridColumn = '7';
+      nextBtn.disabled = !canFlipPage;
+      nextBtn.innerHTML = `
+        <div class="phrase-card-top">
+          <span class="phrase-zy-tag">翻頁控制</span>
+          <span class="phrase-status-badge" style="color:#cbd5e1;">${pageStatusText}</span>
+        </div>
+        <div class="phrase-main-text page-nav-main-text">下一頁 ▶</div>
+      `;
+      nextBtn.addEventListener('click', () => {
+        if (totalPages <= 1) return;
+        playKeyClickTone(540, 0.05);
+        state.candidatePage = (state.candidatePage + 1) % totalPages;
+        renderCandidates();
+      });
+      grid.appendChild(nextBtn);
+    }
+
+    function updateKeyboardIndicators() {
+      const learnedCountByZy = {};
+      state.phrases.forEach(p => {
+        if (p.isLearned) {
+          const zyKey = p.primaryZy || (p.zy ? p.zy[0] : '');
+          if (zyKey) {
+            learnedCountByZy[zyKey] = (learnedCountByZy[zyKey] || 0) + 1;
+          }
+        }
+      });
+
+      document.querySelectorAll('.zy-key[data-zy]').forEach(btn => {
+        const zy = btn.dataset.zy;
+        if (state.selectedZySequence.includes(zy)) {
+          btn.classList.add('active-selected');
+        } else {
+          btn.classList.remove('active-selected');
+        }
+
+        const badge = btn.querySelector(`[data-zy-badge="${zy}"]`);
+        if (badge) {
+          const cnt = learnedCountByZy[zy] || 0;
+          if (cnt > 0) {
+            badge.textContent = `🌟${cnt}`;
+            badge.classList.remove('hidden');
+          } else {
+            badge.classList.add('hidden');
+          }
+        }
+      });
+    }
+
+    function updateLearnedCountBadge() {
+      const learnedTotal = state.phrases.filter(p => p.isLearned).length;
+      document.getElementById('learnedCountBadge').textContent = String(learnedTotal);
+    }
+
+    const QUICK_SUGGESTION_TEMPLATES = {
+      'ㄏ': ['換枕頭位置', '想喝果汁', '幫我擦汗', '呼吸有點喘'],
+      'ㄔ': ['想吃水果', '幫我抽痰', '床頭調高一點', '幫我穿衣服'],
+      'ㄈ': ['請幫我翻身向左', '請幫我翻身向右', '扶我坐起來', '房間太悶了'],
+      'ㄊ': ['頭很痛', '肚子痛', '喉嚨有痰想抽痰', '腿很痠幫我按摩'],
+      'ㄋ': ['我想尿尿', '幫我拿眼鏡', '幫我拿遙控器', '尿布好像濕了'],
+      'ㄉ': ['我想大便', '幫我打開電視', '幫我關大燈留小燈', '墊高腳部枕頭'],
+      'ㄅ': ['背部很癢幫我抓', '幫我蓋被子', '不要這個', '幫我拍背'],
+      'ㄒ': ['謝謝你的照顧', '我想休息一下', '想洗臉擦手', '想見家人'],
+      'ㄕ': ['手麻了幫我移動', '我想睡覺了', '身體不舒服', '幫我梳頭髮'],
+      'ㄎ': ['口很渴想沾水', '想看電視新聞', '開窗戶通風', '一直想咳嗽']
+    };
+
+    function initModalZyPicker() {
+      const picker = document.getElementById('modalZyPicker');
+      picker.innerHTML = '';
+      BOPOMOFO_ROWS.flat().forEach(item => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'mini-zy-btn';
+        b.dataset.modalZy = item.symbol;
+        b.textContent = item.symbol;
+        b.addEventListener('click', () => setModalPrimaryZy(item.symbol));
+        picker.appendChild(b);
+      });
+    }
+
+    function setModalPrimaryZy(zy) {
+      state.modalPrimaryZy = zy || 'ㄏ';
+      document.getElementById('modalPrimaryZyBadge').textContent = state.modalPrimaryZy;
+      document.getElementById('modalExplainZy').textContent = state.modalPrimaryZy;
+
+      document.querySelectorAll('.mini-zy-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.modalZy === state.modalPrimaryZy);
+      });
+
+      const suggContainer = document.getElementById('quickPhraseSuggestions');
+      const templates = QUICK_SUGGESTION_TEMPLATES[state.modalPrimaryZy] || [
+        `我想表達（${state.modalPrimaryZy}）相關需求`,
+        '幫我調整姿勢',
+        '請幫我看一下'
+      ];
+      suggContainer.innerHTML = `<span style="font-size:0.82rem;color:#94a3b8;align-self:center;">快速範本：</span>` +
+        templates.map(t => `<button type="button" class="suggestion-chip">${t}</button>`).join('');
+
+      suggContainer.querySelectorAll('.suggestion-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const inputEl = document.getElementById('inputNewPhraseText');
+          inputEl.value = chip.textContent;
+          updateAutoZyCodeFromInput();
+        });
+      });
+
+      updateAutoZyCodeFromInput();
+    }
+
+    function openLearnModal(defaultZy) {
+      const chosenZy = defaultZy || state.selectedZySequence[0] || 'ㄏ';
+      document.getElementById('inputNewPhraseText').value = '';
+      document.getElementById('selectNewPhraseCategory').value = '專屬學習';
+      setModalPrimaryZy(chosenZy);
+
+      if (state.selectedZySequence.length > 0) {
+        document.getElementById('inputNewPhraseZyCode').value = state.selectedZySequence.join('');
+      } else {
+        document.getElementById('inputNewPhraseZyCode').value = chosenZy;
+      }
+
+      document.getElementById('learnModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('inputNewPhraseText').focus(), 80);
+    }
+
+    function closeLearnModal() {
+      document.getElementById('learnModal').classList.add('hidden');
+    }
+
+    function updateAutoZyCodeFromInput() {
+      const text = document.getElementById('inputNewPhraseText').value.trim();
+      const codeInput = document.getElementById('inputNewPhraseZyCode');
+      if (!text) {
+        codeInput.value = state.modalPrimaryZy;
+        return;
+      }
+      const autoZy = extractBopomofoInitials(text, state.modalPrimaryZy);
+      if (autoZy && !autoZy.startsWith(state.modalPrimaryZy)) {
+        codeInput.value = state.modalPrimaryZy + autoZy;
+      } else {
+        codeInput.value = autoZy || state.modalPrimaryZy;
+      }
+    }
+
+    function saveLearnedPhrase(speakImmediately = false) {
+      const textInput = document.getElementById('inputNewPhraseText');
+      const zyCodeInput = document.getElementById('inputNewPhraseZyCode');
+      const categorySelect = document.getElementById('selectNewPhraseCategory');
+
+      const text = textInput.value.trim();
+      if (!text) {
+        showToast('⚠️ 請先輸入要記錄學習的語詞內容！');
+        textInput.focus();
+        return;
+      }
+
+      const primaryZy = state.modalPrimaryZy || 'ㄏ';
+      let zyCode = zyCodeInput.value.trim() || extractBopomofoInitials(text, primaryZy);
+      if (!zyCode.startsWith(primaryZy)) {
+        zyCode = primaryZy + zyCode;
+      }
+
+      let existing = state.phrases.find(p => p.text === text && p.primaryZy === primaryZy);
+      if (existing) {
+        existing.zy = zyCode;
+        existing.category = categorySelect.value;
+        existing.isLearned = true;
+        if (!speakImmediately) {
+          existing.useCount = (existing.useCount || 0) + 1;
+          existing.lastUsedAt = Date.now();
+        }
+      } else {
+        existing = {
+          id: 'learned-' + Date.now(),
+          text,
+          zy: zyCode,
+          primaryZy,
+          category: categorySelect.value,
+          isLearned: true,
+          useCount: speakImmediately ? 0 : 1,
+          lastUsedAt: Date.now(),
+          pinned: true
+        };
+        state.phrases.unshift(existing);
+      }
+
+      savePhrases();
+      closeLearnModal();
+
+      state.selectedZySequence = [primaryZy];
+      state.candidatePage = 0;
+      updateUI();
+
+      if (speakImmediately) {
+        confirmAndSpeakPhrase(existing);
+        state.selectedZySequence = [primaryZy];
+        updateUI();
+      } else {
+        showToast(`🌟 已成功學習「${text}」！下次選注音「${primaryZy}」時將立即排在第一順位！`);
+      }
+    }
+
+    function initDictFilterSelect() {
+      const sel = document.getElementById('dictFilterZySelect');
+      BOPOMOFO_ROWS.flat().forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.symbol;
+        opt.textContent = `注音：${item.symbol} (${item.hint})`;
+        sel.appendChild(opt);
+      });
+    }
+
+    function openDictModal() {
+      renderDictList();
+      document.getElementById('dictModal').classList.remove('hidden');
+    }
+
+    function closeDictModal() {
+      document.getElementById('dictModal').classList.add('hidden');
+    }
+
+    function renderDictList() {
+      const container = document.getElementById('dictListContainer');
+      let list = [...state.phrases];
+
+      if (state.dictTab === 'learned') {
+        list = list.filter(p => p.isLearned || (p.useCount || 0) > 0);
+      }
+      if (state.dictFilterZy) {
+        list = list.filter(p => p.primaryZy === state.dictFilterZy || (p.zy && p.zy.startsWith(state.dictFilterZy)));
+      }
+
+      list = sortPhrasesByLearningPriority(list, state.dictFilterZy);
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:32px;color:#94a3b8;">
+            目前沒有符合條件的學習語詞。您可以點選下方「➕ 新增學習語詞」建立專屬詞庫！
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      list.forEach(item => {
+        const row = document.createElement('div');
+        row.className = `dict-item-row ${item.isLearned ? 'learned-row' : ''}`;
+        row.innerHTML = `
+          <div class="dict-item-left">
+            <div class="dict-zy-pill">${escapeHtml(item.primaryZy || (item.zy ? item.zy[0] : ''))}</div>
+            <div class="dict-item-info">
+              <div class="dict-item-text">${escapeHtml(item.text)}</div>
+              <div class="dict-item-meta">
+                注音字首碼：<strong>${escapeHtml(item.zy || '')}</strong> ｜ 分類：${escapeHtml(item.category || '一般')} ｜ 累積使用：<strong>${item.useCount || 0} 次</strong>
+              </div>
+            </div>
+          </div>
+          <div class="dict-item-actions">
+            <button type="button" class="dict-act-btn btn-test-speak" title="測試語音朗讀">🔊 發音</button>
+            <button type="button" class="dict-act-btn ${item.isLearned ? 'btn-star-active' : ''}" title="切換是否列為優先學習語詞">
+              ${item.isLearned ? '🌟 已學習置頂' : '☆ 設為學習置頂'}
+            </button>
+            <button type="button" class="dict-act-btn btn-del" title="刪除此語詞">🗑️ 刪除</button>
+          </div>
+        `;
+
+        const [btnSpeak, btnStar, btnDel] = row.querySelectorAll('.dict-act-btn');
+        btnSpeak.addEventListener('click', () => speakText(item.text));
+        btnStar.addEventListener('click', () => {
+          item.isLearned = !item.isLearned;
+          if (item.isLearned && !item.lastUsedAt) item.lastUsedAt = Date.now();
+          savePhrases();
+          renderDictList();
+          updateUI();
+        });
+        btnDel.addEventListener('click', () => {
+          state.phrases = state.phrases.filter(p => p.id !== item.id);
+          savePhrases();
+          renderDictList();
+          updateUI();
+          showToast(`已刪除語詞「${item.text}」`);
+        });
+
+        container.appendChild(row);
+      });
+    }
+
+    function applyInputMode() {
+      document.querySelectorAll('.mode-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === state.inputMode);
+      });
+
+      document.getElementById('dwellSettingsGroup').classList.toggle('hidden', state.inputMode !== 'dwell');
+      document.getElementById('scanSettingsGroup').classList.toggle('hidden', state.inputMode !== 'scan');
+      document.getElementById('scanTriggerBar').classList.toggle('hidden', state.inputMode !== 'scan');
+
+      clearDwellState();
+      stopAutoScan();
+
+      if (state.inputMode === 'scan') {
+        startAutoScan();
+      }
+    }
+
+    function setupDwellDelegation() {
+      document.addEventListener('mouseover', e => {
+        if (state.inputMode !== 'dwell') return;
+        const targetBtn = e.target.closest('.scan-item');
+        if (!targetBtn || targetBtn.disabled || targetBtn === currentDwellEl) return;
+
+        clearDwellState();
+        currentDwellEl = targetBtn;
+
+        const bar = document.createElement('div');
+        bar.className = 'dwell-progress-bar';
+        bar.style.transitionDuration = `${state.dwellTimeMs}ms`;
+        targetBtn.appendChild(bar);
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            bar.style.width = '100%';
+          });
+        });
+
+        dwellTimer = setTimeout(() => {
+          if (currentDwellEl === targetBtn) {
+            clearDwellState();
+            targetBtn.click();
+          }
+        }, state.dwellTimeMs);
+      });
+
+      document.addEventListener('mouseout', e => {
+        if (state.inputMode !== 'dwell') return;
+        if (currentDwellEl && !currentDwellEl.contains(e.relatedTarget)) {
+          clearDwellState();
+        }
+      });
+    }
+
+    function clearDwellState() {
+      if (dwellTimer) {
+        clearTimeout(dwellTimer);
+        dwellTimer = null;
+      }
+      if (currentDwellEl) {
+        currentDwellEl.querySelectorAll('.dwell-progress-bar').forEach(el => el.remove());
+        currentDwellEl = null;
+      }
+    }
+
+    function getScanRows() {
+      return Array.from(document.querySelectorAll('.scan-row'));
+    }
+
+    function startAutoScan() {
+      stopAutoScan();
+      scanState.phase = 'row';
+      scanState.rowIndex = 1;
+      scanState.itemIndex = 0;
+      scanState.itemLoopCount = 0;
+      highlightCurrentScanTarget();
+      scanState.timer = setInterval(stepAutoScan, state.scanSpeedMs);
+    }
+
+    function stopAutoScan() {
+      if (scanState.timer) {
+        clearInterval(scanState.timer);
+        scanState.timer = null;
+      }
+      document.querySelectorAll('.scan-row-highlight').forEach(el => el.classList.remove('scan-row-highlight'));
+      document.querySelectorAll('.scan-item-highlight').forEach(el => el.classList.remove('scan-item-highlight'));
+    }
+
+    function stepAutoScan() {
+      if (!document.getElementById('learnModal').classList.contains('hidden') ||
+          !document.getElementById('dictModal').classList.contains('hidden')) {
+        return;
+      }
+
+      const rows = getScanRows();
+      if (rows.length === 0) return;
+
+      if (scanState.phase === 'row') {
+        scanState.rowIndex = (scanState.rowIndex + 1) % rows.length;
+        highlightCurrentScanTarget();
+      } else {
+        const activeRow = rows[scanState.rowIndex];
+        const items = activeRow ? Array.from(activeRow.querySelectorAll('.scan-item:not(:disabled)')) : [];
+        if (items.length === 0) {
+          scanState.phase = 'row';
+          highlightCurrentScanTarget();
+          return;
+        }
+        scanState.itemIndex++;
+        if (scanState.itemIndex >= items.length) {
+          scanState.itemIndex = 0;
+          scanState.itemLoopCount++;
+          if (scanState.itemLoopCount >= 2) {
+            scanState.phase = 'row';
+            scanState.itemLoopCount = 0;
+          }
+        }
+        highlightCurrentScanTarget();
+      }
+    }
+
+    function highlightCurrentScanTarget() {
+      document.querySelectorAll('.scan-row-highlight').forEach(el => el.classList.remove('scan-row-highlight'));
+      document.querySelectorAll('.scan-item-highlight').forEach(el => el.classList.remove('scan-item-highlight'));
+
+      const rows = getScanRows();
+      const statusEl = document.getElementById('scanStatusText');
+      if (!rows[scanState.rowIndex]) return;
+
+      const currentRow = rows[scanState.rowIndex];
+      const rowLabel = currentRow.dataset.scanLabel || `第 ${scanState.rowIndex + 1} 列`;
+
+      if (scanState.phase === 'row') {
+        currentRow.classList.add('scan-row-highlight');
+        if (statusEl) {
+          statusEl.textContent = `🔄 自動掃描【列】中：目前位於「${rowLabel}」`;
+        }
+      } else {
+        currentRow.classList.add('scan-row-highlight');
+        const items = Array.from(currentRow.querySelectorAll('.scan-item:not(:disabled)'));
+        const currentItem = items[scanState.itemIndex];
+        if (currentItem) {
+          currentItem.classList.add('scan-item-highlight');
+          const itemLabel = currentItem.innerText.replace(/\s+/g, ' ').trim();
+          if (statusEl) {
+            statusEl.textContent = `🎯 掃描「${rowLabel}」按鈕中：【 ${itemLabel} 】`;
+          }
+        }
+      }
+    }
+
+    function handleScanTriggerAction() {
+      if (state.inputMode !== 'scan') return;
+      const rows = getScanRows();
+      const currentRow = rows[scanState.rowIndex];
+      if (!currentRow) return;
+
+      if (scanState.phase === 'row') {
+        playKeyClickTone(600, 0.05);
+        scanState.phase = 'item';
+        scanState.itemIndex = 0;
+        scanState.itemLoopCount = 0;
+        highlightCurrentScanTarget();
+        clearInterval(scanState.timer);
+        scanState.timer = setInterval(stepAutoScan, state.scanSpeedMs);
+      } else {
+        const items = Array.from(currentRow.querySelectorAll('.scan-item:not(:disabled)'));
+        const currentItem = items[scanState.itemIndex];
+        const isPageNav = currentItem && currentItem.classList.contains('page-nav-card');
+        if (currentItem) {
+          currentItem.click();
+        }
+        if (isPageNav) {
+          // 翻頁後繼續留在語詞選擇列，從新頁面的第 1 個語詞開始掃描
+          scanState.phase = 'item';
+          scanState.rowIndex = 1;
+          scanState.itemIndex = 0;
+          scanState.itemLoopCount = 0;
+        } else {
+          scanState.phase = 'row';
+          scanState.rowIndex = 1;
+          scanState.itemIndex = 0;
+        }
+        highlightCurrentScanTarget();
+        clearInterval(scanState.timer);
+        scanState.timer = setInterval(stepAutoScan, state.scanSpeedMs);
+      }
+    }
+
+    let cachedVoices = [];
+
+    function initOfflineSpeechEngine() {
+      if (!('speechSynthesis' in window)) return;
+      const updateVoices = () => {
+        try {
+          const list = window.speechSynthesis.getVoices();
+          if (list && list.length > 0) {
+            cachedVoices = list;
+          }
+        } catch (e) {}
+      };
+      updateVoices();
+      if ('onvoiceschanged' in window.speechSynthesis) {
+        window.speechSynthesis.addEventListener('voiceschanged', updateVoices);
+      }
+    }
+
+    function selectBestOfflineVoice() {
+      if (!('speechSynthesis' in window)) return null;
+      const voices = cachedVoices.length > 0 ? cachedVoices : window.speechSynthesis.getVoices();
+      if (!voices || voices.length === 0) return null;
+
+      const isTwLang = v => /zh[-_](TW|Hant)/i.test(v.lang || '') || /Taiwan|台灣|臺灣/i.test(v.name || '');
+      const isZhLang = v => /^zh/i.test(v.lang || '') || /Chinese|中文|國語/i.test(v.name || '');
+      // 排除需連網的 Online / Natural 雲端語音，確保完全斷網或內網環境下 100% 使用作業系統本機語音
+      const isStrictlyOffline = v => v.localService === true && !/Online|Cloud/i.test(v.name || '');
+
+      return (
+        voices.find(v => isStrictlyOffline(v) && isTwLang(v)) ||
+        voices.find(v => v.localService === true && isTwLang(v)) ||
+        voices.find(v => isStrictlyOffline(v) && isZhLang(v)) ||
+        voices.find(v => v.localService === true && isZhLang(v)) ||
+        voices.find(v => isTwLang(v)) ||
+        voices.find(v => isZhLang(v)) ||
+        null
+      );
+    }
+
+    function speakText(text) {
+      if (!text) return;
+      // 先發出短促雙音確認提示音（Web Audio API 硬體即時合成，完全不依賴網路與語音包）
+      playConfirmChime();
+
+      if (!('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
+
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'zh-TW';
+        utter.rate = 0.95;
+        utter.pitch = 1.0;
+        utter.volume = 1.0;
+
+        const bestVoice = selectBestOfflineVoice();
+        if (bestVoice) {
+          utter.voice = bestVoice;
+          utter.lang = bestVoice.lang || 'zh-TW';
+        }
+
+        // 若特定語音引擎因斷網或忙碌發生錯誤，自動退回系統預設本機引擎重試一次
+        utter.onerror = evt => {
+          if (evt && (evt.error === 'interrupted' || evt.error === 'canceled')) return;
+          try {
+            const fallbackUtter = new SpeechSynthesisUtterance(text);
+            fallbackUtter.lang = 'zh-TW';
+            fallbackUtter.rate = 0.95;
+            const localZh = (window.speechSynthesis.getVoices() || []).find(
+              v => v.localService === true && /^zh/i.test(v.lang || '')
+            );
+            if (localZh) fallbackUtter.voice = localZh;
+            window.speechSynthesis.speak(fallbackUtter);
+          } catch (err) {}
+        };
+
+        window.speechSynthesis.speak(utter);
+      } catch (e) {
+        console.warn('語音合成失敗:', e);
+      }
+    }
+
+    let sharedAudioCtx = null;
+    function getSharedAudioContext() {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return null;
+      if (!sharedAudioCtx || sharedAudioCtx.state === 'closed') {
+        sharedAudioCtx = new AudioCtx();
+      }
+      if (sharedAudioCtx.state === 'suspended') {
+        sharedAudioCtx.resume().catch(() => {});
+      }
+      return sharedAudioCtx;
+    }
+
+    function playConfirmChime() {
+      try {
+        const ctx = getSharedAudioContext();
+        if (!ctx) return;
+        [
+          { freq: 587.33, offset: 0, dur: 0.06 },
+          { freq: 880, offset: 0.065, dur: 0.08 }
+        ].forEach(note => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = note.freq;
+          gain.gain.setValueAtTime(0.09, ctx.currentTime + note.offset);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + note.offset + note.dur);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + note.offset);
+          osc.stop(ctx.currentTime + note.offset + note.dur);
+        });
+      } catch (e) {}
+    }
+
+    function playKeyClickTone(freq = 520, duration = 0.05) {
+      try {
+        const ctx = getSharedAudioContext();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playEmergencyAlarmTone() {
+      try {
+        const ctx = getSharedAudioContext();
+        if (!ctx) return;
+        [0, 0.18, 0.36].forEach(offset => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = 880;
+          gain.gain.setValueAtTime(0.22, ctx.currentTime + offset);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + offset + 0.14);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + offset);
+          osc.stop(ctx.currentTime + offset + 0.15);
+        });
+      } catch (e) {}
+    }
+
+    function bindEvents() {
+      document.getElementById('btnSpeakAgain').addEventListener('click', repeatConfirmedPhrase);
+      document.getElementById('btnEmergencyBell').addEventListener('click', triggerEmergencyCall);
+
+      document.querySelectorAll('.mode-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.inputMode = btn.dataset.mode;
+          saveSettings();
+          applyInputMode();
+        });
+      });
+
+      document.getElementById('dwellTimeSelect').addEventListener('change', e => {
+        state.dwellTimeMs = Number(e.target.value);
+        saveSettings();
+      });
+
+      document.getElementById('scanSpeedSelect').addEventListener('change', e => {
+        state.scanSpeedMs = Number(e.target.value);
+        saveSettings();
+        if (state.inputMode === 'scan') startAutoScan();
+      });
+
+      document.getElementById('btnScanTriggerPad').addEventListener('click', handleScanTriggerAction);
+
+      window.addEventListener('keydown', e => {
+        const learnOpen = !document.getElementById('learnModal').classList.contains('hidden');
+        const dictOpen = !document.getElementById('dictModal').classList.contains('hidden');
+        if (learnOpen || dictOpen) {
+          if (e.key === 'Escape') {
+            closeLearnModal();
+            closeDictModal();
+          }
+          return;
+        }
+
+        if (state.inputMode === 'scan' && (e.code === 'Space' || e.code === 'Enter')) {
+          e.preventDefault();
+          handleScanTriggerAction();
+        }
+      });
+
+      document.getElementById('btnCloseLearnModal').addEventListener('click', closeLearnModal);
+      document.getElementById('btnCancelLearn').addEventListener('click', closeLearnModal);
+      document.getElementById('inputNewPhraseText').addEventListener('input', updateAutoZyCodeFromInput);
+      document.getElementById('btnSaveOnlyLearn').addEventListener('click', () => saveLearnedPhrase(false));
+      document.getElementById('btnSpeakAndSaveLearn').addEventListener('click', () => saveLearnedPhrase(true));
+
+      document.getElementById('btnOpenDictModal').addEventListener('click', openDictModal);
+      document.getElementById('btnCloseDictModal').addEventListener('click', closeDictModal);
+      document.getElementById('btnCloseDictFooter').addEventListener('click', closeDictModal);
+      document.getElementById('btnAddFromDictModal').addEventListener('click', () => {
+        closeDictModal();
+        openLearnModal(state.dictFilterZy || state.selectedZySequence[0]);
+      });
+
+      document.getElementById('tabLearnedOnly').addEventListener('click', () => {
+        state.dictTab = 'learned';
+        document.getElementById('tabLearnedOnly').classList.add('active');
+        document.getElementById('tabAllPhrases').classList.remove('active');
+        renderDictList();
+      });
+
+      document.getElementById('tabAllPhrases').addEventListener('click', () => {
+        state.dictTab = 'all';
+        document.getElementById('tabAllPhrases').classList.add('active');
+        document.getElementById('tabLearnedOnly').classList.remove('active');
+        renderDictList();
+      });
+
+      document.getElementById('dictFilterZySelect').addEventListener('change', e => {
+        state.dictFilterZy = e.target.value;
+        renderDictList();
+      });
+
+      document.getElementById('btnResetDefaultDict').addEventListener('click', resetToDefaultPhrases);
+      document.getElementById('btnExportDict').addEventListener('click', exportDictionaryJson);
+      document.getElementById('inputImportDict').addEventListener('change', importDictionaryJson);
+
+      setupDwellDelegation();
+    }
+
+    function resetToDefaultPhrases() {
+      if (!window.confirm('確定要回復為系統預設語詞嗎？\n（每個注音符號將恢復為 2 個預設語詞，並清除目前的自訂學習紀錄）')) {
+        return;
+      }
+      localStorage.removeItem(STORAGE_KEY_PHRASES);
+      state.phrases = DEFAULT_PHRASES.map(p => ({ ...p }));
+      savePhrases();
+      renderDictList();
+      updateUI();
+      showToast('🔄 已成功回復為 37 個注音符號的系統預設語詞！');
+    }
+
+    function exportDictionaryJson() {
+      const dataStr = JSON.stringify(state.phrases, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `bopomofo-aac-phrases-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('📤 已匯出學習詞庫備份檔！');
+    }
+
+    function importDictionaryJson(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = evt => {
+        try {
+          const imported = JSON.parse(evt.target.result);
+          if (!Array.isArray(imported)) {
+            showToast('⚠️ 匯入失敗：檔案格式必須為語詞陣列');
+            return;
+          }
+          const sanitized = imported
+            .filter(item => item && typeof item === 'object' && typeof item.text === 'string' && item.text.trim())
+            .map((item, idx) => {
+              const text = item.text.trim();
+              const zy = typeof item.zy === 'string' && item.zy.trim()
+                ? item.zy.trim()
+                : extractBopomofoInitials(text, 'ㄏ');
+              const primaryZy = typeof item.primaryZy === 'string' && item.primaryZy.trim()
+                ? item.primaryZy.trim()[0]
+                : zy[0];
+              return {
+                id: typeof item.id === 'string' && item.id ? item.id : `imported-${Date.now()}-${idx}`,
+                text,
+                zy,
+                primaryZy,
+                category: typeof item.category === 'string' ? item.category : '專屬學習',
+                isLearned: Boolean(item.isLearned),
+                useCount: Number.isFinite(Number(item.useCount)) ? Math.max(0, Number(item.useCount)) : 0,
+                lastUsedAt: Number.isFinite(Number(item.lastUsedAt)) ? Number(item.lastUsedAt) : 0,
+                pinned: Boolean(item.pinned)
+              };
+            });
+          if (sanitized.length === 0) {
+            showToast('⚠️ 匯入失敗：檔案中沒有有效的語詞資料');
+            return;
+          }
+          state.phrases = sanitized;
+          savePhrases();
+          renderDictList();
+          updateUI();
+          showToast(`📥 成功匯入 ${sanitized.length} 筆學習語詞！`);
+        } catch (err) {
+          showToast('⚠️ 匯入失敗：檔案格式不正確');
+        } finally {
+          e.target.value = '';
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const el = document.getElementById('toastNotification');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        el.classList.add('hidden');
+      }, 3600);
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>

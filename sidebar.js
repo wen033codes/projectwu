@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         </a>
                     </li>
                     
+                    <li class="main-category-item"><a href="bopomofo-aac/" class="main-category-link"><i class="fa-solid fa-comments"></i> ㄅㄆㄇㄈ輔助溝通系統</a></li>
                     <li class="main-category-item"><a href="qa.html" class="main-category-link"><i class="fa-solid fa-circle-question"></i> Q&A</a></li>
                 </ul>
             </div>
