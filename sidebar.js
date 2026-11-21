@@ -200,10 +200,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
         let pagePath = window.location.pathname || '/';
         if (window.location.protocol === 'file:') {
-            const parts = pagePath.split(/[\\/]/);
-            pagePath = '/' + (parts.pop() || 'index.html');
+            if (pagePath.includes('bopomofo-aac')) {
+                pagePath = '/projectwu/bopomofo-aac/index.html';
+            } else {
+                const parts = pagePath.split(/[\\/]/);
+                pagePath = '/projectwu/' + (parts.pop() || 'index.html');
+            }
         } else if (pagePath === '/' || pagePath === '/projectwu' || pagePath === '/projectwu/') {
             pagePath = '/projectwu/index.html';
+        } else if (pagePath.endsWith('/bopomofo-aac') || pagePath.endsWith('/bopomofo-aac/')) {
+            pagePath = '/projectwu/bopomofo-aac/index.html';
         }
 
         let pageTitle = document.title || '';
